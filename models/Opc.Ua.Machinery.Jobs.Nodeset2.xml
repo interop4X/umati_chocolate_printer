@@ -1,0 +1,1206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:s1="http://opcfoundation.org/UA/Machinery/Jobs/Types.xsd" xmlns:s2="http://opcfoundation.org/UA/ISA95-JOBCONTROL_V2/Types.xsd" xmlns:ua="http://unifiedautomation.com/Configuration/NodeSet.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <NamespaceUris>
+        <Uri>http://opcfoundation.org/UA/Machinery/Jobs/</Uri>
+        <Uri>http://opcfoundation.org/UA/ISA95-JOBCONTROL_V2/</Uri>
+    </NamespaceUris>
+    <Models>
+        <Model ModelUri="http://opcfoundation.org/UA/Machinery/Jobs/" PublicationDate="2024-05-01T00:00:00Z" Version="1.0.1">
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/" PublicationDate="2023-12-15T00:00:00Z" Version="1.05.03"/>
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/ISA95-JOBCONTROL_V2/" PublicationDate="2024-01-31T00:00:00Z" Version="2.0.0"/>
+        </Model>
+    </Models>
+    <Aliases>
+        <Alias Alias="Boolean">i=1</Alias>
+        <Alias Alias="UInt16">i=5</Alias>
+        <Alias Alias="Double">i=11</Alias>
+        <Alias Alias="String">i=12</Alias>
+        <Alias Alias="DateTime">i=13</Alias>
+        <Alias Alias="ByteString">i=15</Alias>
+        <Alias Alias="NodeId">i=17</Alias>
+        <Alias Alias="QualifiedName">i=20</Alias>
+        <Alias Alias="LocalizedText">i=21</Alias>
+        <Alias Alias="HasModellingRule">i=37</Alias>
+        <Alias Alias="HasEncoding">i=38</Alias>
+        <Alias Alias="HasDescription">i=39</Alias>
+        <Alias Alias="HasTypeDefinition">i=40</Alias>
+        <Alias Alias="HasSubtype">i=45</Alias>
+        <Alias Alias="HasProperty">i=46</Alias>
+        <Alias Alias="HasComponent">i=47</Alias>
+        <Alias Alias="IdType">i=256</Alias>
+        <Alias Alias="NumericRange">i=291</Alias>
+        <Alias Alias="Argument">i=296</Alias>
+        <Alias Alias="EUInformation">i=887</Alias>
+        <Alias Alias="EnumValueType">i=7594</Alias>
+        <Alias Alias="ISA95WorkMasterDataType">ns=2;i=3007</Alias>
+        <Alias Alias="ISA95JobOrderAndStateDataType">ns=2;i=3015</Alias>
+        <Alias Alias="OutputInfoType">ns=1;i=3009</Alias>
+        <Alias Alias="OutputInformationDataType">ns=1;i=3012</Alias>
+        <Alias Alias="BOMComponentInformationDataType">ns=1;i=3015</Alias>
+    </Aliases>
+    <Extensions>
+        <Extension>
+            <ua:ModelInfo Tool="UaModeler" Hash="A0hVZeQK8hWoFOUUDU+UhQ==" Version="1.6.12"/>
+        </Extension>
+    </Extensions>
+    <UADataType NodeId="ns=1;i=3003" BrowseName="1:JobExecutionMode">
+        <DisplayName>JobExecutionMode</DisplayName>
+        <Category>Machinery Job Management Planned ExecutionMode</Category>
+        <Category>Machinery Job Management Result ExecutionMode</Category>
+        <Documentation>https://reference.opcfoundation.org/Machinery/Jobs/v100/docs/9.1</Documentation>
+        <References>
+            <Reference ReferenceType="HasProperty">ns=1;i=6014</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=29</Reference>
+        </References>
+        <Definition Name="1:JobExecutionMode">
+            <Field Name="SimulationMode" Value="0">
+                <Description>Machine running in simulation mode with no workpiece involved.</Description>
+            </Field>
+            <Field Name="TestMode" Value="1">
+                <Description>Machine running in test mode with a workpiece involved.</Description>
+            </Field>
+            <Field Name="ProductionMode" Value="2">
+                <Description>Machine running in production mode.</Description>
+            </Field>
+        </Definition>
+    </UADataType>
+    <UAVariable DataType="EnumValueType" ParentNodeId="ns=1;i=3003" ValueRank="1" NodeId="ns=1;i=6014" ArrayDimensions="3" BrowseName="EnumValues">
+        <DisplayName>EnumValues</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=3003</Reference>
+        </References>
+        <Value>
+            <uax:ListOfExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=7616</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:EnumValueType>
+                            <uax:Value>0</uax:Value>
+                            <uax:DisplayName>
+                                <uax:Text>SimulationMode</uax:Text>
+                            </uax:DisplayName>
+                            <uax:Description>
+                                <uax:Text>Machine running in simulation mode with no workpiece involved.</uax:Text>
+                            </uax:Description>
+                        </uax:EnumValueType>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=7616</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:EnumValueType>
+                            <uax:Value>1</uax:Value>
+                            <uax:DisplayName>
+                                <uax:Text>TestMode</uax:Text>
+                            </uax:DisplayName>
+                            <uax:Description>
+                                <uax:Text>Machine running in test mode with a workpiece involved.</uax:Text>
+                            </uax:Description>
+                        </uax:EnumValueType>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=7616</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:EnumValueType>
+                            <uax:Value>2</uax:Value>
+                            <uax:DisplayName>
+                                <uax:Text>ProductionMode</uax:Text>
+                            </uax:DisplayName>
+                            <uax:Description>
+                                <uax:Text>Machine running in production mode.</uax:Text>
+                            </uax:Description>
+                        </uax:EnumValueType>
+                    </uax:Body>
+                </uax:ExtensionObject>
+            </uax:ListOfExtensionObject>
+        </Value>
+    </UAVariable>
+    <UADataType NodeId="ns=1;i=3006" BrowseName="1:JobResult">
+        <DisplayName>JobResult</DisplayName>
+        <Category>Machinery Job Management Result JobResult</Category>
+        <Documentation>https://reference.opcfoundation.org/Machinery/Jobs/v100/docs/9.2</Documentation>
+        <References>
+            <Reference ReferenceType="HasProperty">ns=1;i=6019</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=29</Reference>
+        </References>
+        <Definition Name="1:JobResult">
+            <Field Name="Unknown" Value="0">
+                <Description>Unknown state. Used when result is not known, e.g. because job order is still running.</Description>
+            </Field>
+            <Field Name="Successful" Value="1">
+                <Description>Job order was executed successful</Description>
+            </Field>
+            <Field Name="Unsuccessful" Value="2">
+                <Description>Job order was not executed successful.</Description>
+            </Field>
+        </Definition>
+    </UADataType>
+    <UAVariable DataType="EnumValueType" ParentNodeId="ns=1;i=3006" ValueRank="1" NodeId="ns=1;i=6019" ArrayDimensions="3" BrowseName="EnumValues">
+        <DisplayName>EnumValues</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=3006</Reference>
+        </References>
+        <Value>
+            <uax:ListOfExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=7616</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:EnumValueType>
+                            <uax:Value>0</uax:Value>
+                            <uax:DisplayName>
+                                <uax:Text>Unknown</uax:Text>
+                            </uax:DisplayName>
+                            <uax:Description>
+                                <uax:Text>Unknown state. Used when result is not known, e.g. because job order is still running.</uax:Text>
+                            </uax:Description>
+                        </uax:EnumValueType>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=7616</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:EnumValueType>
+                            <uax:Value>1</uax:Value>
+                            <uax:DisplayName>
+                                <uax:Text>Successful</uax:Text>
+                            </uax:DisplayName>
+                            <uax:Description>
+                                <uax:Text>Job order was executed successful</uax:Text>
+                            </uax:Description>
+                        </uax:EnumValueType>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=7616</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:EnumValueType>
+                            <uax:Value>2</uax:Value>
+                            <uax:DisplayName>
+                                <uax:Text>Unsuccessful</uax:Text>
+                            </uax:DisplayName>
+                            <uax:Description>
+                                <uax:Text>Job order was not executed successful.</uax:Text>
+                            </uax:Description>
+                        </uax:EnumValueType>
+                    </uax:Body>
+                </uax:ExtensionObject>
+            </uax:ListOfExtensionObject>
+        </Value>
+    </UAVariable>
+    <UADataType NodeId="ns=1;i=3004" BrowseName="1:ProcessIrregularity">
+        <DisplayName>ProcessIrregularity</DisplayName>
+        <Category>Machinery Job Management Result ProcessIrregularity</Category>
+        <Documentation>https://reference.opcfoundation.org/Machinery/Jobs/v100/docs/9.8</Documentation>
+        <References>
+            <Reference ReferenceType="HasProperty">ns=1;i=6036</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=29</Reference>
+        </References>
+        <Definition Name="1:ProcessIrregularity">
+            <Field Name="CapabilityUnavailable" Value="0">
+                <Description>The machine is not able to give a statement about process irregularities.</Description>
+            </Field>
+            <Field Name="Detected" Value="1">
+                <Description>A process irregularity has been detected.</Description>
+            </Field>
+            <Field Name="NotDetected" Value="2">
+                <Description>There was no process irregularity detected.</Description>
+            </Field>
+            <Field Name="NotYetDetermined" Value="3">
+                <Description>A statement about the process irregularity is to be expected.</Description>
+            </Field>
+        </Definition>
+    </UADataType>
+    <UAVariable DataType="EnumValueType" ParentNodeId="ns=1;i=3004" ValueRank="1" NodeId="ns=1;i=6036" ArrayDimensions="4" BrowseName="EnumValues">
+        <DisplayName>EnumValues</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=3004</Reference>
+        </References>
+        <Value>
+            <uax:ListOfExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=7616</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:EnumValueType>
+                            <uax:Value>0</uax:Value>
+                            <uax:DisplayName>
+                                <uax:Text>CapabilityUnavailable</uax:Text>
+                            </uax:DisplayName>
+                            <uax:Description>
+                                <uax:Text>The machine is not able to give a statement about process irregularities.</uax:Text>
+                            </uax:Description>
+                        </uax:EnumValueType>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=7616</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:EnumValueType>
+                            <uax:Value>1</uax:Value>
+                            <uax:DisplayName>
+                                <uax:Text>Detected</uax:Text>
+                            </uax:DisplayName>
+                            <uax:Description>
+                                <uax:Text>A process irregularity has been detected.</uax:Text>
+                            </uax:Description>
+                        </uax:EnumValueType>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=7616</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:EnumValueType>
+                            <uax:Value>2</uax:Value>
+                            <uax:DisplayName>
+                                <uax:Text>NotDetected</uax:Text>
+                            </uax:DisplayName>
+                            <uax:Description>
+                                <uax:Text>There was no process irregularity detected.</uax:Text>
+                            </uax:Description>
+                        </uax:EnumValueType>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=7616</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:EnumValueType>
+                            <uax:Value>3</uax:Value>
+                            <uax:DisplayName>
+                                <uax:Text>NotYetDetermined</uax:Text>
+                            </uax:DisplayName>
+                            <uax:Description>
+                                <uax:Text>A statement about the process irregularity is to be expected.</uax:Text>
+                            </uax:Description>
+                        </uax:EnumValueType>
+                    </uax:Body>
+                </uax:ExtensionObject>
+            </uax:ListOfExtensionObject>
+        </Value>
+    </UAVariable>
+    <UADataType NodeId="ns=1;i=3009" BrowseName="1:OutputInfoType">
+        <DisplayName>OutputInfoType</DisplayName>
+        <Category>Machinery Job Management Planned Base</Category>
+        <Category>Machinery Job Management Result Base</Category>
+        <Documentation>https://reference.opcfoundation.org/Machinery/Jobs/v100/docs/9.4</Documentation>
+        <References>
+            <Reference ReferenceType="HasProperty">ns=1;i=6020</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=3</Reference>
+        </References>
+        <Definition Name="1:OutputInfoType" IsOptionSet="true">
+            <Field Name="OrderNumber" Value="0">
+                <Description>Identifier identifies the order (order identifier).</Description>
+            </Field>
+            <Field Name="LotNumber" Value="1">
+                <Description>Identifier identifies the production group of the item (lot identifier).</Description>
+            </Field>
+            <Field Name="SerialNumber" Value="2">
+                <Description>Identifier identifies the one entity of the item (product identifier).</Description>
+            </Field>
+        </Definition>
+    </UADataType>
+    <UAVariable DataType="LocalizedText" ParentNodeId="ns=1;i=3009" ValueRank="1" NodeId="ns=1;i=6020" ArrayDimensions="3" BrowseName="OptionSetValues">
+        <DisplayName>OptionSetValues</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=3009</Reference>
+        </References>
+        <Value>
+            <uax:ListOfLocalizedText>
+                <uax:LocalizedText>
+                    <uax:Text>OrderNumber</uax:Text>
+                </uax:LocalizedText>
+                <uax:LocalizedText>
+                    <uax:Text>LotNumber</uax:Text>
+                </uax:LocalizedText>
+                <uax:LocalizedText>
+                    <uax:Text>SerialNumber</uax:Text>
+                </uax:LocalizedText>
+            </uax:ListOfLocalizedText>
+        </Value>
+    </UAVariable>
+    <UADataType NodeId="ns=1;i=3015" BrowseName="1:BOMComponentInformationDataType">
+        <DisplayName>BOMComponentInformationDataType</DisplayName>
+        <Category>Machinery Job Management Result BOM</Category>
+        <Documentation>https://reference.opcfoundation.org/Machinery/Jobs/v100/docs/9.5</Documentation>
+        <References>
+            <Reference ReferenceType="HasEncoding">ns=1;i=5005</Reference>
+            <Reference ReferenceType="HasEncoding">ns=1;i=5006</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:BOMComponentInformationDataType">
+            <Field DataType="OutputInformationDataType" Name="Identification">
+                <Description>Identification of the output.</Description>
+            </Field>
+            <Field DataType="Double" Name="Quantity">
+                <Description>Quantity defines the amount of material. This quantity can be specified in different ways, e.g. weight or number.</Description>
+            </Field>
+            <Field DataType="EUInformation" Name="EngineeringUnits">
+                <Description>The engineering unit of the quantity.</Description>
+            </Field>
+        </Definition>
+    </UADataType>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=6015" NodeId="ns=1;i=6023" BrowseName="1:BOMComponentInformationDataType">
+        <DisplayName>BOMComponentInformationDataType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=6015</Reference>
+            <Reference ReferenceType="HasDescription" IsForward="false">ns=1;i=5005</Reference>
+        </References>
+        <Value>
+            <uax:String>BOMComponentInformationDataType</uax:String>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=6017" NodeId="ns=1;i=6024" BrowseName="1:BOMComponentInformationDataType">
+        <DisplayName>BOMComponentInformationDataType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=6017</Reference>
+            <Reference ReferenceType="HasDescription" IsForward="false">ns=1;i=5006</Reference>
+        </References>
+        <Value>
+            <uax:String>//xs:element[@name='BOMComponentInformationDataType']</uax:String>
+        </Value>
+    </UAVariable>
+    <UADataType NodeId="ns=1;i=3018" BrowseName="1:BOMInformationDataType">
+        <DisplayName>BOMInformationDataType</DisplayName>
+        <Category>Machinery Job Management Result BOM</Category>
+        <Documentation>https://reference.opcfoundation.org/Machinery/Jobs/v100/docs/9.6</Documentation>
+        <References>
+            <Reference ReferenceType="HasEncoding">ns=1;i=5007</Reference>
+            <Reference ReferenceType="HasEncoding">ns=1;i=5008</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:BOMInformationDataType">
+            <Field DataType="OutputInformationDataType" Name="Identification">
+                <Description>Identification of the output.</Description>
+            </Field>
+            <Field DataType="BOMComponentInformationDataType" ValueRank="1" ArrayDimensions="0" Name="ComponentInformation">
+                <Description>Contains information about components.</Description>
+            </Field>
+        </Definition>
+    </UADataType>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=6015" NodeId="ns=1;i=6025" BrowseName="1:BOMInformationDataType">
+        <DisplayName>BOMInformationDataType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=6015</Reference>
+            <Reference ReferenceType="HasDescription" IsForward="false">ns=1;i=5007</Reference>
+        </References>
+        <Value>
+            <uax:String>BOMInformationDataType</uax:String>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=6017" NodeId="ns=1;i=6026" BrowseName="1:BOMInformationDataType">
+        <DisplayName>BOMInformationDataType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=6017</Reference>
+            <Reference ReferenceType="HasDescription" IsForward="false">ns=1;i=5008</Reference>
+        </References>
+        <Value>
+            <uax:String>//xs:element[@name='BOMInformationDataType']</uax:String>
+        </Value>
+    </UAVariable>
+    <UADataType NodeId="ns=1;i=3012" BrowseName="1:OutputInformationDataType">
+        <DisplayName>OutputInformationDataType</DisplayName>
+        <Category>Machinery Job Management Planned Base</Category>
+        <Category>Machinery Job Management Result Base</Category>
+        <Documentation>https://reference.opcfoundation.org/Machinery/Jobs/v100/docs/9.3</Documentation>
+        <References>
+            <Reference ReferenceType="HasEncoding">ns=1;i=5003</Reference>
+            <Reference ReferenceType="HasEncoding">ns=1;i=5004</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:OutputInformationDataType">
+            <Field DataType="String" Name="ItemNumber">
+                <Description>ItemNumber defines an Identifier to identify the Type of the item (Material Identifier).</Description>
+            </Field>
+            <Field DataType="OutputInfoType" Name="OutputInfo">
+                <Description>Bitmask indicating which of the optional fields are used for identification. If none is selected, only ItemNumber is used. Each selected optional field shall provide a value.</Description>
+            </Field>
+            <Field IsOptional="true" DataType="String" Name="OrderNumber">
+                <Description>OrderNumber defines an Identifier to identify the order. Shall be provided if defined in OutputInfo.</Description>
+            </Field>
+            <Field IsOptional="true" DataType="String" Name="LotNumber">
+                <Description>LotNumber defines an Identifier to identify the production-group of the item (Lot Identifier). Shall be provided if defined in OutputInfo.</Description>
+            </Field>
+            <Field IsOptional="true" DataType="String" Name="SerialNumber">
+                <Description>SerialNumber defines an Identifier to identify the one entity of the item (Product Identifier). Shall be provided if defined in OutputInfo.</Description>
+            </Field>
+        </Definition>
+    </UADataType>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=6015" NodeId="ns=1;i=6021" BrowseName="1:OutputInformationDataType">
+        <DisplayName>OutputInformationDataType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=6015</Reference>
+            <Reference ReferenceType="HasDescription" IsForward="false">ns=1;i=5003</Reference>
+        </References>
+        <Value>
+            <uax:String>OutputInformationDataType</uax:String>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=6017" NodeId="ns=1;i=6022" BrowseName="1:OutputInformationDataType">
+        <DisplayName>OutputInformationDataType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=6017</Reference>
+            <Reference ReferenceType="HasDescription" IsForward="false">ns=1;i=5004</Reference>
+        </References>
+        <Value>
+            <uax:String>//xs:element[@name='OutputInformationDataType']</uax:String>
+        </Value>
+    </UAVariable>
+    <UADataType NodeId="ns=1;i=3021" BrowseName="1:OutputPerformanceInfoDataType">
+        <DisplayName>OutputPerformanceInfoDataType</DisplayName>
+        <Category>Machinery Job Management Result PerformanceInfo</Category>
+        <Documentation>https://reference.opcfoundation.org/Machinery/Jobs/v100/docs/9.7</Documentation>
+        <References>
+            <Reference ReferenceType="HasEncoding">ns=1;i=5009</Reference>
+            <Reference ReferenceType="HasEncoding">ns=1;i=5010</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:OutputPerformanceInfoDataType">
+            <Field DataType="OutputInformationDataType" Name="Identification">
+                <Description>Identification of the output.</Description>
+            </Field>
+            <Field IsOptional="true" DataType="DateTime" Name="StartTime">
+                <Description>Output of first item from order.</Description>
+            </Field>
+            <Field IsOptional="true" DataType="DateTime" Name="EndTime">
+                <Description>Output of last item from order.</Description>
+            </Field>
+        </Definition>
+    </UADataType>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=6015" NodeId="ns=1;i=6027" BrowseName="1:OutputPerformanceInfoDataType">
+        <DisplayName>OutputPerformanceInfoDataType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=6015</Reference>
+            <Reference ReferenceType="HasDescription" IsForward="false">ns=1;i=5009</Reference>
+        </References>
+        <Value>
+            <uax:String>OutputPerformanceInfoDataType</uax:String>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=6017" NodeId="ns=1;i=6028" BrowseName="1:OutputPerformanceInfoDataType">
+        <DisplayName>OutputPerformanceInfoDataType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=69</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=6017</Reference>
+            <Reference ReferenceType="HasDescription" IsForward="false">ns=1;i=5010</Reference>
+        </References>
+        <Value>
+            <uax:String>//xs:element[@name='OutputPerformanceInfoDataType']</uax:String>
+        </Value>
+    </UAVariable>
+    <UAVariable SymbolicName="TypeDictionary_BinarySchema" DataType="ByteString" NodeId="ns=1;i=6015" BrowseName="1:TypeDictionary">
+        <DisplayName>TypeDictionary</DisplayName>
+        <Description>Collects the data type descriptions of http://opcfoundation.org/UA/Machinery/Jobs/</Description>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6023</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6025</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6016</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6021</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6027</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">i=93</Reference>
+        </References>
+        <Value>
+            <uax:ByteString>PG9wYzpUeXBlRGljdGlvbmFyeSB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZ
+        W1hLWluc3RhbmNlIiB4bWxuczp0bnM9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS9NY
+        WNoaW5lcnkvSm9icy8iIERlZmF1bHRCeXRlT3JkZXI9IkxpdHRsZUVuZGlhbiIgeG1sbnM6b
+        3BjPSJodHRwOi8vb3BjZm91bmRhdGlvbi5vcmcvQmluYXJ5U2NoZW1hLyIgeG1sbnM6dWE9I
+        mh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iIFRhcmdldE5hbWVzcGFjZT0iaHR0cDovL
+        29wY2ZvdW5kYXRpb24ub3JnL1VBL01hY2hpbmVyeS9Kb2JzLyI+CiA8b3BjOkltcG9ydCBOY
+        W1lc3BhY2U9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS8iLz4KIDxvcGM6U3RydWN0d
+        XJlZFR5cGUgQmFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCIgTmFtZT0iQk9NQ29tcG9uZ
+        W50SW5mb3JtYXRpb25EYXRhVHlwZSI+CiAgPG9wYzpGaWVsZCBUeXBlTmFtZT0idG5zOk91d
+        HB1dEluZm9ybWF0aW9uRGF0YVR5cGUiIE5hbWU9IklkZW50aWZpY2F0aW9uIi8+CiAgPG9wY
+        zpGaWVsZCBUeXBlTmFtZT0ib3BjOkRvdWJsZSIgTmFtZT0iUXVhbnRpdHkiLz4KICA8b3BjO
+        kZpZWxkIFR5cGVOYW1lPSJ1YTpFVUluZm9ybWF0aW9uIiBOYW1lPSJFbmdpbmVlcmluZ1Vua
+        XRzIi8+CiA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KIDxvcGM6U3RydWN0dXJlZFR5cGUgQmFzZ
+        VR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCIgTmFtZT0iQk9NSW5mb3JtYXRpb25EYXRhVHlwZ
+        SI+CiAgPG9wYzpGaWVsZCBUeXBlTmFtZT0idG5zOk91dHB1dEluZm9ybWF0aW9uRGF0YVR5c
+        GUiIE5hbWU9IklkZW50aWZpY2F0aW9uIi8+CiAgPG9wYzpGaWVsZCBUeXBlTmFtZT0ib3BjO
+        kludDMyIiBOYW1lPSJOb09mQ29tcG9uZW50SW5mb3JtYXRpb24iLz4KICA8b3BjOkZpZWxkI
+        Exlbmd0aEZpZWxkPSJOb09mQ29tcG9uZW50SW5mb3JtYXRpb24iIFR5cGVOYW1lPSJ0bnM6Q
+        k9NQ29tcG9uZW50SW5mb3JtYXRpb25EYXRhVHlwZSIgTmFtZT0iQ29tcG9uZW50SW5mb3JtY
+        XRpb24iLz4KIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgogPG9wYzpTdHJ1Y3R1cmVkVHlwZSBCY
+        XNlVHlwZT0idWE6RXh0ZW5zaW9uT2JqZWN0IiBOYW1lPSJPdXRwdXRJbmZvcm1hdGlvbkRhd
+        GFUeXBlIj4KICA8b3BjOkZpZWxkIFR5cGVOYW1lPSJvcGM6Qml0IiBOYW1lPSJPcmRlck51b
+        WJlclNwZWNpZmllZCIvPgogIDxvcGM6RmllbGQgVHlwZU5hbWU9Im9wYzpCaXQiIE5hbWU9I
+        kxvdE51bWJlclNwZWNpZmllZCIvPgogIDxvcGM6RmllbGQgVHlwZU5hbWU9Im9wYzpCaXQiI
+        E5hbWU9IlNlcmlhbE51bWJlclNwZWNpZmllZCIvPgogIDxvcGM6RmllbGQgTGVuZ3RoPSIyO
+        SIgVHlwZU5hbWU9Im9wYzpCaXQiIE5hbWU9IlJlc2VydmVkMSIvPgogIDxvcGM6RmllbGQgV
+        HlwZU5hbWU9Im9wYzpDaGFyQXJyYXkiIE5hbWU9Ikl0ZW1OdW1iZXIiLz4KICA8b3BjOkZpZ
+        WxkIFR5cGVOYW1lPSJ0bnM6T3V0cHV0SW5mb1R5cGUiIE5hbWU9Ik91dHB1dEluZm8iLz4KI
+        CA8b3BjOkZpZWxkIFN3aXRjaEZpZWxkPSJPcmRlck51bWJlclNwZWNpZmllZCIgVHlwZU5hb
+        WU9Im9wYzpDaGFyQXJyYXkiIE5hbWU9Ik9yZGVyTnVtYmVyIi8+CiAgPG9wYzpGaWVsZCBTd
+        2l0Y2hGaWVsZD0iTG90TnVtYmVyU3BlY2lmaWVkIiBUeXBlTmFtZT0ib3BjOkNoYXJBcnJhe
+        SIgTmFtZT0iTG90TnVtYmVyIi8+CiAgPG9wYzpGaWVsZCBTd2l0Y2hGaWVsZD0iU2VyaWFsT
+        nVtYmVyU3BlY2lmaWVkIiBUeXBlTmFtZT0ib3BjOkNoYXJBcnJheSIgTmFtZT0iU2VyaWFsT
+        nVtYmVyIi8+CiA8L29wYzpTdHJ1Y3R1cmVkVHlwZT4KIDxvcGM6U3RydWN0dXJlZFR5cGUgQ
+        mFzZVR5cGU9InVhOkV4dGVuc2lvbk9iamVjdCIgTmFtZT0iT3V0cHV0UGVyZm9ybWFuY2VJb
+        mZvRGF0YVR5cGUiPgogIDxvcGM6RmllbGQgVHlwZU5hbWU9Im9wYzpCaXQiIE5hbWU9IlN0Y
+        XJ0VGltZVNwZWNpZmllZCIvPgogIDxvcGM6RmllbGQgVHlwZU5hbWU9Im9wYzpCaXQiIE5hb
+        WU9IkVuZFRpbWVTcGVjaWZpZWQiLz4KICA8b3BjOkZpZWxkIExlbmd0aD0iMzAiIFR5cGVOY
+        W1lPSJvcGM6Qml0IiBOYW1lPSJSZXNlcnZlZDEiLz4KICA8b3BjOkZpZWxkIFR5cGVOYW1lP
+        SJ0bnM6T3V0cHV0SW5mb3JtYXRpb25EYXRhVHlwZSIgTmFtZT0iSWRlbnRpZmljYXRpb24iL
+        z4KICA8b3BjOkZpZWxkIFN3aXRjaEZpZWxkPSJTdGFydFRpbWVTcGVjaWZpZWQiIFR5cGVOY
+        W1lPSJvcGM6RGF0ZVRpbWUiIE5hbWU9IlN0YXJ0VGltZSIvPgogIDxvcGM6RmllbGQgU3dpd
+        GNoRmllbGQ9IkVuZFRpbWVTcGVjaWZpZWQiIFR5cGVOYW1lPSJvcGM6RGF0ZVRpbWUiIE5hb
+        WU9IkVuZFRpbWUiLz4KIDwvb3BjOlN0cnVjdHVyZWRUeXBlPgogPG9wYzpFbnVtZXJhdGVkV
+        HlwZSBMZW5ndGhJbkJpdHM9IjMyIiBOYW1lPSJKb2JFeGVjdXRpb25Nb2RlIj4KICA8b3BjO
+        kVudW1lcmF0ZWRWYWx1ZSBOYW1lPSJTaW11bGF0aW9uTW9kZSIgVmFsdWU9IjAiLz4KICA8b
+        3BjOkVudW1lcmF0ZWRWYWx1ZSBOYW1lPSJUZXN0TW9kZSIgVmFsdWU9IjEiLz4KICA8b3BjO
+        kVudW1lcmF0ZWRWYWx1ZSBOYW1lPSJQcm9kdWN0aW9uTW9kZSIgVmFsdWU9IjIiLz4KIDwvb
+        3BjOkVudW1lcmF0ZWRUeXBlPgogPG9wYzpFbnVtZXJhdGVkVHlwZSBMZW5ndGhJbkJpdHM9I
+        jMyIiBOYW1lPSJKb2JSZXN1bHQiPgogIDxvcGM6RW51bWVyYXRlZFZhbHVlIE5hbWU9IlVua
+        25vd24iIFZhbHVlPSIwIi8+CiAgPG9wYzpFbnVtZXJhdGVkVmFsdWUgTmFtZT0iU3VjY2Vzc
+        2Z1bCIgVmFsdWU9IjEiLz4KICA8b3BjOkVudW1lcmF0ZWRWYWx1ZSBOYW1lPSJVbnN1Y2Nlc
+        3NmdWwiIFZhbHVlPSIyIi8+CiA8L29wYzpFbnVtZXJhdGVkVHlwZT4KIDxvcGM6RW51bWVyY
+        XRlZFR5cGUgTGVuZ3RoSW5CaXRzPSIzMiIgTmFtZT0iUHJvY2Vzc0lycmVndWxhcml0eSI+C
+        iAgPG9wYzpFbnVtZXJhdGVkVmFsdWUgTmFtZT0iQ2FwYWJpbGl0eVVuYXZhaWxhYmxlIiBWY
+        Wx1ZT0iMCIvPgogIDxvcGM6RW51bWVyYXRlZFZhbHVlIE5hbWU9IkRldGVjdGVkIiBWYWx1Z
+        T0iMSIvPgogIDxvcGM6RW51bWVyYXRlZFZhbHVlIE5hbWU9Ik5vdERldGVjdGVkIiBWYWx1Z
+        T0iMiIvPgogIDxvcGM6RW51bWVyYXRlZFZhbHVlIE5hbWU9Ik5vdFlldERldGVybWluZWQiI
+        FZhbHVlPSIzIi8+CiA8L29wYzpFbnVtZXJhdGVkVHlwZT4KIDxvcGM6RW51bWVyYXRlZFR5c
+        GUgTGVuZ3RoSW5CaXRzPSI4IiBOYW1lPSJPdXRwdXRJbmZvVHlwZSIgSXNPcHRpb25TZXQ9I
+        nRydWUiPgogIDxvcGM6RW51bWVyYXRlZFZhbHVlIE5hbWU9Ik9yZGVyTnVtYmVyIiBWYWx1Z
+        T0iMCIvPgogIDxvcGM6RW51bWVyYXRlZFZhbHVlIE5hbWU9IkxvdE51bWJlciIgVmFsdWU9I
+        jEiLz4KICA8b3BjOkVudW1lcmF0ZWRWYWx1ZSBOYW1lPSJTZXJpYWxOdW1iZXIiIFZhbHVlP
+        SIyIi8+CiA8L29wYzpFbnVtZXJhdGVkVHlwZT4KPC9vcGM6VHlwZURpY3Rpb25hcnk+Cg==</uax:ByteString>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=6015" NodeId="ns=1;i=6016" BrowseName="NamespaceUri">
+        <DisplayName>NamespaceUri</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=6015</Reference>
+        </References>
+        <Value>
+            <uax:String>http://opcfoundation.org/UA/Machinery/Jobs/</uax:String>
+        </Value>
+    </UAVariable>
+    <UAVariable SymbolicName="TypeDictionary_XmlSchema" DataType="ByteString" NodeId="ns=1;i=6017" BrowseName="1:TypeDictionary">
+        <DisplayName>TypeDictionary</DisplayName>
+        <Description>Collects the data type descriptions of http://opcfoundation.org/UA/Machinery/Jobs/</Description>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=72</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6024</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6026</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6018</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6022</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6028</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">i=92</Reference>
+        </References>
+        <Value>
+            <uax:ByteString>PHhzOnNjaGVtYSBlbGVtZW50Rm9ybURlZmF1bHQ9InF1YWxpZmllZCIgdGFyZ2V0TmFtZXNwYWNlPSJod
+        HRwOi8vb3BjZm91bmRhdGlvbi5vcmcvVUEvTWFjaGluZXJ5L0pvYnMvVHlwZXMueHNkIiB4b
+        Wxuczp0bnM9Imh0dHA6Ly9vcGNmb3VuZGF0aW9uLm9yZy9VQS9NYWNoaW5lcnkvSm9icy9Ue
+        XBlcy54c2QiIHhtbG5zOnVhPSJodHRwOi8vb3BjZm91bmRhdGlvbi5vcmcvVUEvMjAwOC8wM
+        i9UeXBlcy54c2QiIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtY
+        SI+CiA8eHM6aW1wb3J0IG5hbWVzcGFjZT0iaHR0cDovL29wY2ZvdW5kYXRpb24ub3JnL1VBL
+        zIwMDgvMDIvVHlwZXMueHNkIi8+CiA8eHM6c2ltcGxlVHlwZSBuYW1lPSJKb2JFeGVjdXRpb
+        25Nb2RlIj4KICA8eHM6cmVzdHJpY3Rpb24gYmFzZT0ieHM6c3RyaW5nIj4KICAgPHhzOmVud
+        W1lcmF0aW9uIHZhbHVlPSJTaW11bGF0aW9uTW9kZV8wIi8+CiAgIDx4czplbnVtZXJhdGlvb
+        iB2YWx1ZT0iVGVzdE1vZGVfMSIvPgogICA8eHM6ZW51bWVyYXRpb24gdmFsdWU9IlByb2R1Y
+        3Rpb25Nb2RlXzIiLz4KICA8L3hzOnJlc3RyaWN0aW9uPgogPC94czpzaW1wbGVUeXBlPgogP
+        HhzOmVsZW1lbnQgdHlwZT0idG5zOkpvYkV4ZWN1dGlvbk1vZGUiIG5hbWU9IkpvYkV4ZWN1d
+        Glvbk1vZGUiLz4KIDx4czpjb21wbGV4VHlwZSBuYW1lPSJMaXN0T2ZKb2JFeGVjdXRpb25Nb
+        2RlIj4KICA8eHM6c2VxdWVuY2U+CiAgIDx4czplbGVtZW50IG1pbk9jY3Vycz0iMCIgbWF4T
+        2NjdXJzPSJ1bmJvdW5kZWQiIHR5cGU9InRuczpKb2JFeGVjdXRpb25Nb2RlIiBuYW1lPSJKb
+        2JFeGVjdXRpb25Nb2RlIiBuaWxsYWJsZT0idHJ1ZSIvPgogIDwveHM6c2VxdWVuY2U+CiA8L
+        3hzOmNvbXBsZXhUeXBlPgogPHhzOmVsZW1lbnQgdHlwZT0idG5zOkxpc3RPZkpvYkV4ZWN1d
+        Glvbk1vZGUiIG5hbWU9Ikxpc3RPZkpvYkV4ZWN1dGlvbk1vZGUiIG5pbGxhYmxlPSJ0cnVlI
+        i8+CiA8eHM6c2ltcGxlVHlwZSBuYW1lPSJKb2JSZXN1bHQiPgogIDx4czpyZXN0cmljdGlvb
+        iBiYXNlPSJ4czpzdHJpbmciPgogICA8eHM6ZW51bWVyYXRpb24gdmFsdWU9IlVua25vd25fM
+        CIvPgogICA8eHM6ZW51bWVyYXRpb24gdmFsdWU9IlN1Y2Nlc3NmdWxfMSIvPgogICA8eHM6Z
+        W51bWVyYXRpb24gdmFsdWU9IlVuc3VjY2Vzc2Z1bF8yIi8+CiAgPC94czpyZXN0cmljdGlvb
+        j4KIDwveHM6c2ltcGxlVHlwZT4KIDx4czplbGVtZW50IHR5cGU9InRuczpKb2JSZXN1bHQiI
+        G5hbWU9IkpvYlJlc3VsdCIvPgogPHhzOmNvbXBsZXhUeXBlIG5hbWU9Ikxpc3RPZkpvYlJlc
+        3VsdCI+CiAgPHhzOnNlcXVlbmNlPgogICA8eHM6ZWxlbWVudCBtaW5PY2N1cnM9IjAiIG1he
+        E9jY3Vycz0idW5ib3VuZGVkIiB0eXBlPSJ0bnM6Sm9iUmVzdWx0IiBuYW1lPSJKb2JSZXN1b
+        HQiIG5pbGxhYmxlPSJ0cnVlIi8+CiAgPC94czpzZXF1ZW5jZT4KIDwveHM6Y29tcGxleFR5c
+        GU+CiA8eHM6ZWxlbWVudCB0eXBlPSJ0bnM6TGlzdE9mSm9iUmVzdWx0IiBuYW1lPSJMaXN0T
+        2ZKb2JSZXN1bHQiIG5pbGxhYmxlPSJ0cnVlIi8+CiA8eHM6c2ltcGxlVHlwZSBuYW1lPSJQc
+        m9jZXNzSXJyZWd1bGFyaXR5Ij4KICA8eHM6cmVzdHJpY3Rpb24gYmFzZT0ieHM6c3RyaW5nI
+        j4KICAgPHhzOmVudW1lcmF0aW9uIHZhbHVlPSJDYXBhYmlsaXR5VW5hdmFpbGFibGVfMCIvP
+        gogICA8eHM6ZW51bWVyYXRpb24gdmFsdWU9IkRldGVjdGVkXzEiLz4KICAgPHhzOmVudW1lc
+        mF0aW9uIHZhbHVlPSJOb3REZXRlY3RlZF8yIi8+CiAgIDx4czplbnVtZXJhdGlvbiB2YWx1Z
+        T0iTm90WWV0RGV0ZXJtaW5lZF8zIi8+CiAgPC94czpyZXN0cmljdGlvbj4KIDwveHM6c2ltc
+        GxlVHlwZT4KIDx4czplbGVtZW50IHR5cGU9InRuczpQcm9jZXNzSXJyZWd1bGFyaXR5IiBuY
+        W1lPSJQcm9jZXNzSXJyZWd1bGFyaXR5Ii8+CiA8eHM6Y29tcGxleFR5cGUgbmFtZT0iTGlzd
+        E9mUHJvY2Vzc0lycmVndWxhcml0eSI+CiAgPHhzOnNlcXVlbmNlPgogICA8eHM6ZWxlbWVud
+        CBtaW5PY2N1cnM9IjAiIG1heE9jY3Vycz0idW5ib3VuZGVkIiB0eXBlPSJ0bnM6UHJvY2Vzc
+        0lycmVndWxhcml0eSIgbmFtZT0iUHJvY2Vzc0lycmVndWxhcml0eSIgbmlsbGFibGU9InRyd
+        WUiLz4KICA8L3hzOnNlcXVlbmNlPgogPC94czpjb21wbGV4VHlwZT4KIDx4czplbGVtZW50I
+        HR5cGU9InRuczpMaXN0T2ZQcm9jZXNzSXJyZWd1bGFyaXR5IiBuYW1lPSJMaXN0T2ZQcm9jZ
+        XNzSXJyZWd1bGFyaXR5IiBuaWxsYWJsZT0idHJ1ZSIvPgogPHhzOmNvbXBsZXhUeXBlIG5hb
+        WU9IkJPTUNvbXBvbmVudEluZm9ybWF0aW9uRGF0YVR5cGUiPgogIDx4czpzZXF1ZW5jZT4KI
+        CAgPHhzOmVsZW1lbnQgbWluT2NjdXJzPSIwIiBtYXhPY2N1cnM9IjEiIHR5cGU9InRuczpPd
+        XRwdXRJbmZvcm1hdGlvbkRhdGFUeXBlIiBuYW1lPSJJZGVudGlmaWNhdGlvbiIvPgogICA8e
+        HM6ZWxlbWVudCBtaW5PY2N1cnM9IjAiIG1heE9jY3Vycz0iMSIgdHlwZT0ieHM6ZG91YmxlI
+        iBuYW1lPSJRdWFudGl0eSIvPgogICA8eHM6ZWxlbWVudCBtaW5PY2N1cnM9IjAiIG1heE9jY
+        3Vycz0iMSIgdHlwZT0idWE6RVVJbmZvcm1hdGlvbiIgbmFtZT0iRW5naW5lZXJpbmdVbml0c
+        yIvPgogIDwveHM6c2VxdWVuY2U+CiA8L3hzOmNvbXBsZXhUeXBlPgogPHhzOmVsZW1lbnQgd
+        HlwZT0idG5zOkJPTUNvbXBvbmVudEluZm9ybWF0aW9uRGF0YVR5cGUiIG5hbWU9IkJPTUNvb
+        XBvbmVudEluZm9ybWF0aW9uRGF0YVR5cGUiLz4KIDx4czpjb21wbGV4VHlwZSBuYW1lPSJMa
+        XN0T2ZCT01Db21wb25lbnRJbmZvcm1hdGlvbkRhdGFUeXBlIj4KICA8eHM6c2VxdWVuY2U+C
+        iAgIDx4czplbGVtZW50IG1pbk9jY3Vycz0iMCIgbWF4T2NjdXJzPSJ1bmJvdW5kZWQiIHR5c
+        GU9InRuczpCT01Db21wb25lbnRJbmZvcm1hdGlvbkRhdGFUeXBlIiBuYW1lPSJCT01Db21wb
+        25lbnRJbmZvcm1hdGlvbkRhdGFUeXBlIiBuaWxsYWJsZT0idHJ1ZSIvPgogIDwveHM6c2Vxd
+        WVuY2U+CiA8L3hzOmNvbXBsZXhUeXBlPgogPHhzOmVsZW1lbnQgdHlwZT0idG5zOkxpc3RPZ
+        kJPTUNvbXBvbmVudEluZm9ybWF0aW9uRGF0YVR5cGUiIG5hbWU9Ikxpc3RPZkJPTUNvbXBvb
+        mVudEluZm9ybWF0aW9uRGF0YVR5cGUiIG5pbGxhYmxlPSJ0cnVlIi8+CiA8eHM6Y29tcGxle
+        FR5cGUgbmFtZT0iQk9NSW5mb3JtYXRpb25EYXRhVHlwZSI+CiAgPHhzOnNlcXVlbmNlPgogI
+        CA8eHM6ZWxlbWVudCBtaW5PY2N1cnM9IjAiIG1heE9jY3Vycz0iMSIgdHlwZT0idG5zOk91d
+        HB1dEluZm9ybWF0aW9uRGF0YVR5cGUiIG5hbWU9IklkZW50aWZpY2F0aW9uIi8+CiAgIDx4c
+        zplbGVtZW50IG1pbk9jY3Vycz0iMCIgbWF4T2NjdXJzPSIxIiB0eXBlPSJ0bnM6TGlzdE9mQ
+        k9NQ29tcG9uZW50SW5mb3JtYXRpb25EYXRhVHlwZSIgbmFtZT0iQ29tcG9uZW50SW5mb3JtY
+        XRpb24iLz4KICA8L3hzOnNlcXVlbmNlPgogPC94czpjb21wbGV4VHlwZT4KIDx4czplbGVtZ
+        W50IHR5cGU9InRuczpCT01JbmZvcm1hdGlvbkRhdGFUeXBlIiBuYW1lPSJCT01JbmZvcm1hd
+        GlvbkRhdGFUeXBlIi8+CiA8eHM6Y29tcGxleFR5cGUgbmFtZT0iTGlzdE9mQk9NSW5mb3JtY
+        XRpb25EYXRhVHlwZSI+CiAgPHhzOnNlcXVlbmNlPgogICA8eHM6ZWxlbWVudCBtaW5PY2N1c
+        nM9IjAiIG1heE9jY3Vycz0idW5ib3VuZGVkIiB0eXBlPSJ0bnM6Qk9NSW5mb3JtYXRpb25EY
+        XRhVHlwZSIgbmFtZT0iQk9NSW5mb3JtYXRpb25EYXRhVHlwZSIgbmlsbGFibGU9InRydWUiL
+        z4KICA8L3hzOnNlcXVlbmNlPgogPC94czpjb21wbGV4VHlwZT4KIDx4czplbGVtZW50IHR5c
+        GU9InRuczpMaXN0T2ZCT01JbmZvcm1hdGlvbkRhdGFUeXBlIiBuYW1lPSJMaXN0T2ZCT01Jb
+        mZvcm1hdGlvbkRhdGFUeXBlIiBuaWxsYWJsZT0idHJ1ZSIvPgogPHhzOmNvbXBsZXhUeXBlI
+        G5hbWU9Ik91dHB1dEluZm9ybWF0aW9uRGF0YVR5cGUiPgogIDx4czpzZXF1ZW5jZT4KICAgP
+        HhzOmVsZW1lbnQgbWluT2NjdXJzPSIwIiB0eXBlPSJ4czp1bnNpZ25lZEludCIgbmFtZT0iR
+        W5jb2RpbmdNYXNrIi8+CiAgIDx4czplbGVtZW50IG1pbk9jY3Vycz0iMCIgbWF4T2NjdXJzP
+        SIxIiB0eXBlPSJ4czpzdHJpbmciIG5hbWU9Ikl0ZW1OdW1iZXIiLz4KICAgPHhzOmVsZW1lb
+        nQgbWluT2NjdXJzPSIwIiBtYXhPY2N1cnM9IjEiIHR5cGU9InhzOnVuc2lnbmVkQnl0ZSIgb
+        mFtZT0iT3V0cHV0SW5mbyIvPgogICA8eHM6ZWxlbWVudCBtaW5PY2N1cnM9IjAiIG1heE9jY
+        3Vycz0iMSIgdHlwZT0ieHM6c3RyaW5nIiBuYW1lPSJPcmRlck51bWJlciIvPgogICA8eHM6Z
+        WxlbWVudCBtaW5PY2N1cnM9IjAiIG1heE9jY3Vycz0iMSIgdHlwZT0ieHM6c3RyaW5nIiBuY
+        W1lPSJMb3ROdW1iZXIiLz4KICAgPHhzOmVsZW1lbnQgbWluT2NjdXJzPSIwIiBtYXhPY2N1c
+        nM9IjEiIHR5cGU9InhzOnN0cmluZyIgbmFtZT0iU2VyaWFsTnVtYmVyIi8+CiAgPC94czpzZ
+        XF1ZW5jZT4KIDwveHM6Y29tcGxleFR5cGU+CiA8eHM6ZWxlbWVudCB0eXBlPSJ0bnM6T3V0c
+        HV0SW5mb3JtYXRpb25EYXRhVHlwZSIgbmFtZT0iT3V0cHV0SW5mb3JtYXRpb25EYXRhVHlwZ
+        SIvPgogPHhzOmNvbXBsZXhUeXBlIG5hbWU9Ikxpc3RPZk91dHB1dEluZm9ybWF0aW9uRGF0Y
+        VR5cGUiPgogIDx4czpzZXF1ZW5jZT4KICAgPHhzOmVsZW1lbnQgbWluT2NjdXJzPSIwIiBtY
+        XhPY2N1cnM9InVuYm91bmRlZCIgdHlwZT0idG5zOk91dHB1dEluZm9ybWF0aW9uRGF0YVR5c
+        GUiIG5hbWU9Ik91dHB1dEluZm9ybWF0aW9uRGF0YVR5cGUiIG5pbGxhYmxlPSJ0cnVlIi8+C
+        iAgPC94czpzZXF1ZW5jZT4KIDwveHM6Y29tcGxleFR5cGU+CiA8eHM6ZWxlbWVudCB0eXBlP
+        SJ0bnM6TGlzdE9mT3V0cHV0SW5mb3JtYXRpb25EYXRhVHlwZSIgbmFtZT0iTGlzdE9mT3V0c
+        HV0SW5mb3JtYXRpb25EYXRhVHlwZSIgbmlsbGFibGU9InRydWUiLz4KIDx4czpjb21wbGV4V
+        HlwZSBuYW1lPSJPdXRwdXRQZXJmb3JtYW5jZUluZm9EYXRhVHlwZSI+CiAgPHhzOnNlcXVlb
+        mNlPgogICA8eHM6ZWxlbWVudCBtaW5PY2N1cnM9IjAiIHR5cGU9InhzOnVuc2lnbmVkSW50I
+        iBuYW1lPSJFbmNvZGluZ01hc2siLz4KICAgPHhzOmVsZW1lbnQgbWluT2NjdXJzPSIwIiBtY
+        XhPY2N1cnM9IjEiIHR5cGU9InRuczpPdXRwdXRJbmZvcm1hdGlvbkRhdGFUeXBlIiBuYW1lP
+        SJJZGVudGlmaWNhdGlvbiIvPgogICA8eHM6ZWxlbWVudCBtaW5PY2N1cnM9IjAiIG1heE9jY
+        3Vycz0iMSIgdHlwZT0ieHM6ZGF0ZVRpbWUiIG5hbWU9IlN0YXJ0VGltZSIvPgogICA8eHM6Z
+        WxlbWVudCBtaW5PY2N1cnM9IjAiIG1heE9jY3Vycz0iMSIgdHlwZT0ieHM6ZGF0ZVRpbWUiI
+        G5hbWU9IkVuZFRpbWUiLz4KICA8L3hzOnNlcXVlbmNlPgogPC94czpjb21wbGV4VHlwZT4KI
+        Dx4czplbGVtZW50IHR5cGU9InRuczpPdXRwdXRQZXJmb3JtYW5jZUluZm9EYXRhVHlwZSIgb
+        mFtZT0iT3V0cHV0UGVyZm9ybWFuY2VJbmZvRGF0YVR5cGUiLz4KIDx4czpjb21wbGV4VHlwZ
+        SBuYW1lPSJMaXN0T2ZPdXRwdXRQZXJmb3JtYW5jZUluZm9EYXRhVHlwZSI+CiAgPHhzOnNlc
+        XVlbmNlPgogICA8eHM6ZWxlbWVudCBtaW5PY2N1cnM9IjAiIG1heE9jY3Vycz0idW5ib3VuZ
+        GVkIiB0eXBlPSJ0bnM6T3V0cHV0UGVyZm9ybWFuY2VJbmZvRGF0YVR5cGUiIG5hbWU9Ik91d
+        HB1dFBlcmZvcm1hbmNlSW5mb0RhdGFUeXBlIiBuaWxsYWJsZT0idHJ1ZSIvPgogIDwveHM6c
+        2VxdWVuY2U+CiA8L3hzOmNvbXBsZXhUeXBlPgogPHhzOmVsZW1lbnQgdHlwZT0idG5zOkxpc
+        3RPZk91dHB1dFBlcmZvcm1hbmNlSW5mb0RhdGFUeXBlIiBuYW1lPSJMaXN0T2ZPdXRwdXRQZ
+        XJmb3JtYW5jZUluZm9EYXRhVHlwZSIgbmlsbGFibGU9InRydWUiLz4KPC94czpzY2hlbWE+C
+        g==</uax:ByteString>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=6017" NodeId="ns=1;i=6018" BrowseName="NamespaceUri">
+        <DisplayName>NamespaceUri</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=6017</Reference>
+        </References>
+        <Value>
+            <uax:String>http://opcfoundation.org/UA/Machinery/Jobs/Types.xsd</uax:String>
+        </Value>
+    </UAVariable>
+    <UAObjectType NodeId="ns=1;i=1003" BrowseName="1:JobManagementType">
+        <DisplayName>JobManagementType</DisplayName>
+        <Category>Machinery Job Management Base</Category>
+        <Documentation>https://reference.opcfoundation.org/Machinery/Jobs/v100/docs/8.1</Documentation>
+        <References>
+            <Reference ReferenceType="HasProperty">ns=1;i=6013</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=5001</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=5002</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=58</Reference>
+        </References>
+    </UAObjectType>
+    <UAVariable DataType="QualifiedName" ParentNodeId="ns=1;i=1003" NodeId="ns=1;i=6013" BrowseName="DefaultInstanceBrowseName" AccessLevel="3">
+        <DisplayName>DefaultInstanceBrowseName</DisplayName>
+        <Description>The default BrowseName for instances of the type.</Description>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1003</Reference>
+        </References>
+        <Value>
+            <uax:QualifiedName>
+                <uax:NamespaceIndex>1</uax:NamespaceIndex>
+                <uax:Name>JobManagement</uax:Name>
+            </uax:QualifiedName>
+        </Value>
+    </UAVariable>
+    <UAObject ParentNodeId="ns=1;i=1003" NodeId="ns=1;i=5001" BrowseName="1:JobOrderControl">
+        <DisplayName>JobOrderControl</DisplayName>
+        <References>
+            <Reference ReferenceType="HasComponent">ns=1;i=6009</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6001</Reference>
+            <Reference ReferenceType="HasTypeDefinition">ns=2;i=1002</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6002</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6003</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6004</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6005</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6006</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6007</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=6008</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=1003</Reference>
+        </References>
+    </UAObject>
+    <UAVariable DataType="LocalizedText" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=6009" BrowseName="CurrentState">
+        <DisplayName>CurrentState</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=2760</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6010</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="NodeId" ParentNodeId="ns=1;i=6009" NodeId="ns=1;i=6010" BrowseName="Id">
+        <DisplayName>Id</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=6009</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=5001" ValueRank="1" NodeId="ns=1;i=6001" ArrayDimensions="0" BrowseName="2:EquipmentID">
+        <DisplayName>EquipmentID</DisplayName>
+        <Description>Defines a read-only set of Equipment Class IDs and Equipment IDs that may be specified in a job order.</Description>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="ISA95JobOrderAndStateDataType" ParentNodeId="ns=1;i=5001" ValueRank="1" NodeId="ns=1;i=6002" ArrayDimensions="0" BrowseName="2:JobOrderList">
+        <DisplayName>JobOrderList</DisplayName>
+        <Description>Defines a read-only list of job order information available from the server.</Description>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=5001" ValueRank="1" NodeId="ns=1;i=6003" ArrayDimensions="0" BrowseName="2:MaterialClassID">
+        <DisplayName>MaterialClassID</DisplayName>
+        <Description>Defines a read-only set of Material Classes IDs that may be specified in a job order.</Description>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=5001" ValueRank="1" NodeId="ns=1;i=6004" ArrayDimensions="0" BrowseName="2:MaterialDefinitionID">
+        <DisplayName>MaterialDefinitionID</DisplayName>
+        <Description>Defines a read-only set of Material Classes IDs that may be specified in a job order.</Description>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="UInt16" ParentNodeId="ns=1;i=5001" NodeId="ns=1;i=6005" BrowseName="2:MaxDownloadableJobOrders">
+        <DisplayName>MaxDownloadableJobOrders</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=5001" ValueRank="1" NodeId="ns=1;i=6006" ArrayDimensions="0" BrowseName="2:PersonnelID">
+        <DisplayName>PersonnelID</DisplayName>
+        <Description>Defines a read-only set of Personnel IDs and Person IDs that may be specified in a job order.</Description>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=5001" ValueRank="1" NodeId="ns=1;i=6007" ArrayDimensions="0" BrowseName="2:PhysicalAssetID">
+        <DisplayName>PhysicalAssetID</DisplayName>
+        <Description>Defines a read-only set of Physical Asset Class IDs and Physical Asset IDs that may be specified in a job order.</Description>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="ISA95WorkMasterDataType" ParentNodeId="ns=1;i=5001" ValueRank="1" NodeId="ns=1;i=6008" ArrayDimensions="0" BrowseName="2:WorkMaster">
+        <DisplayName>WorkMaster</DisplayName>
+        <Description>Defines a read-only set of work master IDs that may be specified in a job order, and the read-only set of parameters that may be specified for a specific work master.</Description>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
+        </References>
+    </UAVariable>
+    <UAObject ParentNodeId="ns=1;i=1003" NodeId="ns=1;i=5002" BrowseName="1:JobOrderResults">
+        <DisplayName>JobOrderResults</DisplayName>
+        <References>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasTypeDefinition">ns=2;i=1003</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=7001</Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=7002</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=1003</Reference>
+        </References>
+    </UAObject>
+    <UAMethod ParentNodeId="ns=1;i=5002" NodeId="ns=1;i=7001" BrowseName="2:RequestJobResponseByJobOrderID" MethodDeclarationId="ns=2;i=7002">
+        <DisplayName>RequestJobResponseByJobOrderID</DisplayName>
+        <References>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6011</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6012</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5002</Reference>
+        </References>
+    </UAMethod>
+    <UAVariable DataType="Argument" ParentNodeId="ns=1;i=7001" ValueRank="1" NodeId="ns=1;i=6011" ArrayDimensions="1" BrowseName="InputArguments">
+        <DisplayName>InputArguments</DisplayName>
+        <References>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=7001</Reference>
+        </References>
+        <Value>
+            <uax:ListOfExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=297</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:Argument>
+                            <uax:Name>JobOrderID</uax:Name>
+                            <uax:DataType>
+                                <uax:Identifier>i=12</uax:Identifier>
+                            </uax:DataType>
+                            <uax:ValueRank>-1</uax:ValueRank>
+                            <uax:ArrayDimensions/>
+                            <uax:Description>
+                                <uax:Text>Contains an ID of the job order, as specified by the method caller.</uax:Text>
+                            </uax:Description>
+                        </uax:Argument>
+                    </uax:Body>
+                </uax:ExtensionObject>
+            </uax:ListOfExtensionObject>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="Argument" ParentNodeId="ns=1;i=7001" ValueRank="1" NodeId="ns=1;i=6012" ArrayDimensions="2" BrowseName="OutputArguments">
+        <DisplayName>OutputArguments</DisplayName>
+        <References>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=7001</Reference>
+        </References>
+        <Value>
+            <uax:ListOfExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=297</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:Argument>
+                            <uax:Name>JobResponse</uax:Name>
+                            <uax:DataType>
+                                <uax:Identifier>ns=2;i=3013</uax:Identifier>
+                            </uax:DataType>
+                            <uax:ValueRank>-1</uax:ValueRank>
+                            <uax:ArrayDimensions/>
+                            <uax:Description>
+                                <uax:Text>Contains information about the execution of a job order, such as the current status of the job, actual material consumed, actual material produced, actual equipment used, and job specific data.</uax:Text>
+                            </uax:Description>
+                        </uax:Argument>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=297</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:Argument>
+                            <uax:Name>ReturnStatus</uax:Name>
+                            <uax:DataType>
+                                <uax:Identifier>i=9</uax:Identifier>
+                            </uax:DataType>
+                            <uax:ValueRank>-1</uax:ValueRank>
+                            <uax:ArrayDimensions/>
+                            <uax:Description>
+                                <uax:Text>Returns the status of the method execution.</uax:Text>
+                            </uax:Description>
+                        </uax:Argument>
+                    </uax:Body>
+                </uax:ExtensionObject>
+            </uax:ListOfExtensionObject>
+        </Value>
+    </UAVariable>
+    <UAMethod ParentNodeId="ns=1;i=5002" NodeId="ns=1;i=7002" BrowseName="2:RequestJobResponseByJobOrderState" MethodDeclarationId="ns=2;i=7014">
+        <DisplayName>RequestJobResponseByJobOrderState</DisplayName>
+        <References>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6037</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6038</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5002</Reference>
+        </References>
+    </UAMethod>
+    <UAVariable DataType="Argument" ParentNodeId="ns=1;i=7002" ValueRank="1" NodeId="ns=1;i=6037" ArrayDimensions="1" BrowseName="InputArguments">
+        <DisplayName>InputArguments</DisplayName>
+        <References>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=7002</Reference>
+        </References>
+        <Value>
+            <uax:ListOfExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=297</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:Argument>
+                            <uax:Name>JobOrderState</uax:Name>
+                            <uax:DataType>
+                                <uax:Identifier>ns=2;i=3006</uax:Identifier>
+                            </uax:DataType>
+                            <uax:ValueRank>1</uax:ValueRank>
+                            <uax:ArrayDimensions>
+                                <uax:UInt32>0</uax:UInt32>
+                            </uax:ArrayDimensions>
+                            <uax:Description>
+                                <uax:Text>Contains a job status of the JobResponse to be returned. The array shall provide at least one entry representing the top level state and potentially additional entries representing substates. The first entry shall be the top level entry, having the BrowsePath set to null. The order of the substates is not defined.</uax:Text>
+                            </uax:Description>
+                        </uax:Argument>
+                    </uax:Body>
+                </uax:ExtensionObject>
+            </uax:ListOfExtensionObject>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="Argument" ParentNodeId="ns=1;i=7002" ValueRank="1" NodeId="ns=1;i=6038" ArrayDimensions="2" BrowseName="OutputArguments">
+        <DisplayName>OutputArguments</DisplayName>
+        <References>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=7002</Reference>
+        </References>
+        <Value>
+            <uax:ListOfExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=297</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:Argument>
+                            <uax:Name>JobResponses</uax:Name>
+                            <uax:DataType>
+                                <uax:Identifier>ns=2;i=3013</uax:Identifier>
+                            </uax:DataType>
+                            <uax:ValueRank>1</uax:ValueRank>
+                            <uax:ArrayDimensions>
+                                <uax:UInt32>0</uax:UInt32>
+                            </uax:ArrayDimensions>
+                            <uax:Description>
+                                <uax:Text>Contains a list of information about the execution of a job order, such as the current status of the job, actual material consumed, actual material produced, actual equipment used, and job specific data. </uax:Text>
+                            </uax:Description>
+                        </uax:Argument>
+                    </uax:Body>
+                </uax:ExtensionObject>
+                <uax:ExtensionObject>
+                    <uax:TypeId>
+                        <uax:Identifier>i=297</uax:Identifier>
+                    </uax:TypeId>
+                    <uax:Body>
+                        <uax:Argument>
+                            <uax:Name>ReturnStatus</uax:Name>
+                            <uax:DataType>
+                                <uax:Identifier>i=9</uax:Identifier>
+                            </uax:DataType>
+                            <uax:ValueRank>-1</uax:ValueRank>
+                            <uax:ArrayDimensions/>
+                            <uax:Description>
+                                <uax:Text>Returns the status of the method execution.</uax:Text>
+                            </uax:Description>
+                        </uax:Argument>
+                    </uax:Body>
+                </uax:ExtensionObject>
+            </uax:ListOfExtensionObject>
+        </Value>
+    </UAVariable>
+    <UAObject SymbolicName="http___opcfoundation_org_UA_Machinery_Jobs_" NodeId="ns=1;i=5011" BrowseName="1:http://opcfoundation.org/UA/Machinery/Jobs/">
+        <DisplayName>http://opcfoundation.org/UA/Machinery/Jobs/</DisplayName>
+        <Documentation>https://reference.opcfoundation.org/Machinery/Jobs/v100/docs/11.1</Documentation>
+        <References>
+            <Reference ReferenceType="HasProperty">ns=1;i=6029</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=11616</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6030</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6031</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6032</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6033</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6034</Reference>
+            <Reference ReferenceType="HasProperty">ns=1;i=6035</Reference>
+            <Reference ReferenceType="HasComponent" IsForward="false">i=11715</Reference>
+        </References>
+    </UAObject>
+    <UAVariable DataType="Boolean" ParentNodeId="ns=1;i=5011" NodeId="ns=1;i=6029" BrowseName="IsNamespaceSubset">
+        <DisplayName>IsNamespaceSubset</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=5011</Reference>
+        </References>
+        <Value>
+            <uax:Boolean>false</uax:Boolean>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="DateTime" ParentNodeId="ns=1;i=5011" NodeId="ns=1;i=6030" BrowseName="NamespacePublicationDate">
+        <DisplayName>NamespacePublicationDate</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=5011</Reference>
+        </References>
+        <Value>
+            <uax:DateTime>2024-05-01T00:00:00Z</uax:DateTime>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=5011" NodeId="ns=1;i=6031" BrowseName="NamespaceUri">
+        <DisplayName>NamespaceUri</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=5011</Reference>
+        </References>
+        <Value>
+            <uax:String>http://opcfoundation.org/UA/Machinery/Jobs/</uax:String>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=5011" NodeId="ns=1;i=6032" BrowseName="NamespaceVersion">
+        <DisplayName>NamespaceVersion</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=5011</Reference>
+        </References>
+        <Value>
+            <uax:String>1.0.1</uax:String>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="IdType" ParentNodeId="ns=1;i=5011" ValueRank="1" NodeId="ns=1;i=6033" ArrayDimensions="0" BrowseName="StaticNodeIdTypes">
+        <DisplayName>StaticNodeIdTypes</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=5011</Reference>
+        </References>
+        <Value>
+            <uax:ListOfInt32>
+                <uax:Int32>0</uax:Int32>
+            </uax:ListOfInt32>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="NumericRange" ParentNodeId="ns=1;i=5011" ValueRank="1" NodeId="ns=1;i=6034" ArrayDimensions="0" BrowseName="StaticNumericNodeIdRange">
+        <DisplayName>StaticNumericNodeIdRange</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=5011</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" ParentNodeId="ns=1;i=5011" NodeId="ns=1;i=6035" BrowseName="StaticStringNodeIdPattern">
+        <DisplayName>StaticStringNodeIdPattern</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=5011</Reference>
+        </References>
+    </UAVariable>
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=5003" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3012</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=6021</Reference>
+        </References>
+    </UAObject>
+    <UAObject SymbolicName="DefaultXml" NodeId="ns=1;i=5004" BrowseName="Default XML">
+        <DisplayName>Default XML</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3012</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=6022</Reference>
+        </References>
+    </UAObject>
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=5005" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=6023</Reference>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3015</Reference>
+        </References>
+    </UAObject>
+    <UAObject SymbolicName="DefaultXml" NodeId="ns=1;i=5006" BrowseName="Default XML">
+        <DisplayName>Default XML</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=6024</Reference>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3015</Reference>
+        </References>
+    </UAObject>
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=5007" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=6025</Reference>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3018</Reference>
+        </References>
+    </UAObject>
+    <UAObject SymbolicName="DefaultXml" NodeId="ns=1;i=5008" BrowseName="Default XML">
+        <DisplayName>Default XML</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=6026</Reference>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3018</Reference>
+        </References>
+    </UAObject>
+    <UAObject SymbolicName="DefaultBinary" NodeId="ns=1;i=5009" BrowseName="Default Binary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3021</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=6027</Reference>
+        </References>
+    </UAObject>
+    <UAObject SymbolicName="DefaultXml" NodeId="ns=1;i=5010" BrowseName="Default XML">
+        <DisplayName>Default XML</DisplayName>
+        <References>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3021</Reference>
+            <Reference ReferenceType="HasDescription">ns=1;i=6028</Reference>
+        </References>
+    </UAObject>
+</UANodeSet>
