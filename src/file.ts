@@ -48,7 +48,11 @@ export class RootDict extends Dict {
 
         watcher.on('add', (path: any) => {
             console.log(`Datei ${path} wurde hinzugefügt`);
-            this.addFile(new File(server, js_path.basename(path), this));
+            if (this.childs.some(x => x.name == js_path.basename(path))){
+                console.log("file exist - no new File");
+            } else {
+                this.addFile(new File(server, js_path.basename(path), this));
+            }
         });
 
         // Ereignis für das Ändern einer Datei

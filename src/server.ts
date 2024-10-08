@@ -29,7 +29,7 @@ function createPdf(JobOrderId: string, outputPath: string, jobFile: string) {
             }
 
             // Füge den Inhalt der jobFile an einer bestimmten Position ein
-            doc.fontSize(3).text(fileContent, 3, 50);  // Position angepasst
+            doc.fontSize(3).text(fileContent, 20, 50);  // Position angepasst
 
             // PDF-Dokument abschließen, nachdem der Inhalt eingefügt wurde
             doc.end();
@@ -60,7 +60,7 @@ async function main() {
 
     // OPC UA Server Konfiguration
     const server = new OPCUAServer({
-        port: 48400, // Der Port, auf dem der Server läuft
+        port: 48030, // Der Port, auf dem der Server läuft
         resourcePath: "", // Endpunkt
         buildInfo: {
             productName: "interop4X - Choco Cutting Table",
@@ -68,6 +68,8 @@ async function main() {
             buildDate: new Date(),
         },
         nodeset_filename: xmlFiles, // Die Nodeset-Dateien werden hier übergeben
+        maxConnectionsPerEndpoint : 50,
+        maxAllowedSessionNumber : 50
     });
 
     // Initialisiere den Server
@@ -118,7 +120,9 @@ async function main() {
 
     const createFileMethod = fileSystemRoot.getMethodByName("CreateFile");
     createFileMethod?.bindMethod(function (inputArguments, context, callback) {
+        console.log("Add new file:");
         const fileName = inputArguments[0].value;
+        console.log(fileName);
         const requestFileOpen = inputArguments[1].value;
         var tmp : File = new File(server, fileName, root);
         root.addFile(tmp);
@@ -229,7 +233,7 @@ async function main() {
 
         var tmp = identifcation?.getChildByName("Location") as UAVariable;
         tmp?.setValueFromSource({
-            value: "GLASSTEC 15 A43 / 51.262752, 6.743782",
+            value: "glass 15 A43 / 51.262752, 6.743782",
             dataType: DataType.String
         });
     }
@@ -301,6 +305,10 @@ async function main() {
         if (!theJob){
             console.log(`Job ${jobOrderID} not found!`); 
         }
+
+        theJob.state[0].stateNumber = 3;
+        theJob.state[0].stateText = "Running";
+
         // achtung es könnten auch mehrere WorkMaster sein!
         if (!theJob.jobOrder.workMasterID[0]){
             console.log(`Job ${jobOrderID} No Workmaster is set`); 
@@ -326,6 +334,8 @@ async function main() {
             .then(() => {
                 console.log("Druckauftrag erfolgreich gesendet!");
                 mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.NotExecuting.text);
+                theJob.state[0].stateNumber = 5;
+                theJob.state[0].stateText = "Ended";
                 // Erfolgreiche Rückgabe an den Client
                 const callMethodResult = {
                     statusCode: StatusCodes.Good,
@@ -340,6 +350,8 @@ async function main() {
 
             })
             .catch((error : any) => {
+                theJob.state[0].stateNumber = 6;
+                theJob.state[0].stateText = "Aborted";
                 console.error("Fehler beim Drucken:", error);
                 mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.NotExecuting.text);
 
@@ -365,9 +377,30 @@ async function main() {
                 list.value.value[i].state[0].stateText = "AllowedToStart";
 
             }
+            if (job.state[0].stateNumber == 6) {
+                console.log("Aborted->End");
+                list.value.value[i].state[0].stateNumber = 5;
+                list.value.value[i].state[0].stateText = "Ended";
+
+            }
         }
         jobOrderList.setValueFromSource(list.value);
     }, 5000); // 10 Sekunden Intervall
+
+    setInterval(() => {
+        var i;
+        var list = jobOrderList.readValue();
+        //console.log(list.value.value);
+        for (i in list.value.value) {
+            var job = (list.value.value[i]);
+            //console.log(job.state);
+            if (job.state[0].stateNumber == 5) {
+                console.log("Remove job");
+                delete list.value.value[i];
+            }
+        }
+        jobOrderList.setValueFromSource(list.value);
+    }, 300000); // 10 Sekunden Intervall
 
 
     // Endpunkt anzeigen
