@@ -11,9 +11,12 @@ async function main() {
 createPdf("TestOrder", "myTest.pdf","data/myFile")
             .then((filePath : any) => {
                 console.log("print file");
-                /*return printer.print(tempPdfPath, {
-                    printer: process.env.PRINTER_NAME || '', // Setze den Druckernamen falls nötig
-                    win32: ["-print-settings", "fit"] // Windows-spezifische Einstellungen, z.B. "fit" für Papiergrößenanpassung
+                return printer.print("myTest.pdf", {
+                    printer: 'vertti', // Setze den Druckernamen falls nötig
+                    orientation : "landscape",
+                    paperSize: "label",
+                    scale: "fit",
+                    //win32: ["-print-settings", "fit"]  // Windows-spezifische Einstellungen, z.B. "fit" für Papiergrößenanpassung
                 }); // Ersetze "printer_name" mit deinem tatsächlichen Druckernamen*/
             })
             .then(() => {

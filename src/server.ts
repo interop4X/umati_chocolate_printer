@@ -3,6 +3,7 @@ import { NodeId, NodeIdType, OPCUAServer, UAFile, nodesets, UAMethod, StatusCode
 import * as path from "path";
 import { MachineryItemState } from "./machineryItemState";
 import { FileBaseSystem, RootDict, File } from "./file";
+import { createPdf } from "./labelCreator";
 
 import { promisify } from "util";
 const { exec } = require("child_process");
@@ -10,41 +11,6 @@ const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const printer = require("pdf-to-printer");
 
-function createPdf(JobOrderId: string, outputPath: string, jobFile: string) {
-    return new Promise((resolve, reject) => {
-        const doc = new PDFDocument({
-            size: [40, 90]
-        });
-
-        const writeStream = fs.createWriteStream(outputPath);
-        doc.pipe(writeStream);
-
-        // Füge den JobOrderId in die PDF-Datei ein
-        doc.fontSize(8).text(JobOrderId, 3, 1);
-
-        // Lies den Inhalt der jobFile und füge ihn ins PDF ein
-        fs.readFile(jobFile, 'utf8', (err: any, fileContent: string) => {
-            if (err) {
-                return reject(`Fehler beim Lesen der Datei: ${err}`);
-            }
-
-            // Füge den Inhalt der jobFile an einer bestimmten Position ein
-            doc.fontSize(3).text(fileContent, 20, 50);  // Position angepasst
-
-            // PDF-Dokument abschließen, nachdem der Inhalt eingefügt wurde
-            doc.end();
-        });
-
-        // Auf Abschluss des WriteStreams warten
-        writeStream.on("finish", () => {
-            resolve(outputPath);
-        });
-
-        writeStream.on("error", (err:any) => {
-            reject(`Fehler beim Schreiben der PDF-Datei: ${err}`);
-        });
-    });
-}
 
 // Hauptfunktion zur Erstellung des OPC UA Servers
 async function main() {
@@ -308,27 +274,33 @@ async function main() {
 
         theJob.state[0].stateNumber = 3;
         theJob.state[0].stateText = "Running";
+        jobOrderList.setValueFromSource(list.value);
 
         // achtung es könnten auch mehrere WorkMaster sein!
-        if (!theJob.jobOrder.workMasterID[0]){
-            console.log(`Job ${jobOrderID} No Workmaster is set`); 
+        var jobFile ="myFile";
+        if (theJob.jobOrder.workMasterID){
+            jobFile = theJob.jobOrder.workMasterID[0].parameters.find((p:any) => p.ID == "localPath").value;
+
+        }else{
+            console.log(`Job ${jobOrderID} No Workmaster is set`);
+            console.log(`No localPath in  ${jobOrderID} not found! Use Default!`);
         }
-        var jobFile = theJob.jobOrder.workMasterID[0].parameters.find((p:any) => p.ID == "localPath")
-        if (!jobFile){
-            console.log(`No localPath in  ${jobOrderID} not found!`); 
-        }
+ 
         console.log(jobFile);
         // Temporäre Datei erstellen, die gedruckt werden soll
         const tempPdfPath = path.join(__dirname,"../data",`${jobOrderID}.pdf`);
-        const tempRecipePath = path.join(__dirname,"../data",jobFile.value);
+        const tempRecipePath = path.join(__dirname,"../data",jobFile);
 
         // Erstelle die PDF-Datei und drucke sie
         createPdf(jobOrderID, tempPdfPath,tempRecipePath)
             .then((filePath : any) => {
                 console.log("print file");
-                /*return printer.print(tempPdfPath, {
-                    printer: process.env.PRINTER_NAME || '', // Setze den Druckernamen falls nötig
-                    win32: ["-print-settings", "fit"] // Windows-spezifische Einstellungen, z.B. "fit" für Papiergrößenanpassung
+                /*
+                return printer.print(tempPdfPath, {
+                    printer: 'vertti', // Setze den Druckernamen falls nötig
+                    orientation : "landscape",
+                    paperSize: "label",
+                    scale: "fit",
                 }); // Ersetze "printer_name" mit deinem tatsächlichen Druckernamen*/
             })
             .then(() => {
@@ -336,6 +308,7 @@ async function main() {
                 mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.NotExecuting.text);
                 theJob.state[0].stateNumber = 5;
                 theJob.state[0].stateText = "Ended";
+                jobOrderList.setValueFromSource(list.value);
                 // Erfolgreiche Rückgabe an den Client
                 const callMethodResult = {
                     statusCode: StatusCodes.Good,
@@ -352,6 +325,7 @@ async function main() {
             .catch((error : any) => {
                 theJob.state[0].stateNumber = 6;
                 theJob.state[0].stateText = "Aborted";
+                jobOrderList.setValueFromSource(list);
                 console.error("Fehler beim Drucken:", error);
                 mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.NotExecuting.text);
 
@@ -385,7 +359,7 @@ async function main() {
             }
         }
         jobOrderList.setValueFromSource(list.value);
-    }, 5000); // 10 Sekunden Intervall
+    }, 5*1000); // 10 Sekunden Intervall
 
     setInterval(() => {
         var i;
@@ -396,11 +370,11 @@ async function main() {
             //console.log(job.state);
             if (job.state[0].stateNumber == 5) {
                 console.log("Remove job");
-                delete list.value.value[i];
-            }
+                list.value.value.splice(i);
+                list.value.dimensions![0] = list.value.dimensions![0] - 1;            }
         }
         jobOrderList.setValueFromSource(list.value);
-    }, 300000); // 10 Sekunden Intervall
+    }, 10*1000); // 10 Sekunden Intervall
 
 
     // Endpunkt anzeigen
