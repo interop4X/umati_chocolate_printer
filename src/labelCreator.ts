@@ -137,7 +137,7 @@ function readJtd(fileContent: string, doc: any) {
                     var globalProduct = jtd.Recipe[0].GlobalProduct.find((x: any) => x.Identification == globalrect.Product[0].InstanceOf);
                     //console.log(globalProduct);
                     var shape = jtd.Recipe[0].GlobalGeometryPath.find((x: any) => x.Identification == globalProduct.BoM.Shape.InstanceOf);
-                    console.log(shape);
+                    //console.log(shape);
                     for (var el in shape.Element) {
                         var element = shape.Element[el];
                         //console.log("newlloop");

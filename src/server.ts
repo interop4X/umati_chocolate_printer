@@ -277,7 +277,7 @@ async function main() {
         jobOrderList.setValueFromSource(list.value);
 
         // achtung es könnten auch mehrere WorkMaster sein!
-        var jobFile ="myFile";
+        var jobFile ="default.json";
         if (theJob.jobOrder.workMasterID){
             jobFile = theJob.jobOrder.workMasterID[0].parameters.find((p:any) => p.ID == "localPath").value;
 
