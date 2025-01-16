@@ -8,7 +8,7 @@ const fs = require("fs");
 const printer = require("pdf-to-printer");
 
 async function main() {
-createPdf("TestOrder", "myTest.pdf","data/shape_v3.json")
+createPdf("TestOrder", "myTest.pdf","data/shape1.Json")
             .then((filePath : any) => {
                 console.log("print file");
                 /*return printer.print("myTest.pdf", {
