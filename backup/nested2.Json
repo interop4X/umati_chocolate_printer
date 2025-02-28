@@ -1,0 +1,774 @@
+{
+  "Format": {
+    "Name": "VDMA",
+    "Version": "1.0"
+  },
+  "Header": {
+    "Name": "Name1",
+    "Description": "Pattern",
+    "Generator": "A+W",
+    "PrecisionEpsilon": 0.1
+  },
+  "JobIdentifier": "MyJob",
+  "GlobalGeometryPath": [
+    {
+      "Identification": "Global_Shape_Pos0002",
+      "Element": [
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 1450
+            },
+            "EndPoint": {
+              "Y": 2830
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "Y": 2830
+            },
+            "EndPoint": {}
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {},
+            "EndPoint": {
+              "X": 1450
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Identification": "Global_Shape_Pos0001",
+      "Element": [
+        {
+          "Line": {
+            "StartPoint": {},
+            "EndPoint": {
+              "X": 1450
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 1450
+            },
+            "EndPoint": {
+              "X": 1450,
+              "Y": 2830
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 1450,
+              "Y": 2830
+            },
+            "EndPoint": {}
+          }
+        }
+      ]
+    },
+    {
+      "Identification": "Global_Shape_Pos0006",
+      "Element": [
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 820
+            },
+            "EndPoint": {
+              "Y": 3980
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "Y": 3980
+            },
+            "EndPoint": {}
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {},
+            "EndPoint": {
+              "X": 820
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Identification": "Global_Shape_Pos0005",
+      "Element": [
+        {
+          "Line": {
+            "StartPoint": {},
+            "EndPoint": {
+              "X": 820
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 820
+            },
+            "EndPoint": {
+              "X": 820,
+              "Y": 3980
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 820,
+              "Y": 3980
+            },
+            "EndPoint": {}
+          }
+        }
+      ]
+    },
+    {
+      "Identification": "Global_Shape_Pos0008",
+      "Element": [
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 820
+            },
+            "EndPoint": {
+              "Y": 4080
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "Y": 4080
+            },
+            "EndPoint": {}
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {},
+            "EndPoint": {
+              "X": 820
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Identification": "Global_Shape_Pos0007",
+      "Element": [
+        {
+          "Line": {
+            "StartPoint": {},
+            "EndPoint": {
+              "X": 820
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 820
+            },
+            "EndPoint": {
+              "X": 820,
+              "Y": 4080
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 820,
+              "Y": 4080
+            },
+            "EndPoint": {}
+          }
+        }
+      ]
+    },
+    {
+      "Identification": "Global_Shape_Pos0003",
+      "Element": [
+        {
+          "Line": {
+            "StartPoint": {},
+            "EndPoint": {
+              "X": 1450
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 1450
+            },
+            "EndPoint": {
+              "X": 1450,
+              "Y": 2850
+            }
+          }
+        },
+        {
+          "Line": {
+            "StartPoint": {
+              "X": 1450,
+              "Y": 2850
+            },
+            "EndPoint": {}
+          }
+        }
+      ]
+    }
+  ],
+  "GlobalMaterial": [
+    {
+      "Identification": "GlobalMaterial_DefaultGlass",
+      "MaterialType": {
+        "ID": "Glass"
+      },
+      "MaterialCode": "00581",
+      "MaterialName": "vetroLow- 1. 6m 6.00",
+      "Thickness": 6
+    }
+  ],
+  "GlobalBoMElementGlass": [
+    {
+      "Identification": "GivenGlass",
+      "Material": {
+        "InstanceOf": "GlobalMaterial_DefaultGlass"
+      },
+      "GlassType": {
+        "ID": "PlainCoated"
+      },
+      "Surface1": {
+        "CoatingClass": {
+          "ID": "Soft"
+        }
+      },
+      "Surface2": {
+        "CoatingClass": {
+          "ID": "None"
+        }
+      }
+    }
+  ],
+  "GlobalProduct": [
+    {
+      "Identification": "Global_Product_Pos0002",
+      "BoM": {
+        "Shape": {
+          "InstanceOf": "Global_Shape_Pos0002"
+        },
+        "Glass": {
+          "InstanceOf": "GivenGlass"
+        }
+      }
+    },
+    {
+      "Identification": "Global_Product_Pos0001",
+      "BoM": {
+        "Shape": {
+          "InstanceOf": "Global_Shape_Pos0001"
+        },
+        "Glass": {
+          "InstanceOf": "GivenGlass"
+        }
+      }
+    },
+    {
+      "Identification": "Global_Product_Pos0006",
+      "BoM": {
+        "Shape": {
+          "InstanceOf": "Global_Shape_Pos0006"
+        },
+        "Glass": {
+          "InstanceOf": "GivenGlass"
+        }
+      }
+    },
+    {
+      "Identification": "Global_Product_Pos0005",
+      "BoM": {
+        "Shape": {
+          "InstanceOf": "Global_Shape_Pos0005"
+        },
+        "Glass": {
+          "InstanceOf": "GivenGlass"
+        }
+      }
+    },
+    {
+      "Identification": "Global_Product_Pos0008",
+      "BoM": {
+        "Shape": {
+          "InstanceOf": "Global_Shape_Pos0008"
+        },
+        "Glass": {
+          "InstanceOf": "GivenGlass"
+        }
+      }
+    },
+    {
+      "Identification": "Global_Product_Pos0007",
+      "BoM": {
+        "Shape": {
+          "InstanceOf": "Global_Shape_Pos0007"
+        },
+        "Glass": {
+          "InstanceOf": "GivenGlass"
+        }
+      }
+    },
+    {
+      "Identification": "Global_Product_Pos0003",
+      "BoM": {
+        "Shape": {
+          "InstanceOf": "Global_Shape_Pos0003"
+        },
+        "Glass": {
+          "InstanceOf": "GivenGlass"
+        }
+      }
+    }
+  ],
+  "GlobalRectangle": [
+    {
+      "Type": {
+        "ID": "Primitive"
+      },
+      "P0": {},
+      "Width": 3209.9,
+      "Height": 1450,
+      "Identification": "GlobalRectangle_Pos0017_R",
+      "Product": [
+        {
+          "Identification": "Product1",
+          "InstanceOf": "Global_Product_Pos0002"
+        },
+        {
+          "Identification": "Product2",
+          "InstanceOf": "Global_Product_Pos0001"
+        }
+      ],
+      "TransformationData": [
+        {
+          "Reference": {
+            "ProductIdentification": "Product1"
+          },
+          "CCWRotationAngleXY": 270,
+          "PostRotationTranslation": {
+            "Y": 1450
+          }
+        },
+        {
+          "Reference": {
+            "ProductIdentification": "Product2"
+          },
+          "CCWRotationAngleXY": 117.12912642152037,
+          "PostRotationTranslation": {
+            "X": 3179.843017578125
+          }
+        }
+      ],
+      "Processing": [
+        {
+          "Identification": "Proc_AuxCut1",
+          "Category": {
+            "ID": "Helpcut"
+          },
+          "Parameter": [
+            {
+              "Name": "AffectedElement",
+              "StringValue": "AuxCut1"
+            }
+          ]
+        }
+      ],
+      "GeometryElement": [
+        {
+          "Identification": "AuxCut1",
+          "Line": {
+            "StartPoint": {
+              "X": 2829.9999999999995,
+              "Y": 1449.9999999999998
+            },
+            "EndPoint": {
+              "X": 2830,
+              "Y": 1450
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Type": {
+        "ID": "Primitive"
+      },
+      "P0": {},
+      "Width": 4093.6000000000004,
+      "Height": 850,
+      "Identification": "GlobalRectangle_Pos0018_R",
+      "Product": [
+        {
+          "Identification": "Product1",
+          "InstanceOf": "Global_Product_Pos0006"
+        },
+        {
+          "Identification": "Product2",
+          "InstanceOf": "Global_Product_Pos0005"
+        }
+      ],
+      "TransformationData": [
+        {
+          "Reference": {
+            "ProductIdentification": "Product1"
+          },
+          "CCWRotationAngleXY": 270.00000130438832,
+          "PostRotationTranslation": {
+            "X": -1.8668013850864369E-05,
+            "Y": 819.99999999999977
+          }
+        },
+        {
+          "Reference": {
+            "ProductIdentification": "Product2"
+          },
+          "CCWRotationAngleXY": 101.64175760295706,
+          "PostRotationTranslation": {
+            "X": 4063.5939941406245
+          }
+        }
+      ],
+      "Processing": [
+        {
+          "Identification": "Proc_AuxCut1",
+          "Category": {
+            "ID": "Helpcut"
+          },
+          "Parameter": [
+            {
+              "Name": "AffectedElement",
+              "StringValue": "AuxCut1"
+            }
+          ]
+        }
+      ],
+      "GeometryElement": [
+        {
+          "Identification": "AuxCut1",
+          "Line": {
+            "StartPoint": {
+              "X": 3979.9999813319851,
+              "Y": 820.00009060816467
+            },
+            "EndPoint": {
+              "X": 4093.593994140625,
+              "Y": 843.40388488769531
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Type": {
+        "ID": "Primitive"
+      },
+      "P0": {},
+      "Width": 4191.6,
+      "Height": 850,
+      "Identification": "GlobalRectangle_Pos0019_R",
+      "Product": [
+        {
+          "Identification": "Product1",
+          "InstanceOf": "Global_Product_Pos0008"
+        },
+        {
+          "Identification": "Product2",
+          "InstanceOf": "Global_Product_Pos0007"
+        }
+      ],
+      "TransformationData": [
+        {
+          "Reference": {
+            "ProductIdentification": "Product1"
+          },
+          "CCWRotationAngleXY": 270.00000077943218,
+          "PostRotationTranslation": {
+            "X": -1.1154999291496104E-05,
+            "Y": 820
+          }
+        },
+        {
+          "Reference": {
+            "ProductIdentification": "Product2"
+          },
+          "CCWRotationAngleXY": 101.36393413523362,
+          "PostRotationTranslation": {
+            "X": 4161.5859375
+          }
+        }
+      ],
+      "Processing": [
+        {
+          "Identification": "Proc_AuxCut1",
+          "Category": {
+            "ID": "Helpcut"
+          },
+          "Parameter": [
+            {
+              "Name": "AffectedElement",
+              "StringValue": "AuxCut1"
+            }
+          ]
+        }
+      ],
+      "GeometryElement": [
+        {
+          "Identification": "AuxCut1",
+          "Line": {
+            "StartPoint": {
+              "X": 4079.9999888450006,
+              "Y": 820.00005550292326
+            },
+            "EndPoint": {
+              "X": 4191.5859375,
+              "Y": 842.42664480209351
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Type": {
+        "ID": "Primitive"
+      },
+      "P0": {},
+      "Width": 1450,
+      "Height": 2850,
+      "Identification": "GlobalRectangle_Pos0003",
+      "Product": [
+        {
+          "Identification": "Product1",
+          "InstanceOf": "Global_Product_Pos0003"
+        }
+      ],
+      "TransformationData": [
+        {
+          "Reference": {
+            "ProductIdentification": "Product1"
+          },
+          "PostRotationTranslation": {}
+        }
+      ]
+    }
+  ],
+  "CuttingInstruction": {
+    "Input": {
+      "Layout": {
+        "P0": {},
+        "Width": 6000,
+        "Height": 3210,
+        "Product": [
+          {
+            "BoM": {
+              "Glass": {
+                "InstanceOf": "GivenGlass"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "Output": {
+      "Layout": {
+        "Type": {
+          "ID": "Plate"
+        },
+        "P0": {},
+        "Width": 6000,
+        "Height": 3210,
+        "InnerRectangle": [
+          {
+            "Type": {
+              "ID": "Trim"
+            },
+            "P0": {},
+            "Width": 30,
+            "Height": 3210
+          },
+          {
+            "Type": {
+              "ID": "Stripe"
+            },
+            "P0": {
+              "X": 30
+            },
+            "Width": 4191.6,
+            "Height": 3210,
+            "InnerRectangle": [
+              {
+                "Type": {
+                  "ID": "Trim"
+                },
+                "P0": {},
+                "Width": 4191.6,
+                "Height": 30
+              },
+              {
+                "Type": {
+                  "ID": "Stripe"
+                },
+                "P0": {
+                  "Y": 30
+                },
+                "Width": 4191.6,
+                "Height": 1450,
+                "InnerRectangle": [
+                  {
+                    "Type": {
+                      "ID": "Primitive"
+                    },
+                    "P0": {},
+                    "InstanceOf": "GlobalRectangle_Pos0017_R"
+                  },
+                  {
+                    "Type": {
+                      "ID": "Waste"
+                    },
+                    "P0": {
+                      "X": 3209.9
+                    },
+                    "Width": 981.7,
+                    "Height": 1450
+                  }
+                ]
+              },
+              {
+                "Type": {
+                  "ID": "Stripe"
+                },
+                "P0": {
+                  "Y": 1480
+                },
+                "Width": 4191.6,
+                "Height": 850,
+                "InnerRectangle": [
+                  {
+                    "Type": {
+                      "ID": "Primitive"
+                    },
+                    "P0": {},
+                    "InstanceOf": "GlobalRectangle_Pos0018_R"
+                  },
+                  {
+                    "Type": {
+                      "ID": "Waste"
+                    },
+                    "P0": {
+                      "X": 4093.6000000000004
+                    },
+                    "Width": 98,
+                    "Height": 850
+                  }
+                ]
+              },
+              {
+                "Type": {
+                  "ID": "Primitive"
+                },
+                "P0": {
+                  "Y": 2330
+                },
+                "InstanceOf": "GlobalRectangle_Pos0019_R"
+              },
+              {
+                "Type": {
+                  "ID": "Waste"
+                },
+                "P0": {
+                  "Y": 3180
+                },
+                "Width": 4191.6,
+                "Height": 30
+              }
+            ]
+          },
+          {
+            "Type": {
+              "ID": "Stripe"
+            },
+            "P0": {
+              "X": 4221.6
+            },
+            "Width": 1450,
+            "Height": 3210,
+            "InnerRectangle": [
+              {
+                "Type": {
+                  "ID": "Trim"
+                },
+                "P0": {},
+                "Width": 1450,
+                "Height": 30
+              },
+              {
+                "Type": {
+                  "ID": "Primitive"
+                },
+                "P0": {
+                  "Y": 30
+                },
+                "InstanceOf": "GlobalRectangle_Pos0003",
+                "InstanceData": [
+                  {
+                    "Reference": {
+                      "ProductIdentification": "Product1"
+                    },
+                    "StorageIdentification": "3200"
+                  }
+                ]
+              },
+              {
+                "Type": {
+                  "ID": "Waste"
+                },
+                "P0": {
+                  "Y": 2880
+                },
+                "Width": 1450,
+                "Height": 330
+              }
+            ]
+          },
+          {
+            "Type": {
+              "ID": "Waste"
+            },
+            "P0": {
+              "X": 5671.6
+            },
+            "Width": 328.40000000000003,
+            "Height": 3210
+          }
+        ]
+      }
+    }
+  }
+}

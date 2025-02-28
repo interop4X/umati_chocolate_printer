@@ -4,6 +4,7 @@ import * as path from "path";
 import { MachineryItemState } from "./machineryItemState";
 import { FileBaseSystem, RootDict, File } from "./file";
 import { createPdf } from "./labelCreator";
+import {StackLight} from "./stacklight";
 
 import { promisify } from "util";
 const { exec } = require("child_process");
@@ -14,13 +15,18 @@ const printer = require("pdf-to-printer");
 
 // Hauptfunktion zur Erstellung des OPC UA Servers
 async function main() {
+    const stackLight = new StackLight('COM10', 9600);
+    await stackLight.setLightSync('yellow');
+    await stackLight.setFlashSync('normal');
+
     // Definiere den Pfad zu den XML-Dateien
     const xmlFiles = [
         nodesets.standard, // Standard OPC UA Nodeset
-        path.join(__dirname, "..", "models", "Opc.Ua.Di.NodeSet2.xml"), // DI Nodeset
-        path.join(__dirname, "..", "models", "opc.ua.isa95-jobcontrol.nodeset2.xml"), // ISA95-JobControl Nodeset
-        path.join(__dirname, "..", "models", "Opc.Ua.Machinery.NodeSet2.xml"), // Machinery Nodeset
-        path.join(__dirname, "..", "models", "Opc.Ua.Machinery.Jobs.NodeSet2.xml"), // Machinery Jobs Nodeset
+        path.join(__dirname, "..", "models", "demo_siemens.xml"),
+        //path.join(__dirname, "..", "models", "Opc.Ua.Di.NodeSet2.xml"), // DI Nodeset
+        //path.join(__dirname, "..", "models", "opc.ua.isa95-jobcontrol.nodeset2.xml"), // ISA95-JobControl Nodeset
+        //path.join(__dirname, "..", "models", "Opc.Ua.Machinery.NodeSet2.xml"), // Machinery Nodeset
+        //path.join(__dirname, "..", "models", "Opc.Ua.Machinery.Jobs.NodeSet2.xml"), // Machinery Jobs Nodeset
         path.join(__dirname, "..", "models", "opc.ua.glas.v2.nodeset2.xml"), // Glas Nodeset
     ];
 
@@ -63,6 +69,7 @@ async function main() {
         {
             organizedBy: machine_folder, // Definiere, wo diese Instanz im Adressraum organisiert ist
             browseName: "ChocoCuttingTable",
+            namespace:  myNamespace,
             optionals: [
                 "MachineryBuildingBlocks.JobManagement.JobOrderControl.Store",
                 "MachineryBuildingBlocks.JobManagement.JobOrderControl.Start",
@@ -73,6 +80,7 @@ async function main() {
                 "Identification.YearOfConstruction",
                 "Identification.DeviceClass",
                 "Identification.Location",
+                //"MachineryBuildingBlocks.OperationCounters.OperationCycleCounter"
                 //"OptionalObject"
             ] // Liste der optionalen Elemente, die du instanziieren möchtest
         }
@@ -88,34 +96,70 @@ async function main() {
     createFileMethod?.bindMethod(function (inputArguments, context, callback) {
         console.log("Add new file:");
         const fileName = inputArguments[0].value;
-        console.log(fileName);
         const requestFileOpen = inputArguments[1].value;
+        console.log(fileName);
         var tmp : File = new File(server, fileName, root);
         root.addFile(tmp);
-
-        // Rückgabe an den Client bei Fehler
-        const callMethodResult = {
-            statusCode: StatusCodes.Good,
-            outputArguments: [{
-                dataType: DataType.NodeId ,
+        if (requestFileOpen) {
+            var args: Variant[] = [];
+            args.push(new Variant({
+                dataType: DataType.Byte,
                 arrayType: VariantArrayType.Scalar,
-                value: tmp.opcuaObject.nodeId
-            },{
-                dataType: DataType.UInt32,
-                arrayType: VariantArrayType.Scalar,
-                value: 0
-            }]
-        };
-        callback(null, callMethodResult);
-    })
+                value: 7
+            }));
+            
+            // Asynchrone Methode aufrufen und auf das Ergebnis warten
+            tmp.opcuaObject.open.execute(tmp.opcuaObject, args, context).then(
+                (result) => {
+                    console.log("Das Ergebnis des Methodenaufrufs:", result);
+                    // Ergebnis auswerten und fileHandle setzen
+                    var fileHandle = result.outputArguments![0]?.value ?? 1;
+        
+                    // Rückgabe an den Client nach erfolgreicher Ausführung
+                    const callMethodResult = {
+                        statusCode: StatusCodes.Good,
+                        outputArguments: [{
+                            dataType: DataType.NodeId,
+                            arrayType: VariantArrayType.Scalar,
+                            value: tmp.opcuaObject.nodeId
+                        }, {
+                            dataType: DataType.UInt32,
+                            arrayType: VariantArrayType.Scalar,
+                            value: fileHandle
+                        }]
+                    };
+                    // Callback aufrufen, um das Ergebnis zurückzugeben
+                    callback(null, callMethodResult);
+                }
+            ).catch((error) => {
+                console.error("Fehler beim Aufruf der Methode:", error);
+                // Bei einem Fehler wird der Callback mit einer Fehlermeldung aufgerufen
+                callback(error);
+            });
+        
+        } else {
+            // Wenn kein requestFileOpen erforderlich ist, direkt das Ergebnis zurückgeben
+            const callMethodResult = {
+                statusCode: StatusCodes.Good,
+                outputArguments: [{
+                    dataType: DataType.NodeId,
+                    arrayType: VariantArrayType.Scalar,
+                    value: tmp.opcuaObject.nodeId
+                }, {
+                    dataType: DataType.UInt32,
+                    arrayType: VariantArrayType.Scalar,
+                    value: 0
+                }]
+            };
+            callback(null, callMethodResult);
+        }
+    });
 
     const MachineryBuildingBlocks = machine.getChildByName("MachineryBuildingBlocks");
 
     initIdentifcation();
 
     initMachineryItem();
-
-
 
     const { jobOrderList, jobOrderControl } = initJobManagement();
 
@@ -141,6 +185,16 @@ async function main() {
         const machineryItemState_node = MachineryBuildingBlocks?.getChildByName("MachineryItemState");
         mymachineryItemState = new MachineryItemState(machineryItemState_node as BaseNode, machinery_idx);
         mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.NotExecuting.text);
+
+        const machineryOperationMode_node = MachineryBuildingBlocks?.getChildByName("MachineryOperationMode");
+        const currentState_node = machineryOperationMode_node?.getChildByName("CurrentState") as UAVariable;
+        const currentState_id_node = currentState_node?.getChildByName("Id") as UAVariable;
+        const currentState_number_node = currentState_node?.getChildByName("Number") as UAVariable;
+        currentState_node.setValueFromSource(            {
+            value: "Processing",
+            dataType: "LocalizedText"
+        });
+
     }
 
     function initIdentifcation() {
@@ -176,7 +230,7 @@ async function main() {
 
         var tmp = identifcation?.getChildByName("Model") as UAVariable;
         tmp?.setValueFromSource({
-            value: new LocalizedText("Test"),
+            value: new LocalizedText("Model 42"),
             dataType: DataType.LocalizedText
         });
 
@@ -263,6 +317,13 @@ async function main() {
         console.log(`Drucke Dokument: ${jobOrderID}`);
         mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.Executing.text);
 
+        /*const operationCounter = MachineryBuildingBlocks?.getChildByName("OperationCounters");
+        const OperationCycleCounter = MachineryBuildingBlocks?.getChildByName("OperationCycleCounter") as UAVariable;
+        var counter = OperationCycleCounter.readValue()
+        counter.value = counter.value + 1;
+        OperationCycleCounter.setValueFromSource(counter)*/
+
+
 
         const list = jobOrderList.readValue();
         const theJob = list.value.value.find((job: any) => {
@@ -275,36 +336,59 @@ async function main() {
         theJob.state[0].stateNumber = 3;
         theJob.state[0].stateText = "Running";
         jobOrderList.setValueFromSource(list.value);
+        stackLight.setLightSync('green');
+        stackLight.setFlashSync('fast');
 
         // achtung es könnten auch mehrere WorkMaster sein!
+        var source = "default"
+        if(theJob.jobOrder.jobOrderParameters){
+            source =  "umati";
+        }
+        console.log(source);
+
         var jobFile ="default.json";
         if (theJob.jobOrder.workMasterID){
-            jobFile = theJob.jobOrder.workMasterID[0].parameters.find((p:any) => p.ID == "localPath").value;
+            jobFile = theJob.jobOrder.workMasterID[0].parameters.find((p:any) => p.ID == "LocalPath").value.value;
 
         }else{
             console.log(`Job ${jobOrderID} No Workmaster is set`);
             console.log(`No localPath in  ${jobOrderID} not found! Use Default!`);
         }
- 
+
         console.log(jobFile);
         // Temporäre Datei erstellen, die gedruckt werden soll
         const tempPdfPath = path.join(__dirname,"../data",`${jobOrderID}.pdf`);
         const tempRecipePath = path.join(__dirname,"../data",jobFile);
+        const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
         // Erstelle die PDF-Datei und drucke sie
-        createPdf(jobOrderID, tempPdfPath,tempRecipePath)
+        createPdf(jobOrderID, tempPdfPath,tempRecipePath,source)
+            /*.then((filePath : any) => {
+                console.log("print file");    
+                /*return printer.print(tempPdfPath, {
+                    printer: 'M220 Printer', // Setze den Druckernamen falls nötig
+                    orientation : "portrait",
+                    //paperSize: "label",
+                    scale: "fit",
+                    //win32: ["-print-settings", "fit"]  // Windows-spezifische Einstellungen, z.B. "fit" für Papiergrößenanpassung
+                }); // Ersetze "printer_name" mit deinem tatsächlichen Druckernamen
+            })*/
             .then((filePath : any) => {
-                console.log("print file");
-                /*
+                console.log("print file");    
                 return printer.print(tempPdfPath, {
                     printer: 'vertti', // Setze den Druckernamen falls nötig
                     orientation : "landscape",
                     paperSize: "label",
                     scale: "fit",
-                }); // Ersetze "printer_name" mit deinem tatsächlichen Druckernamen*/
+                }); // Ersetze "printer_name" mit deinem tatsächlichen Druckernamen*
+            })
+            .then(()=>{
+                return sleep(5000); // 2 Sekunden warten
             })
             .then(() => {
                 console.log("Druckauftrag erfolgreich gesendet!");
+                stackLight.setLightSync('yellow');
+                stackLight.setFlashSync('normal');
                 mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.NotExecuting.text);
                 theJob.state[0].stateNumber = 5;
                 theJob.state[0].stateText = "Ended";
@@ -374,7 +458,7 @@ async function main() {
                 list.value.dimensions![0] = list.value.dimensions![0] - 1;            }
         }
         jobOrderList.setValueFromSource(list.value);
-    }, 10*1000); // 10 Sekunden Intervall
+    }, 7*60*60*1000); // 10 Sekunden Intervall
 
 
     // Endpunkt anzeigen

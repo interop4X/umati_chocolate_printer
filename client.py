@@ -37,9 +37,9 @@ SUBMODEL_REPOSITORY_URL = "https://aas-env.interop4x.de/submodels"
 CONCEPT_DESCRIPTION_REPOSITORY_URL = "https://aas-env.interop4x.de/concept-descriptions"
 
 def create_aas_for_job(job_data, job_id):
-    aas_id = f"JobAAS_{job_data.JobOrder.JobOrderID}"
+    aas_id = f"JobAAS_{job_data.JobOrder.JobOrderID}".replace(" ","").replace("-","_")
     #short_id = uuid.uuid4().__str__().replace("-","_")
-    short_id = "job"+ str(aas_id).replace(" ","")
+    short_id = "job"+ str(aas_id).replace(" ","").replace("-","_")
 
     print(short_id)
     

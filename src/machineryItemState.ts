@@ -1,3 +1,4 @@
+import { Console } from "console";
 import {  LocalizedText,BindVariableOptionsVariation1, Variant, DataType, UAVariable,BaseNode, NodeId} from "node-opcua";
 
 
@@ -64,6 +65,7 @@ export class MachineryItemState {
 
     // Setter für den Zustand basierend auf dem Text und synchronisiere die ID
     public setCurrentStateByText(text: string): void {
+        console.log(text);
         const state = Object.values(this.possibleStates).find(s => s.text === text);
         if (state) {
             this.id = state.id;

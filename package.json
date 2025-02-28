@@ -4,14 +4,17 @@
   "main": "server.ts",
   "scripts": {
     "start": "ts-node src/server.ts",
-    "test": "ts-node src/label_test.ts"
+    "test": "ts-node src/label_test.ts",
+    "test-light": "ts-node /src/light_test.ts"
   },
   "dependencies": {
     "chokidar": "^4.0.1",
     "node-opcua": "^2.133.0",
-    "node-opcua-file-transfer": "^2.133.0",
+    "node-opcua-file-transfer": "^2.130.0",
     "pdf-to-printer": "^5.6.0",
     "pdfkit": "^0.15.0",
+    "qrcode": "^1.5.4",
+    "serialport": "^12.0.0",
     "sharp": "^0.33.5",
     "svg-to-pdfkit": "^0.1.8",
     "ts-node": "^10.9.1",
@@ -19,6 +22,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.7.18",
-    "node-opcua": "^2.133.0"
+    "@types/qrcode": "^1.5.5",
+    "@types/serialport": "^8.0.5"
   }
 }

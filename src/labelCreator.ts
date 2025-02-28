@@ -3,6 +3,7 @@ import { NodeId, NodeIdType, OPCUAServer, UAFile, nodesets, UAMethod, StatusCode
 import * as path from "path";
 import { MachineryItemState } from "./machineryItemState";
 import { FileBaseSystem, RootDict, File } from "./file";
+import * as QRCode from 'qrcode';
 
 import { promisify } from "util";
 import sharp from "sharp";
@@ -15,6 +16,31 @@ const printer = require("pdf-to-printer");
 PDFDocument.prototype.addSVG = function(svg :any, x:any, y:any, options:any) {
     return SVGtoPDF(this, svg, x, y, options), this;
   };
+
+
+// Funktion, um den String zu codieren und die URL zu generieren
+async function generateUrlAndQRCode(input: string,path:string): Promise<void> {
+    // Erstelle den benötigten String und base64-codiere ihn
+    const formattedString = `jobJobAAS_${input}`;
+    const base64Encoded = Buffer.from(formattedString).toString('base64');
+
+    // Generiere die URL
+    const url = `https://aas.interop4x.de/?aas=https://aas-env.interop4x.de/shells/${base64Encoded}`.replace(/=$/, "");
+    console.log('Generated URL:', url);
+
+    // QR-Code generieren und speichern
+    await QRCode.toFile(path +"qr_" +input + ".png", url, {
+        type: 'png',
+        errorCorrectionLevel: 'H',
+    }/*, (err: any) => {
+        if (err) {
+            console.error('Error generating QR Code:', err);
+        } else {
+            console.log('QR Code saved as', input);
+        }
+    }*/);
+    console.log('QR Code saved as', input);
+}
 
 function generateSvgArc(arcData:any,x:number,y:number) {
     /*const arcData = {
@@ -44,8 +70,10 @@ function generateSvgArc(arcData:any,x:number,y:number) {
 
   
 
-export function createPdf(JobOrderId: string, outputPath: string, jobFile: string) {
+export function createPdf(JobOrderId: string, outputPath: string, jobFile: string,source:string) {
     return new Promise((resolve, reject) => {
+        generateUrlAndQRCode(JobOrderId,"images/").then(() =>{
+            console.log('QR Code Generierung abgeschlossen.');
         const doc = new PDFDocument({
             size: [40, 90]
         });
@@ -54,8 +82,9 @@ export function createPdf(JobOrderId: string, outputPath: string, jobFile: strin
         doc.pipe(writeStream);
         doc.fontSize(5)
 
-        doc.image('images/interop4X.png', 1, 5, {fit: [20, 20]})
-        doc.image('images/qrcode.png', 21, 5, {fit: [20, 20]})
+        doc.image('images/interop4X.png', 10, 3, {fit: [20, 20]})
+
+        //doc.image("images/qr_"+JobOrderId+".png", 21, 5, {fit: [20, 20]})
 
         doc.fontSize(3)
         const url = "htttp://interop4X.de";
@@ -65,20 +94,42 @@ export function createPdf(JobOrderId: string, outputPath: string, jobFile: strin
             align: 'center',
         });
 
-        doc.fontSize(5)
+        doc.fontSize(4)
         // Füge den JobOrderId in die PDF-Datei ein
-        const textWidth2 = doc.widthOfString(JobOrderId);
+        var tmp = "Job: " + JobOrderId
+        const textWidth2 = doc.widthOfString(tmp);
         const centeredX2 = 21 - (textWidth2 / 2);
-        doc.text(JobOrderId,centeredX,50,{
+        doc.text(tmp,centeredX2,35,{
             align: 'center',
         });
+        if(source == "umati"){
+            doc.image("images/umati.png", 5, 50, {fit: [22, 50]})
+        } else {
+            doc.image("images/xMES.png", 5, 50, {fit: [10, 10]})
+            doc.fontSize(2)
+            doc.text("Hall 6 Booth 352",15,53,{
+                align: 'center',
+                //width: 35
+            });
+            doc.text("send from ",15,56,{
+                align: 'center',
+                //width: 35
+            });
+        }
+
 
         // Lies den Inhalt der jobFile und füge ihn ins PDF ein
         fs.readFile(jobFile, 'utf8', (err: any, fileContent: string) => {
             if (err) {
                 return reject(`Fehler beim Lesen der Datei: ${err}`);
             }
-            readJtd(fileContent, doc);
+            try {
+                //readJtd(fileContent, doc);
+            } catch (error) {
+                console.error("JTD file was not readable!");
+            }
+            doc.image("images/qr_"+JobOrderId+".png", 5, 59, {fit: [30, 30]})
+
             // PDF-Dokument abschließen, nachdem der Inhalt eingefügt wurde
             doc.end();
         });
@@ -91,20 +142,43 @@ export function createPdf(JobOrderId: string, outputPath: string, jobFile: strin
         writeStream.on("error", (err:any) => {
             reject(`Fehler beim Schreiben der PDF-Datei: ${err}`);
         });
+    })
     });
 }
 function readJtd(fileContent: string, doc: any) {
     var jtd = JSON.parse(fileContent);
-    var jtdEntry;
+    var jtdEntry = jtd;
     if (jtd.Recipe){
         jtdEntry = jtd.Recipe[0];
-    } else{
+    }
+    if (jtd.InnerJobTargetDefinition){
         jtdEntry = jtd.InnerJobTargetDefinition[0];
+    }
+
+    if(jtdEntry.Header){
+        if(jtdEntry.Header.Description){
+            console.log(jtdEntry.Header.Description)
+            doc.fontSize(2)
+            const textWidth2 = doc.widthOfString(jtdEntry.Header.Description);
+            const centeredX2 = 21 - (textWidth2 / 2);
+            /*doc.text(jtdEntry.Header.Description,centeredX2,56,{
+                align: 'center',
+            });*/
+        }
+        if(jtdEntry.Header.Generator){
+            console.log(jtdEntry.Header.Generator)
+            doc.fontSize(2)
+            const textWidth2 = doc.widthOfString(jtdEntry.Header.Generator);
+            const centeredX2 = 21 - (textWidth2 / 2);
+            /*doc.text(jtdEntry.Header.Generator,centeredX2,60,{
+                align: 'center',
+            });*/
+        }
     }
     
     var width = jtdEntry.CuttingInstruction.Output.Layout.Width;
     var height = jtdEntry.CuttingInstruction.Output.Layout.Height;
-    var svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 ${width} ${height}">`;
+    var svg = `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 ${width} ${height}">`;
     var rect = jtdEntry.CuttingInstruction.Output.Layout.InnerRectangle;
     for (var i in rect) {
         var rect_width = rect[i].Width;
@@ -174,9 +248,9 @@ function readJtd(fileContent: string, doc: any) {
             </svg>`;
     console.log(svg);
 
-    doc.addSVG(svg, 5, 60, {
-        width: 40,
-        height: 40
+    doc.addSVG(svg, 5, 50, {
+        width: 80,
+        height: 80
     });
 }
 

@@ -1,0 +1,921 @@
+{
+ "Format": {
+  "Name": "VDMA",
+  "Version": "1.0"
+ },
+ "Header": {
+  "Name": "5-OPT100545",
+  "Description": "5-100545/FL8",
+  "Generator": "LISEC"
+ },
+ "JobIdentifier": "5-OPT100545",
+ "FocusedProcessingCategory": [
+  {
+   "ID": "GlassCuttingGuillotine"
+  }
+ ],
+ "GlobalGeometryPath": [
+  {
+   "Identification": "GlobalRect_10",
+   "MaterialSide": {
+    "ID": "Left"
+   },
+   "Element": [
+    {
+     "Line": {
+      "StartPoint": {
+       "X": 2003
+      },
+      "EndPoint": {}
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {},
+      "EndPoint": {
+       "Y": 1103
+      }
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {
+       "Y": 1103
+      },
+      "EndPoint": {
+       "X": 2003,
+       "Y": 1103
+      }
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {
+       "X": 2003,
+       "Y": 1103
+      },
+      "EndPoint": {
+       "X": 2003
+      }
+     }
+    }
+   ],
+   "InfoParameter": [
+    {
+     "Vendor": "LiSEC",
+     "Name": "L",
+     "DoubleValue": 2003
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "H",
+     "DoubleValue": 1103
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "RectWidth",
+     "DoubleValue": 2003
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "RectHeight",
+     "DoubleValue": 1103
+    }
+   ]
+  },
+  {
+   "Identification": "GlobalRect_34",
+   "MaterialSide": {
+    "ID": "Left"
+   },
+   "Element": [
+    {
+     "Line": {
+      "StartPoint": {
+       "X": 1100
+      },
+      "EndPoint": {}
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {},
+      "EndPoint": {
+       "Y": 360
+      }
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {
+       "Y": 360
+      },
+      "EndPoint": {
+       "X": 1100,
+       "Y": 360
+      }
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {
+       "X": 1100,
+       "Y": 360
+      },
+      "EndPoint": {
+       "X": 1100
+      }
+     }
+    }
+   ],
+   "InfoParameter": [
+    {
+     "Vendor": "LiSEC",
+     "Name": "L",
+     "DoubleValue": 1100
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "H",
+     "DoubleValue": 360
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "RectWidth",
+     "DoubleValue": 1100
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "RectHeight",
+     "DoubleValue": 360
+    }
+   ]
+  },
+  {
+   "Identification": "GlobalRect_4",
+   "MaterialSide": {
+    "ID": "Left"
+   },
+   "Element": [
+    {
+     "Line": {
+      "StartPoint": {
+       "X": 1430
+      },
+      "EndPoint": {}
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {},
+      "EndPoint": {
+       "Y": 3161
+      }
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {
+       "Y": 3161
+      },
+      "EndPoint": {
+       "X": 1430,
+       "Y": 3161
+      }
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {
+       "X": 1430,
+       "Y": 3161
+      },
+      "EndPoint": {
+       "X": 1430
+      }
+     }
+    }
+   ],
+   "InfoParameter": [
+    {
+     "Vendor": "LiSEC",
+     "Name": "L",
+     "DoubleValue": 1430
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "H",
+     "DoubleValue": 3161
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "RectWidth",
+     "DoubleValue": 1430
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "RectHeight",
+     "DoubleValue": 3161
+    }
+   ]
+  },
+  {
+   "Identification": "GlobalRect_8",
+   "MaterialSide": {
+    "ID": "Left"
+   },
+   "Element": [
+    {
+     "Line": {
+      "StartPoint": {
+       "X": 2400
+      },
+      "EndPoint": {}
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {},
+      "EndPoint": {
+       "Y": 2628
+      }
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {
+       "Y": 2628
+      },
+      "EndPoint": {
+       "X": 2400,
+       "Y": 2628
+      }
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {
+       "X": 2400,
+       "Y": 2628
+      },
+      "EndPoint": {
+       "X": 2400
+      }
+     }
+    }
+   ],
+   "InfoParameter": [
+    {
+     "Vendor": "LiSEC",
+     "Name": "L",
+     "DoubleValue": 2400
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "H",
+     "DoubleValue": 2628
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "RectWidth",
+     "DoubleValue": 2400
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "RectHeight",
+     "DoubleValue": 2628
+    }
+   ]
+  },
+  {
+   "Identification": "GlobalRect_9",
+   "MaterialSide": {
+    "ID": "Left"
+   },
+   "Element": [
+    {
+     "Line": {
+      "StartPoint": {
+       "X": 977
+      },
+      "EndPoint": {}
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {},
+      "EndPoint": {
+       "Y": 3161
+      }
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {
+       "Y": 3161
+      },
+      "EndPoint": {
+       "X": 977,
+       "Y": 3161
+      }
+     }
+    },
+    {
+     "Line": {
+      "StartPoint": {
+       "X": 977,
+       "Y": 3161
+      },
+      "EndPoint": {
+       "X": 977
+      }
+     }
+    }
+   ],
+   "InfoParameter": [
+    {
+     "Vendor": "LiSEC",
+     "Name": "L",
+     "DoubleValue": 977
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "H",
+     "DoubleValue": 3161
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "RectWidth",
+     "DoubleValue": 977
+    },
+    {
+     "Vendor": "LiSEC",
+     "Name": "RectHeight",
+     "DoubleValue": 3161
+    }
+   ]
+  }
+ ],
+ "GlobalMaterial": [
+  {
+   "Identification": "GlobalMaterial_FL8",
+   "MaterialType": {
+    "ID": "Glass"
+   },
+   "MaterialName": "FL8",
+   "Thickness": 8
+  }
+ ],
+ "GlobalRectangle": [
+  {
+   "Type": {
+    "ID": "Primitive"
+   },
+   "P0": {},
+   "Width": 2003,
+   "Height": 1103,
+   "Identification": "GlobalRect_10",
+   "Product": [
+    {
+     "BoM": {
+      "Shape": {
+       "InstanceOf": "GlobalRect_10"
+      },
+      "Weight": 44.18618
+     },
+     "Order": "62410060  "
+    }
+   ]
+  },
+  {
+   "Type": {
+    "ID": "Primitive"
+   },
+   "P0": {},
+   "Width": 1100,
+   "Height": 360,
+   "Identification": "GlobalRect_34",
+   "Product": [
+    {
+     "BoM": {
+      "Shape": {
+       "InstanceOf": "GlobalRect_34"
+      },
+      "Weight": 7.92
+     },
+     "Order": "          "
+    }
+   ]
+  },
+  {
+   "Type": {
+    "ID": "Primitive"
+   },
+   "P0": {},
+   "Width": 1430,
+   "Height": 3161,
+   "Identification": "GlobalRect_4",
+   "Product": [
+    {
+     "BoM": {
+      "Shape": {
+       "InstanceOf": "GlobalRect_4"
+      },
+      "Weight": 90.4046
+     },
+     "Order": "12408938  "
+    }
+   ]
+  },
+  {
+   "Type": {
+    "ID": "Primitive"
+   },
+   "P0": {},
+   "Width": 2400,
+   "Height": 2628,
+   "Identification": "GlobalRect_8",
+   "Product": [
+    {
+     "BoM": {
+      "Shape": {
+       "InstanceOf": "GlobalRect_8"
+      },
+      "Weight": 126.144
+     },
+     "Order": "12407510  "
+    }
+   ]
+  },
+  {
+   "Type": {
+    "ID": "Primitive"
+   },
+   "P0": {},
+   "Width": 977,
+   "Height": 3161,
+   "Identification": "GlobalRect_9",
+   "Product": [
+    {
+     "BoM": {
+      "Shape": {
+       "InstanceOf": "GlobalRect_9"
+      },
+      "Weight": 61.76594
+     },
+     "Order": "12408939  "
+    }
+   ]
+  }
+ ],
+ "CuttingInstruction": {
+  "Input": {
+   "Product": [
+    {
+     "BoM": {
+      "Shape": {
+       "Identification": "StplRect",
+       "Element": [
+        {
+         "Line": {
+          "StartPoint": {},
+          "EndPoint": {
+           "X": 9000
+          }
+         }
+        },
+        {
+         "Line": {
+          "StartPoint": {
+           "X": 9000
+          },
+          "EndPoint": {
+           "X": 9000,
+           "Y": 3210
+          }
+         }
+        },
+        {
+         "Line": {
+          "StartPoint": {
+           "X": 9000,
+           "Y": 3210
+          },
+          "EndPoint": {
+           "Y": 3210
+          }
+         }
+        },
+        {
+         "Line": {
+          "StartPoint": {
+           "Y": 3210
+          },
+          "EndPoint": {}
+         }
+        }
+       ]
+      },
+      "Glass": {
+       "Material": {
+        "InstanceOf": "GlobalMaterial_FL8"
+       },
+       "GlassType": {
+        "ID": "PlainFloat"
+       },
+       "Surface1": {
+        "CoatingClass": {
+         "ID": "None"
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "Output": {
+   "Layout": {
+    "Type": {
+     "ID": "Plate"
+    },
+    "P0": {},
+    "Width": 9000,
+    "Height": 3210,
+    "InnerRectangle": [
+     {
+      "Type": {
+       "ID": "Trim"
+      },
+      "P0": {},
+      "Width": 40,
+      "Height": 3210
+     },
+     {
+      "Type": {
+       "ID": "Stripe"
+      },
+      "P0": {
+       "X": 40
+      },
+      "Width": 977,
+      "InnerRectangle": [
+       {
+        "Type": {
+         "ID": "Trim"
+        },
+        "P0": {},
+        "Width": 977,
+        "Height": 24
+       },
+       {
+        "Type": {
+         "ID": "Stripe"
+        },
+        "P0": {
+         "Y": 24
+        },
+        "Width": 1954,
+        "Height": 3161,
+        "InnerRectangle": [
+         {
+          "Type": {
+           "ID": "Primitive"
+          },
+          "P0": {},
+          "Width": 977,
+          "Height": 3161,
+          "Identification": "Cutting_GlobalRect_9",
+          "InstanceOf": "GlobalRect_9",
+          "Product": [
+           {
+            "Order": "12408939  ",
+            "InstanceData": [
+             {
+              "SerialNumber": "143618",
+              "OptimizationNumber": "100545",
+              "BatchNumber": "522086"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "Type": {
+           "ID": "Primitive"
+          },
+          "P0": {
+           "X": 977
+          },
+          "Width": 977,
+          "Height": 3186,
+          "Identification": "Cutting_GlobalRect_9",
+          "InstanceOf": "GlobalRect_9",
+          "Product": [
+           {
+            "Order": "12408939  ",
+            "InstanceData": [
+             {
+              "SerialNumber": "143619",
+              "OptimizationNumber": "100545",
+              "BatchNumber": "522086"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "Type": {
+       "ID": "Stripe"
+      },
+      "P0": {
+       "X": 1994
+      },
+      "Width": 977,
+      "InnerRectangle": [
+       {
+        "Type": {
+         "ID": "Trim"
+        },
+        "P0": {},
+        "Width": 977,
+        "Height": 24
+       },
+       {
+        "Type": {
+         "ID": "Stripe"
+        },
+        "P0": {
+         "Y": 24
+        },
+        "Width": 1954,
+        "Height": 3161,
+        "InnerRectangle": [
+         {
+          "Type": {
+           "ID": "Primitive"
+          },
+          "P0": {},
+          "Width": 977,
+          "Height": 3161,
+          "Identification": "Cutting_GlobalRect_9",
+          "InstanceOf": "GlobalRect_9",
+          "Product": [
+           {
+            "Order": "12408939  ",
+            "InstanceData": [
+             {
+              "SerialNumber": "143620",
+              "OptimizationNumber": "100545",
+              "BatchNumber": "522086"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "Type": {
+           "ID": "Primitive"
+          },
+          "P0": {
+           "X": 977
+          },
+          "Width": 977,
+          "Height": 3186,
+          "Identification": "Cutting_GlobalRect_9",
+          "InstanceOf": "GlobalRect_9",
+          "Product": [
+           {
+            "Order": "12408939  ",
+            "InstanceData": [
+             {
+              "SerialNumber": "143621",
+              "OptimizationNumber": "100545",
+              "BatchNumber": "522086"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "Type": {
+       "ID": "Primitive"
+      },
+      "P0": {
+       "X": 3948,
+       "Y": 24
+      },
+      "Width": 1430,
+      "Height": 3186,
+      "Identification": "Cutting_GlobalRect_4",
+      "InstanceOf": "GlobalRect_4",
+      "Product": [
+       {
+        "Order": "12408938  ",
+        "InstanceData": [
+         {
+          "SerialNumber": "143582",
+          "OptimizationNumber": "100545",
+          "BatchNumber": "522086"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "Type": {
+       "ID": "Stripe"
+      },
+      "P0": {
+       "X": 5378
+      },
+      "Width": 2400,
+      "InnerRectangle": [
+       {
+        "Type": {
+         "ID": "Trim"
+        },
+        "P0": {},
+        "Width": 2400,
+        "Height": 24
+       },
+       {
+        "Type": {
+         "ID": "Primitive"
+        },
+        "P0": {
+         "Y": 24
+        },
+        "Width": 2400,
+        "Height": 2628,
+        "Identification": "Cutting_GlobalRect_8",
+        "InstanceOf": "GlobalRect_8",
+        "Product": [
+         {
+          "Order": "12407510  ",
+          "InstanceData": [
+           {
+            "SerialNumber": "143539",
+            "OptimizationNumber": "100545",
+            "BatchNumber": "522086"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "Type": {
+         "ID": "Stripe"
+        },
+        "P0": {
+         "Y": 2652
+        },
+        "Width": 2400,
+        "Height": 360,
+        "InnerRectangle": [
+         {
+          "Type": {
+           "ID": "Primitive"
+          },
+          "P0": {},
+          "Width": 1100,
+          "Height": 360,
+          "Identification": "Cutting_GlobalRect_34",
+          "InstanceOf": "GlobalRect_34",
+          "Product": [
+           {
+            "Order": "          ",
+            "InstanceData": [
+             {
+              "OptimizationNumber": "100545"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "Type": {
+           "ID": "Primitive"
+          },
+          "P0": {
+           "X": 1100
+          },
+          "Width": 1100,
+          "Height": 360,
+          "Identification": "Cutting_GlobalRect_34",
+          "InstanceOf": "GlobalRect_34",
+          "Product": [
+           {
+            "Order": "          ",
+            "InstanceData": [
+             {
+              "OptimizationNumber": "100545"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "Type": {
+           "ID": "Waste"
+          },
+          "P0": {
+           "X": 2200
+          },
+          "Width": 200,
+          "Height": 360
+         }
+        ]
+       },
+       {
+        "Type": {
+         "ID": "Waste"
+        },
+        "P0": {
+         "Y": 3012
+        },
+        "Width": 2400,
+        "Height": 198
+       }
+      ]
+     },
+     {
+      "Type": {
+       "ID": "Stripe"
+      },
+      "P0": {
+       "X": 7778
+      },
+      "Width": 1103,
+      "InnerRectangle": [
+       {
+        "Type": {
+         "ID": "Trim"
+        },
+        "P0": {},
+        "Width": 1103,
+        "Height": 24
+       },
+       {
+        "Type": {
+         "ID": "Primitive"
+        },
+        "P0": {
+         "Y": 24
+        },
+        "Width": 1103,
+        "Height": 2003,
+        "Identification": "Cutting_GlobalRect_10",
+        "InstanceOf": "GlobalRect_10",
+        "Product": [
+         {
+          "Order": "62410060  ",
+          "TransformationData": [
+           {
+            "CCWRotationAngleXY": 270
+           }
+          ],
+          "InstanceData": [
+           {
+            "SerialNumber": "14362601",
+            "OptimizationNumber": "100545",
+            "BatchNumber": "522087"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "Type": {
+         "ID": "Waste"
+        },
+        "P0": {
+         "Y": 2027
+        },
+        "Width": 1103,
+        "Height": 1183
+       }
+      ]
+     },
+     {
+      "Type": {
+       "ID": "Waste"
+      },
+      "P0": {
+       "X": 8881
+      },
+      "Width": 119,
+      "Height": 3210
+     }
+    ]
+   }
+  }
+ }
+}
