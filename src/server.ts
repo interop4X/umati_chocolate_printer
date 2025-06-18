@@ -1,3 +1,4 @@
+import util from "util";
 import { Console, log } from "console";
 import { NodeId, NodeIdType, OPCUAServer, UAFile, nodesets, UAMethod, StatusCodes, UAVariable, DataType, Variant, BrowsePath, VariantArrayType, BaseNode, LocalizedText, UAObject, QualifiedName } from "node-opcua";
 import { EUInformation } from "node-opcua-data-access";
@@ -13,10 +14,11 @@ const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const printer = require("pdf-to-printer");
 
+const execAsync = util.promisify(exec);
 
 // Hauptfunktion zur Erstellung des OPC UA Servers
 async function main() {
-    const stackLight = new StackLight('COM10', 9600);
+    const stackLight = new StackLight('/dev/ttyUSB0', 9600);
     await stackLight.setLightSync('yellow');
     await stackLight.setFlashSync('normal');
 
@@ -450,8 +452,12 @@ async function main() {
 
         var jobFile ="default.json";
         if (theJob.jobOrder.workMasterID){
-            jobFile = theJob.jobOrder.workMasterID[0].parameters.find((p:any) => p.ID == "LocalPath").value.value;
-
+	   if (Array.isArray(theJob.jobOrder.workMasterId) && theJob.jobOrder.workMasterId.length > 0){
+		
+            jobFile = theJob.jobOrder.workMasterID[0].parameters.find((p:any) => p.ID == "LocalPath").value.value;}
+	    else {
+		console.log("empty workmasterid array");
+		}
         }else{
             console.log(`Job ${jobOrderID} No Workmaster is set`);
             console.log(`No localPath in  ${jobOrderID} not found! Use Default!`);
@@ -476,13 +482,20 @@ async function main() {
                 }); // Ersetze "printer_name" mit deinem tatsächlichen Druckernamen
             })*/
             .then((filePath : any) => {
-                console.log("print file");    
-                return printer.print(tempPdfPath, {
-                    printer: 'vertti', // Setze den Druckernamen falls nötig
-                    orientation : "landscape",
-                    paperSize: "label",
-                    scale: "fit",
-                });
+                console.log("print file");
+		const printerName = "label";
+                const command = `lp -d ${printerName} "${tempPdfPath}" -o media=Custom.90x40mm -o orientation-requested=4 -o fit-to-page`;
+                    return execAsync(command)
+        .then(({ stdout, stderr } : {stdout:string; stderr:string}) => {
+            if (stderr) {
+                console.error('Fehler beim Drucken:', stderr);
+            } else {
+                console.log('Druckauftrag erfolgreich:', stdout);
+            }
+        })
+        .catch((error : Error) => {
+            console.error('Druckbefehl fehlgeschlagen:', error);
+        });
             })
             .then(()=>{
                 console.log("sim job")
@@ -547,7 +560,6 @@ async function main() {
 
             }
         }
-        
         jobOrderList.setValueFromSource(list.value);
     }, 5*1000); // 10 Sekunden Intervall
 
@@ -566,14 +578,15 @@ async function main() {
         jobOrderList.setValueFromSource(list.value);
     }, 7*60*60*1000); // 10 Sekunden Intervall
 
+
     const power_node = energy_bb?.getChildByName("AcActivePowerTotal") as UAVariable
     setInterval(async () => {
-        const tmp  = await getAcActivePowerTotalFromShelly("192.168.137.125");
+        const tmp  = await getAcActivePowerTotalFromShelly("192.168.33.1");
         power_node?.setValueFromSource({
             value: tmp,
             dataType: DataType.Float
         });
-    }, 1000); // 10 Sekunden Intervall
+    }, 500); // 10 Sekunden Intervall
 
     
 
@@ -595,13 +608,13 @@ async function getAcActivePowerTotalFromShelly(ip: string): Promise<number | nul
 
         const data = await response.json();
         const leistung = data.apower;
-        console.log(leistung)
+        //console.log(leistung)
 
         return leistung
 
     } catch (error) {
-        console.error(`Fehler beim Abrufen der Daten: ${(error as Error).message}`);
-        return 2.2;
+        console.log(`Fehler beim Abrufen der Daten: ${(error as Error).message}`);
+        return 2.2001;
     }
 }
 
@@ -610,4 +623,3 @@ async function getAcActivePowerTotalFromShelly(ip: string): Promise<number | nul
 main().catch((error) => {
     console.error("Error: ", error);
 });
-
