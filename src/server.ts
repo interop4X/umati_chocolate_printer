@@ -1,5 +1,6 @@
 import { Console, log } from "console";
-import { NodeId, NodeIdType, OPCUAServer, UAFile, nodesets, UAMethod, StatusCodes, UAVariable, DataType, Variant, BrowsePath, VariantArrayType, BaseNode, LocalizedText, UAObject } from "node-opcua";
+import { NodeId, NodeIdType, OPCUAServer, UAFile, nodesets, UAMethod, StatusCodes, UAVariable, DataType, Variant, BrowsePath, VariantArrayType, BaseNode, LocalizedText, UAObject, QualifiedName } from "node-opcua";
+import { EUInformation } from "node-opcua-data-access";
 import * as path from "path";
 import { MachineryItemState } from "./machineryItemState";
 import { FileBaseSystem, RootDict, File } from "./file";
@@ -28,6 +29,8 @@ async function main() {
         //path.join(__dirname, "..", "models", "Opc.Ua.Machinery.NodeSet2.xml"), // Machinery Nodeset
         //path.join(__dirname, "..", "models", "Opc.Ua.Machinery.Jobs.NodeSet2.xml"), // Machinery Jobs Nodeset
         path.join(__dirname, "..", "models", "opc.ua.glas.v2.nodeset2.xml"), // Glas Nodeset
+        nodesets.ia,
+        path.join(__dirname, "..", "models", "ECM", "Opc.Ua.ECM.NodeSet2.xml"), // Glas Flat Nodeset
     ];
 
     // OPC UA Server Konfiguration
@@ -80,13 +83,105 @@ async function main() {
                 "Identification.YearOfConstruction",
                 "Identification.DeviceClass",
                 "Identification.Location",
-                //"MachineryBuildingBlocks.OperationCounters.OperationCycleCounter"
+                "MachineryBuildingBlocks.OperationCounters.OperationCycleCounter",
+                "MachineryBuildingBlocks.OperationCounters.OperationDuration",
+                "MachineryBuildingBlocks.OperationCounters.PowerOnDuration"
                 //"OptionalObject"
             ] // Liste der optionalen Elemente, die du instanziieren möchtest
         }
     )
     const machinery_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/Machinery/") as number;
     const device_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/DI/") as number;
+
+    const bb_folder = machine.getChildByName("MachineryBuildingBlocks") as UAObject;
+    const ecm_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/ECM/") as number;
+    const energyType = server.engine.addressSpace?.findObjectType("IEnergyProfileE1Type",ecm_idx)
+    
+
+    const myEnergyProfileE1Type = myNamespace?.addObjectType({
+        browseName: "EnergyProfileE1Type",
+        subtypeOf: energyType!,
+    })
+    
+        const energy_bb = myEnergyProfileE1Type?.instantiate({
+        organizedBy: bb_folder,
+        browseName: "EnergyMeasurement"
+    });
+
+    const bb_lifetime_folder_type_node = server.engine.addressSpace?.findObjectType("MachineryLifetimeCounterType",machinery_idx)
+    const bb_lifetime_folder_node = bb_lifetime_folder_type_node?.instantiate({
+        organizedBy: bb_folder,
+        browseName: new QualifiedName({
+            namespaceIndex:machinery_idx,
+            name:"LifetimeCounters"
+        })
+    });
+    const LifetimeVariableType = server.engine.addressSpace?.findVariableType("LifetimeVariableType",device_idx)
+    const myLifetimeVar = LifetimeVariableType?.instantiate({
+        organizedBy: bb_lifetime_folder_node,
+        browseName: new QualifiedName({
+            namespaceIndex:machinery_idx,
+            name:"Paper"
+        }),
+        optionals:[
+            "Indication"
+        ]
+
+    });
+    myLifetimeVar?.setValueFromSource({
+        value: 0,
+        dataType: DataType.UInt32
+    });
+    var tmp = 0;
+
+    setInterval(async () => {
+        tmp = tmp + 1;
+        myLifetimeVar?.setValueFromSource({
+            value: tmp,
+            dataType: DataType.Float
+        });
+    }, 10); // 10 Sekunden Intervall
+
+    const StartValue = myLifetimeVar?.getChildByName("StartValue") as UAVariable;
+    StartValue.setValueFromSource({
+        value: 0,
+        dataType: DataType.UInt32
+    });
+
+    const LimitValue = myLifetimeVar?.getChildByName("LimitValue") as UAVariable;
+    LimitValue.setValueFromSource({
+        value: 100,
+        dataType: DataType.UInt32
+    });
+    /*
+    const Indication = myLifetimeVar?.getChildByName("Indication") as UAVariable;
+    Indication.setValueFromSource({
+        value: new NodeId(device_idx,475),
+        dataType: DataType.NodeId
+    });*/
+    /*
+    const unit = myLifetimeVar?.getChildByName("EngineeringUnits") as UAVariable;
+    const engineeringUnits = new EUInformation({
+        namespaceUri: "http://www.opcfoundation.org/UA/units/un/cefact",
+        unitId: 4406393, // z. B. UnitId für „degree Celsius“
+        displayName: new LocalizedText("pc"),
+        description: new LocalizedText("piece")
+    });
+    LimitValue.setValueFromSource({
+        value: server.engine.addressSpace?.constructExtensionObject(
+            new NodeId(NodeIdType.NUMERIC, 887, 0),
+            {
+              namespaceUri: engineeringUnits.namespaceUri,
+              unitId: engineeringUnits.unitId,
+              displayName: engineeringUnits.displayName,
+              description: engineeringUnits.description,
+            },
+          ),
+        dataType: DataType.ExtensionObject
+    });*/
+
+
+
 
 
     const fileSystemRoot = machine.getChildByName("FileSystem") as UAObject;
@@ -317,11 +412,18 @@ async function main() {
         console.log(`Drucke Dokument: ${jobOrderID}`);
         mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.Executing.text);
 
-        /*const operationCounter = MachineryBuildingBlocks?.getChildByName("OperationCounters");
-        const OperationCycleCounter = MachineryBuildingBlocks?.getChildByName("OperationCycleCounter") as UAVariable;
+        const operationCounter = MachineryBuildingBlocks?.getChildByName("OperationCounters");
+        const OperationCycleCounter = operationCounter?.getChildByName("OperationCycleCounter") as UAVariable;
         var counter = OperationCycleCounter.readValue()
-        counter.value = counter.value + 1;
-        OperationCycleCounter.setValueFromSource(counter)*/
+        OperationCycleCounter.setValueFromSource({
+            value: counter.value.value + 1,
+            dataType: DataType.UInt32
+        });
+
+        myLifetimeVar?.setValueFromSource({
+            value: counter.value.value,
+            dataType: DataType.UInt32
+        });
 
 
 
@@ -380,10 +482,19 @@ async function main() {
                     orientation : "landscape",
                     paperSize: "label",
                     scale: "fit",
-                }); // Ersetze "printer_name" mit deinem tatsächlichen Druckernamen*
+                });
             })
             .then(()=>{
-                return sleep(5000); // 2 Sekunden warten
+                console.log("sim job")
+                const operationCounter = MachineryBuildingBlocks?.getChildByName("OperationCounters");
+                const OperationDuration = operationCounter?.getChildByName("OperationDuration") as UAVariable;        
+                var counter = OperationDuration.readValue()
+                OperationDuration.setValueFromSource({
+                    value: counter.value.value + 5*1000,
+                    dataType: DataType.Double
+            });
+                return sleep(5000); // 10 Sekunden warten
+
             })
             .then(() => {
                 console.log("Druckauftrag erfolgreich gesendet!");
@@ -429,12 +540,6 @@ async function main() {
         for (i in list.value.value) {
             var job = (list.value.value[i]);
             //console.log(job.state);
-            if (job.state[0].stateNumber == 1) {
-                console.log("Change value");
-                list.value.value[i].state[0].stateNumber = 2;
-                list.value.value[i].state[0].stateText = "AllowedToStart";
-
-            }
             if (job.state[0].stateNumber == 6) {
                 console.log("Aborted->End");
                 list.value.value[i].state[0].stateNumber = 5;
@@ -442,6 +547,7 @@ async function main() {
 
             }
         }
+        
         jobOrderList.setValueFromSource(list.value);
     }, 5*1000); // 10 Sekunden Intervall
 
@@ -460,6 +566,17 @@ async function main() {
         jobOrderList.setValueFromSource(list.value);
     }, 7*60*60*1000); // 10 Sekunden Intervall
 
+    const power_node = energy_bb?.getChildByName("AcActivePowerTotal") as UAVariable
+    setInterval(async () => {
+        const tmp  = await getAcActivePowerTotalFromShelly("192.168.137.125");
+        power_node?.setValueFromSource({
+            value: tmp,
+            dataType: DataType.Float
+        });
+    }, 1000); // 10 Sekunden Intervall
+
+    
+
 
     // Endpunkt anzeigen
     console.log("Server is now listening on: ", server.getEndpointUrl());
@@ -467,7 +584,30 @@ async function main() {
 
 }
 
+async function getAcActivePowerTotalFromShelly(ip: string): Promise<number | null> {
+    const url = `http://${ip}/rpc/Switch.GetStatus?id=0`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP-Fehler: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const leistung = data.apower;
+        console.log(leistung)
+
+        return leistung
+
+    } catch (error) {
+        console.error(`Fehler beim Abrufen der Daten: ${(error as Error).message}`);
+        return 2.2;
+    }
+}
+
+
 // Führe die Hauptfunktion aus
 main().catch((error) => {
     console.error("Error: ", error);
 });
+

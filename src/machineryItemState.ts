@@ -5,7 +5,7 @@ import {  LocalizedText,BindVariableOptionsVariation1, Variant, DataType, UAVari
 export class MachineryItemState {
 
     // Member-Variablen
-    currentState: LocalizedText = new LocalizedText();
+    currentState: LocalizedText = new LocalizedText({locale:"en", text:"blub"});
     id: NodeId = new NodeId();
     number: number = 0;
     machineryItemState_node : BaseNode;
@@ -33,14 +33,14 @@ export class MachineryItemState {
         this.currentState_node = itemState?.getChildByName("CurrentState") as UAVariable;
         this.currentState_id_node = this.currentState_node?.getChildByName("Id") as UAVariable;
         this.currentState_number_node = this.currentState_node?.getChildByName("Number") as UAVariable;
-        this.currentState_node.setValueFromSource(this.getCurrentStateAsVariant());
+        //this.currentState_node.setValueFromSource(this.getCurrentStateAsVariant());
     }
 
     public getCurrentStateAsVariant(): Variant{
         return new Variant (
             {
-                value: this.currentState,
-                dataType: "LocalizedText"
+                value: this.currentState.text,
+                dataType: DataType.LocalizedText
             }
         )
     }
@@ -69,6 +69,7 @@ export class MachineryItemState {
         const state = Object.values(this.possibleStates).find(s => s.text === text);
         if (state) {
             this.id = state.id;
+
             this.currentState.text = state.text;
             this.number = state.number;
             this.currentState_node.setValueFromSource(this.getCurrentStateAsVariant());

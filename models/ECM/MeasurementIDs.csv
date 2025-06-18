@@ -1,0 +1,291 @@
+﻿MeasurementID;BrowseName;Description;EngineeringUnits;MeasurementPeriod;DataType;HasStatisticComponent 
+1000;AcActiveEnergyTotalImport5;Active Energy Consumed Odometer;Wh;-;Int16[5];YES
+1001;AcActiveEnergyTotalImportLp;Active Energy Consumed Odometer (low precision);Wh;-;Float;YES
+1002;AcActiveEnergyTotalImportHp;Active Energy Consumed Odometer (high precision);Wh;-;Double;YES
+1003;AcActiveEnergyTotalExport5;Active Energy Generated Odometer;Wh;-;Int16[5];YES
+1004;AcActiveEnergyTotalExportLp;Active Energy Generated Odometer (low precision);Wh;-;Float;YES
+1005;AcActiveEnergyTotalExportHp;Active Energy Generated Odometer (high precision);Wh;-;Double;YES
+1006;AcActiveEnergyTotalSum5;Active Energy Odometer Sum (import - export);Wh;-;Int16[5];YES
+1007;AcActiveEnergyTotalSumLp;Active Energy Odometer Sum (import - export) (low precision);Wh;-;Float;YES
+1008;AcActiveEnergyTotalSumHp;Active Energy Odometer Sum (import - export) (high precision);Wh;-;Double;YES
+1009;AcReactiveEnergyTotalImport5;Reactive Energy Consumed Odometer;varh;-;Int16[5];YES
+1010;AcReactiveEnergyTotalImportLp;Reactive Energy Consumed Odometer (low precision);varh;-;Float;YES
+1011;AcReactiveEnergyTotalImportHp;Reactive Energy Consumed Odometer (high precision);varh;-;Double;YES
+1012;AcReactiveEnergyTotalExport5;Reactive Energy Generated Odometer;varh;-;Int16[5];YES
+1013;AcReactiveEnergyTotalExportLp;Reactive Energy Generated Odometer (low precision);varh;-;Float;YES
+1014;AcReactiveEnergyTotalExportHp;Reactive Energy Generated Odometer (high precision);varh;-;Double;YES
+1015;AcReactiveEnergyTotalSum5;Reactive Energy Odometer Sum (import - export);varh;-;Int16[5];YES
+1016;AcReactiveEnergyTotalSumLp;Reactive Energy Odometer Sum (import - export) (low precision);varh;-;Float;YES
+1017;AcReactiveEnergyTotalSumHp;Reactive Energy Odometer Sum (import - export) (high precision);varh;-;Double;YES
+1018;AcApparentEnergyTotal5;Apparent Energy Odometer;VAh;-;Int16[5];YES
+1019;AcApparentEnergyTotalLp;Apparent Energy Odometer (low precision);VAh;-;Float;YES
+1020;AcApparentEnergyTotalHp;Apparent Energy Odometer (high precision);VAh;-;Double;YES
+1021;DcEnergyTotalImport5;Direct Current (DC) Energy Consumed Odometer;Wh;-;Int16[5];YES
+1022;DcEnergyTotalImportLp;Direct Current (DC) Energy Consumed Odometer (low precision);Wh;-;Float;YES
+1023;DcEnergyTotalImportHp;Direct Current (DC) Energy Consumed Odometer (high precision);Wh;-;Double;YES
+1024;DcEnergyTotalExport5;Direct Current (DC) Energy Generated Odometer;Wh;-;Int16[5];YES
+1025;DcEnergyTotalExportLp;Direct Current (DC) Energy Generated Odometer (low precision);Wh;-;Float;YES
+1026;DcEnergyTotalExportHp;Direct Current (DC) Energy Generated Odometer (high precision);Wh;-;Double;YES
+1027;DcEnergyTotalSum5;Direct Current (DC) Energy Odometer Sum (import - export);Wh;-;Int16[5];YES
+1028;DcEnergyTotalSumLp;Direct Current (DC) Energy Odometer Sum (import - export) (low precision);Wh;-;Float;YES
+1029;DcEnergyTotalSumHp;Direct Current (DC) Energy Odometer Sum (import - export) (high precision);Wh;-;Double;YES
+1030;DcElectricalCharge;Direct Current (DC) Electrical Charge (e. g. Accumulator) / Current Odometer;Ah;-;Float;YES
+1031;DcRelativeCharge;Direct Current (DC) Relative Charge (e. g. Accumulator);%;-;Float;YES
+1032;DcActivePower;Direct Current (DC) Power;W;-;Float;NO
+1033;DcCurrent;Direct Current (DC) Current;A;-;Float;NO
+1034;DcVoltage;Direct Current (DC) Voltage;V;-;Float;NO
+1100;AcVoltageL1N;Voltage L1-N;V;-;Float;NO
+1101;AcVoltageL1NMax;Voltage L1-N maximum. Based on AcVoltageL1N. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1102;AcVoltageL1NMin;Voltage L1-N minimum. Based on AcVoltageL1N. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1103;AcVoltageL1N3s;Voltage L1-N (3 seconds);V;3 s, SlidingDemand;Float;NO
+1104;AcVoltageL1N3sMax;Voltage L1-N maximum of the last 3 seconds. ;V;3 s,SlidingDemand;Float;NO
+1105;AcVoltageL1N3sMin;Voltage L1-N minimum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1106;AcVoltageL2N;Voltage L2-N;V;-;Float;NO
+1107;AcVoltageL2NMax;Voltage L2-N maximum. Based on AcVoltageL2N. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1108;AcVoltageL2NMin;Voltage L2-N minimum. Based on AcVoltageL2N. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1109;AcVoltageL2N3s;Voltage L2-N (3 seconds);V;3 s, SlidingDemand;Float;NO
+1110;AcVoltageL2N3sMax;Voltage L2-N maximum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1111;AcVoltageL2N3sMin;Voltage L2-N minimum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1112;AcVoltageL3N;Voltage L3-N;V;-;Float;NO
+1113;AcVoltageL3NMax;Voltage L3-N maximum. Based on AcVoltageL3N. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1114;AcVoltageL3NMin;Voltage L3-N minimum. Based on AcVoltageL3N. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1115;AcVoltageL3N3s;Voltage L3-N (3 seconds);V;3 s, SlidingDemand;Float;NO
+1116;AcVoltageL3N3sMax;Voltage L3-N maximum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1117;AcVoltageL3N3sMin;Voltage L3-N minimum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1118;AcVoltagePe;Voltage L-N;V;-;AcPeDataType;NO
+1119;AcVoltagePeMax;Voltage L-N maximum (the maximum of each phase is tracked individually). Based on AcVoltagePe. May be reset by ResetStatistics or other mechanisms.;V;-;AcPeDataType;YES
+1120;AcVoltagePeMin;Voltage L-N minimum (the minimum of each phase is tracked individually). Based on AcVoltagePe. May be reset by ResetStatistics or other mechanisms.;V;-;AcPeDataType;YES
+1121;AcVoltagePeNAverage;Voltage average phase - N;V;-;Float;NO
+1122;AcVoltagePeNAverageMax;Voltage average phase - N maximum. Based on AcVoltagePeNAverage. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1123;AcVoltagePeNAverageMin;Voltage average phase - N minimum. Based on AcVoltagePeNAverage. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1124;AcVoltagePeNAverage3s;Voltage average phase - N (3 seconds);V;3 s, SlidingDemand;Float;NO
+1125;AcVoltagePeNAverage3sMin;Voltage average phase minimum of the last 3 seconds. ;V;3 s, SlidingDemand;Float;NO
+1126;AcVoltagePeNAverage3sMax;Voltage average phase maximum of the last 3 seconds. ;V;3 s, SlidingDemand;Float;NO
+1127;AcVoltageL1L2;Voltage L1-L2;V;-;Float;NO
+1128;AcVoltageL1L2Max;Voltage L1-L2 maximum. Based on AcVoltageL1L2. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1129;AcVoltageL1L2Min;Voltage L1-L2 minimum. Based on AcVoltageL1L2. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1130;AcVoltageL1L23s;Voltage L1-L2 (3 seconds);V;3 s, SlidingDemand;Float;NO
+1131;AcVoltageL1L23sMax;Voltage L1-L2 maximum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1132;AcVoltageL1L23sMin;Voltage L1-L2 minimum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1133;AcVoltageL2L3;Voltage L2-L3;V;-;Float;NO
+1134;AcVoltageL2L3Max;Voltage L2-L3 maximum. Based on AcVoltageL2L3. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1135;AcVoltageL2L3Min;Voltage L2-L3 minimum. Based on AcVoltageL2L3. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1136;AcVoltageL2L33s;Voltage L2-L3 (3 seconds);V;3 s, SlidingDemand;Float;NO
+1137;AcVoltageL2L33sMax;Voltage L2-L3 maximum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1138;AcVoltageL2L33sMin;Voltage L2-L3 minimum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1139;AcVoltageL3L1;Voltage L3-L1;V;-;Float;NO
+1140;AcVoltageL3L1Max;Voltage L3-L1 maximum. Based on AcVoltageL3L1. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1141;AcVoltageL3L1Min;Voltage L3-L1 minimum. Based on AcVoltageL3L1. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1142;AcVoltageL3L13s;Voltage L3-L1 (3 seconds);V;3 s, SlidingDemand;Float;NO
+1143;AcVoltageL3L13sMax;Voltage L3-L1 maximum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1144;AcVoltageL3L13sMin;Voltage L3-L1 minimum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1145;AcVoltagePp;Voltage L1L2, L2L3, L3L1 ;V;-;AcPpDataType;NO
+1146;AcVoltagePpMax;Voltage L1L2, L2L3, L3L1 maximum (the maximum of each phase is tracked individually). Based on AcVoltagePp. May be reset by ResetStatistics or other mechanisms.;V;-;AcPpDataType;YES
+1147;AcVoltagePpMin;Voltage L1L2, L2L3, L3L1 minimum (the minimum of each phase is tracked individually). Based on AcVoltagePp. May be reset by ResetStatistics or other mechanisms.;V;-;AcPpDataType;YES
+1148;AcVoltagePpAverage;Voltage average phase - phase;V;-;Float;NO
+1149;AcVoltagePpAverageMax;Voltage average phase - phase maximum. Based on AcVoltagePpAverage. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1150;AcVoltagePpAverageMin;Voltage average phase - phase minimum. Based on AcVoltagePpAverage. May be reset by ResetStatistics or other mechanisms.;V;-;Float;YES
+1151;AcVoltagePpAverage3s;Voltage average phase - phase (3 seconds);V;3 s, SlidingDemand;Float;NO
+1152;AcVoltagePpAverage3sMin;Voltage average phase - phase minimum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1153;AcVoltagePpAverage3sMax;Voltage average phase - phase maximum of the last 3 seconds.;V;3 s, SlidingDemand;Float;NO
+1154;AcVoltagePhaseDeviation;Voltage phase deviation. For the calculation, first determine which voltage phase has the largest deviation from the average voltage, then divide that difference (absolute value) by the average voltage and then multiply by 100.;%;-;Float;NO
+1155;AcVoltagePhaseDeviationMax;Voltage phase deviation maximum over time. Based on AcVoltagePhaseDeviation. May be reset by ResetStatistics or other mechanisms.;%;-;Float;YES
+1156;AcVoltagePhaseDeviationMin;Voltage phase deviation minimum over time. Based on AcVoltagePhaseDeviation. May be reset by ResetStatistics or other mechanisms.;%;-;Float;YES
+1200;AcCurrentL1;Current L1;A;-;Float;NO
+1201;AcCurrentL1Max;Current L1 maximum. Based on AcCurrentL1. May be reset by ResetStatistics or other mechanisms.;A;-;Float;YES
+1202;AcCurrentL1Min;Current L1 minimum. Based on AcCurrentL1. May be reset by ResetStatistics or other mechanisms.;A;-;Float;YES
+1203;AcCurrentL1600s;Current L1 (600 seconds);A;600 s, SlidingDemand;Float;NO
+1204;AcCurrentL1Max600s;Current L1 maximum of the last 600 seconds.;A;600 s, SlidingDemand;Float;NO
+1205;AcCurrentL1Min600s;Current L1 minimum of the last 600 seconds.;A;600 s, SlidingDemand;Float;NO
+1206;AcCurrentL2;Current L2;A;-;Float;NO
+1207;AcCurrentL2Max;Current L2 maximum. Based on AcCurrentL2. May be reset by ResetStatistics or other mechanisms.;A;-;Float;YES
+1208;AcCurrentL2Min;Current L2 minimum. Based on AcCurrentL2. May be reset by ResetStatistics or other mechanisms.;A;-;Float;YES
+1209;AcCurrentL2600s;Current L2 (600 seconds);A;600 s, SlidingDemand;Float;NO
+1210;AcCurrentL2Max600s;Current L2 maximum of the last 600 seconds.;A;600 s, SlidingDemand;Float;NO
+1211;AcCurrentL2Min600s;Current L2 minimum of the last 600 seconds.;A;600 s, SlidingDemand;Float;NO
+1212;AcCurrentL3;Current L3;A;-;Float;NO
+1213;AcCurrentL3Max;Current L3 maximum. Based on AcCurrentL3. May be reset by ResetStatistics or other mechanisms.;A;-;Float;YES
+1214;AcCurrentL3Min;Current L3 minimum. Based on AcCurrentL3. May be reset by ResetStatistics or other mechanisms.;A;-;Float;YES
+1215;AcCurrentL3600s;Current L3 (600 seconds);A;600 s, SlidingDemand;Float;NO
+1216;AcCurrentL3Max600s;Current L3 maximum of the last 600 seconds.;A;600 s, SlidingDemand;Float;NO
+1217;AcCurrentL3Min600s;Current L3 minimum of the last 600 seconds.;A;600 s, SlidingDemand;Float;NO
+1218;AcCurrentPe;Current;A;-;AcPeDataType;NO
+1219;AcCurrentPeMax;Current maximum (the maximum of each phase is tracked individually). Based on AcCurrentPe. May be reset by ResetStatistics or other mechanisms.;A;-;AcPeDataType;YES
+1220;AcCurrentPeMin;Current minimum (the minimum of each phase is tracked individually). Based on AcCurrentPe. May be reset by ResetStatistics or other mechanisms.;A;-;AcPeDataType;YES
+1221;AcCurrentPe600s;Current (600 seconds);A;600 s, SlidingDemand;AcPeDataType;NO
+1222;AcCurrentPe600sMax;Current maximum of the last 600 seconds.;A;600 s, SlidingDemand;AcPeDataType;NO
+1223;AcCurrentPe600sMin;Current minimum of the last 600 seconds.;A;600 s, SlidingDemand;AcPeDataType;NO
+1224;AcCurrentAverage;Current average L1 L2 L3;A;-;Float;NO
+1225;AcCurrentAverageMax;Current average L1 L2 L3 maximum. Based on AcCurrentAverage. May be reset by ResetStatistics or other mechanisms.;A;-;Float;YES
+1226;AcCurrentAverageMin;Current average L1 L2 L3 minimum. Based on AcCurrentAverage. May be reset by ResetStatistics or other mechanisms.;A;-;Float;YES
+1227;AcCurrentAverage600s;Current average L1 L2 L3 (600 seconds);A;600 s, SlidingDemand;Float;NO
+1228;AcCurrentAverage600sMax;Current average L1 L2 L3 maximum of the last 600 seconds.;A;600 s, SlidingDemand;Float;NO
+1229;AcCurrentAverage600sMin;Current average L1 L2 L3 minimum of the last 600 seconds.;A;600 s, SlidingDemand;Float;NO
+1230;AcCurrentGround;Current ground;A;-;Float;NO
+1231;AcCurrentGroundMax;Current ground maximum. Based on AcCurrentGround.;A;-;Float;YES
+1232;AcCurrentGroundMin;Current ground minimum. Based on AcCurrentGround.;A;-;Float;YES
+1233;AcCurrentN;Current N;A;-;Float;NO
+1234;AcCurrentNMax;Current N maximum. Based in on AcCurrentN.;A;-;Float;YES
+1235;AcCurrentNMin;Current N minimum. Based on AcCurrentN.;A;-;Float;YES
+1236;AcCurrentPhaseDeviation;Current phase deviation. For the calculation, first determine which current phase has the largest deviation from the average current, then divide that difference (absolute value) by the average current and then multiply by 100.;%;-;Float;NO
+1237;AcCurrentPhaseDeviationMax;Current phase deviation maximum. Based on AcCurrentPhaseDeviation. May be reset by ResetStatistics or other mechanisms.;%;-;Float;YES
+1238;AcCurrentPhaseDeviationMin;Current phase deviation minimum. Based on AcCurrentPhaseDeviation. May be reset by ResetStatistics or other mechanisms.;%;-;Float;YES
+1300;AcFrequency;Frequency;Hz;-;Float;NO
+1301;AcFrequencyMax;Frequency maximum. Based on AcFrequency. May be reset by ResetStatistics or other mechanisms.;Hz;-;Float;YES
+1302;AcFrequencyMin;Frequency minimum.Based on AcFrequency. May be reset by ResetStatistics or other mechanisms.;Hz;-;Float;YES
+1400;AcActivePowerL1;Active Power L1 ;W;-;Float;NO
+1401;AcActivePowerL1Max;Active Power L1 maximum. Based on AcActivePowerL1. May be reset by ResetStatistics or other mechanisms.;W;-;Float;YES
+1402;AcActivePowerL1Min;Active Power L1 minimum. Based on AcActivePowerL1. May be reset by ResetStatistics or other mechanisms.;W;-;Float;YES
+1403;AcActivePowerL2;Active Power L2;W;-;Float;NO
+1404;AcActivePowerL2Max;Active Power L2 maximum. Based on AcActivePowerL2. May be reset by ResetStatistics or other mechanisms.;W;-;Float;YES
+1405;AcActivePowerL2Min;Active Power L2 minimum. Based on AcActivePowerL2. May be reset by ResetStatistics or other mechanisms.;W;-;Float;YES
+1406;AcActivePowerL3;Active Power L3;W;-;Float;NO
+1407;AcActivePowerL3Max;Active Power L3 maximum. Based on AcActivePowerL3. May be reset by ResetStatistics or other mechanisms.;W;-;Float;YES
+1408;AcActivePowerL3Min;Active Power L3 minimum. Based on AcActivePowerL3. May be reset by ResetStatistics or other mechanisms.;W;-;Float;YES
+1409;AcActivePowerPe;Active Power;W;-;AcPeDataType;NO
+1410;AcActivePowerPeMin;Active Power minimum (the minimum of each phase is tracked individually). Based on AcActivePowerPe. May be reset by ResetStatistics or other mechanisms.;W;-;AcPeDataType;YES
+1411;AcActivePowerPeMax;Active Power maximum (the maximum of each phase is tracked individually). Based on AcActivePowerPe. May be reset by ResetStatistics or other mechanisms.;W;-;AcPeDataType;YES
+1412;AcActivePowerTotal;Active Power total;W;-;Float;NO
+1413;AcActivePowerTotalMax;Active Power total maximum. Based on AcActivePowerTotal. May be reset by ResetStatistics or other mechanisms.;W;-;Float;YES
+1414;AcActivePowerTotalMin;Active Power total minimum. Based on AcActivePower. May be reset by ResetStatistics or other mechanisms.;W;-;Float;YES
+1416;AcActivePowerTotalImport15minCompleted;Active Power total import in last completed period (fixed 15min interval starting with the full hour);W;900 s, FixedBlockCompleted;Float;NO
+1417;AcActivePowerTotalExport15minCompleted;Active Power total export in last completed period (fixed 15min interval starting with the full hour);W;900 s, FixedBlockCompleted;Float;NO
+1418;AcActivePowerTotalSumMax15minCompleted;Active Power total (import - export) maximum in the last completed period (fixed 15min interval starting with the full hour).;W;900 s,FixedBlockCompleted;Float;NO
+1419;AcActivePowerTotalSumMin15minCompleted;Active Power total (import - export) minimum - demand of last completed period (fixed 15min interval starting with the full hour);W;900 s,FixedBlockCompleted;Float;NO
+1420;AcActivePowerTotalImport15minInstantaneous;Active Power total import in the instantaneous period (fixed 15min interval starting with the full hour);W;900 s, FixedBlockInstantaneous;Float;NO
+1421;AcActivePowerTotalExport15minInstantaneous;Active Power total export in the instantaneous period (fixed 15min interval starting with the full hour);W;900 s, FixedBlockInstantaneous;Float;NO
+1422;AcActivePowerTotalSumMax15minInstantaneous;Active Power total (import - export) maximum in the instantaneous period (fixed 15min interval starting with the full hour);W;900 s, FixedBlockInstantaneous;Float;NO
+1423;AcActivePowerTotalSumMin15minInstantaneous;Active Power total (import - export) minimum in the instantaneous period (fixed 15min interval starting with the full hour);W;900 s, FixedBlockInstantaneous;Float;NO
+1424;AcActivePowerTotalImport15minPredicted;Active Power total import predicted in the instantaneous period (fixed 15min interval starting with the full hour);W;900 s,FixedBlockPredicted;Float;NO
+1425;AcActivePowerTotalExport15minPredicted;Active Power total export predicted in the instantaneous period (fixed 15min interval starting with the full hour);W;900 s,FixedBlockPredicted;Float;NO
+1426;AcActivePowerTotalImportCompleted;Active Power total import in last completed period (fixed interval starting with the full hour);W;user-defined, FixedBlockCompleted;Float;NO
+1427;AcActivePowerTotalExportCompleted;Active Power total export in last completed period (fixed interval starting with the full hour);W;user-defined, FixedBlockCompleted;Float;NO
+1428;AcActivePowerTotalSumMaxCompleted;Active Power total (import - export) maximum - demand of last completed period (fixed interval starting with the full hour);W;user-defined, FixedBlockCompleted;Float;NO
+1429;AcActivePowerTotalSumMinCompleted;Active Power total (import - export) minimum - demand of last completed period (fixed interval starting with the full hour);W;user-defined, FixedBlockCompleted;Float;NO
+1430;AcActivePowerTotalImportInstantaneous;Active Power total import in the instantaneous period (fixed interval starting with the full hour);W;user-defined, FixedBlockInstantaneous;Float;NO
+1431;AcActivePowerTotalExportInstantaneous;Active Power total export in the instantaneous period (fixed interval starting with the full hour);W;user-defined, FixedBlockInstantaneous;Float;NO
+1432;AcActivePowerTotalSumMaxInstantaneous;Active Power total (import - export) maximum in the instantaneous period (fixed interval starting with the full hour);W;user-defined, FixedBlockInstantaneous;Float;NO
+1433;AcActivePowerTotalSumMinInstantaneous;Active Power total (import - export) minimum in the instantaneous period (fixed interval starting with the full hour);W;user-defined, FixedBlockInstantaneous;Float;NO
+1434;AcActivePowerTotalImportPredicted;Active Power total import predicted in the instantaneous period (fixed interval starting with the full hour);W;user-defined, FixedBlockPredicted;Float;NO
+1435;AcActivePowerTotalExportPredicted;Active Power total export predicted in the instantaneous period (fixed interval starting with the full hour);W;user-defined, FixedBlockPredicted;Float;NO
+1500;AcApparentPowerL1;Apparent Power L1 ;VA;-;Float;NO
+1501;AcApparentPowerL1Max;Apparent Power L1 maximum. Based on AcApparentPowerL1. May be reset by ResetStatistics or other mechanisms.;VA;-;Float;YES
+1502;AcApparentPowerL1Min;Apparent Power L1 minimum. Based on AcApparentPowerL1. May be reset by ResetStatistics or other mechanisms.;VA;-;Float;YES
+1503;AcApparentPowerL2;Apparent Power L2;VA;-;Float;NO
+1504;AcApparentPowerL2Max;Apparent Power L2 maximum. Based on AcApparentPowerL2. May be reset by ResetStatistics or other mechanisms.;VA;-;Float;YES
+1505;AcApparentPowerL2Min;Apparent Power L2 minimum. Based on AcApparentPowerL2. May be reset by ResetStatistics or other mechanisms.;VA;-;Float;YES
+1506;AcApparentPowerL3;Apparent Power L3;VA;-;Float;NO
+1507;AcApparentPowerL3Max;Apparent Power L3 maximum. Based on AcApparentPowerL3. May be reset by ResetStatistics or other mechanisms.;VA;-;Float;YES
+1508;AcApparentPowerL3Min;Apparent Power L3 minimum. Based on AcApparentPowerL3. May be reset by ResetStatistics or other mechanisms.;VA;-;Float;YES
+1509;AcApparentPowerPe;Apparent Power;VA;-;AcPeDataType;NO
+1510;AcApparentPowerPeMax;Apparent Power maximum (the maximum of each phase is tracked individually). Based on AcApparentPowerPe. May be reset by ResetStatistics or other mechanisms.;VA;-;AcPeDataType;YES
+1511;AcApparentPowerPeMin;Apparent Power minimum (the minimum of each phase is tracked individually). Based on AcApparentPowerPe. May be reset by ResetStatistics or other mechanisms.;VA;-;AcPeDataType;YES
+1512;AcApparentPowerTotal;Apparent Power total;VA;-;Float;NO
+1513;AcApparentPowerTotalMax;Apparent Power total maximum. Based on AcApparentPowerTotal. May be reset by ResetStatistics or other mechanisms.;VA;-;Float;YES
+1514;AcApparentPowerTotalMin;Apparent Power total minimum. Based on AcApparentPowerTotal. May be reset by ResetStatistics or other mechanisms.;VA;-;Float;YES
+1516;AcApparentPowerTotal15minCompleted;Apparent Power total in last completed period (fixed 15min interval starting with the full hour);VA;900 s, FixedBlockCompleted;Float;NO
+1517;AcApparentPowerTotal15minInstantaneous;Apparent Power total in the instantaneous period (fixed 15min interval starting with the full hour);VA;900 s, FixedBlockInstantaneous;Float;NO
+1518;AcApparentPowerTotal15minPredicted;Apparent Power total predicted in the instantaneous period (fixed 15min interval starting with the full hour);VA;900 s, FixedBlockPredicted;Float;NO
+1519;AcApparentPowerTotalCompleted;Apparent Power total in last completed period (fixed interval starting with the full hour);VA;user-defined, FixedBlockCompleted;Float;NO
+1520;AcApparentPowerTotalInstantaneous;Apparent Power total in the instantaneous period (fixed interval starting with the full hour);VA;user-defined, FixedBlockInstantaneous;Float;NO
+1521;AcApparentPowerTotalPredicted;Apparent Power total predicted in the instantaneous period (fixed interval starting with the full hour);VA;user-defined, FixedBlockPredicted;Float;NO
+1600;AcReactivePowerQnL1;Reactive Power Qn L1 ;var;-;Float;NO
+1601;AcReactivePowerQnL1Max;Reactive Power Qn L1 maximum. Based on AcReactivePowerQnL1. May be reset by ResetStatistics or other mechanisms.;var;-;Float;YES
+1602;AcReactivePowerQnL1Min;Reactive Power Qn L1 minimum. Based on AcReactivePowerQnL1. May be reset by ResetStatistics or other mechanisms.;var;-;Float;YES
+1603;AcReactivePowerQnL2;Reactive Power Qn L2;var;-;Float;NO
+1604;AcReactivePowerQnL2Max;Reactive Power Qn L2 maximum. Based on AcReactivePowerQnL2. May be reset by ResetStatistics or other mechanisms.;var;-;Float;YES
+1605;AcReactivePowerQnL2Min;Reactive Power Qn L2 minimum. Based on AcReactivePowerQnL2. May be reset by ResetStatistics or other mechanisms.;var;-;Float;YES
+1606;AcReactivePowerQnL3;Reactive Power Qn L3;var;-;Float;NO
+1607;AcReactivePowerQnL3Max;Reactive Power Qn L3 maximum. Based on AcReactivePowerQnL3. May be reset by ResetStatistics or other mechanisms.;var;-;Float;YES
+1608;AcReactivePowerQnL3Min;Reactive Power Qn L3 minimum. Based on AcReactivePowerQnL3. May be reset by ResetStatistics or other mechanisms.;var;-;Float;YES
+1609;AcReactivePowerQnPe;Reactive Power Qn;var;-;AcPeDataType;NO
+1610;AcReactivePowerQnPeMax;Reactive Power Qn maximum (the maximum of each phase is tracked individually). Based on AcReactivePowerQnPe. May be reset by ResetStatistics or other mechanisms.;var;-;AcPeDataType;YES
+1611;AcReactivePowerQnPeMin;Reactive Power Qn minimum (the minimum of each phase is tracked individually). Based on AcReactivePowerQnPe. May be reset by ResetStatistics or other mechanisms.;var;-;AcPeDataType;YES
+1612;AcReactivePowerQnTotal;Reactive Power Qn total;var;-;Float;NO
+1613;AcReactivePowerQnTotalMax;Reactive Power Qn total maximum. Based on AcReactivePowerQnTotal. May be reset by ResetStatistics or other mechanisms.;var;-;Float;YES
+1614;AcReactivePowerQnTotalMin;Reactive Power Qn total minimum. Based on AcReactivePowerQnTotal. May be reset by ResetStatistics or other mechanisms.;var;-;Float;YES
+1615;AcReactivePowerL1;Reactive Power Qtot L1 ;var;-;Float;NO
+1616;AcReactivePowerL2;Reactive Power Qtot L2;var;-;Float;NO
+1617;AcReactivePowerL3;Reactive Power Qtot L3;var;-;Float;NO
+1618;AcReactivePowerPe;Reactive Power Qtot;var;-;AcPeDataType;NO
+1619;AcReactivePowerTotal;Reactive Power Qtot total;var;-;Float;NO
+1620;AcReactivePowerImport15minCompleted;Reactive Power total import - demand of last completed period (fixed 15min interval starting with the full hour);var;900 s, FixedBlockCompleted;Float;NO
+1621;AcReactivePowerExport15minCompleted;Reactive Power total export - demand of last completed period (fixed 15min interval starting with the full hour);var;900 s, FixedBlockCompleted;Float;NO
+1622;AcReactivePowerSumMaximum15minCompleted;Reactive Power total (import - export) maximum - demand of last completed period (fixed 15min interval starting with the full hour);var;900 s, FixedBlockCompleted;Float;NO
+1623;AcReactivePowerSumMinimum15minCompleted;Reactive Power total (import - export) minimum - demand of last completed period (fixed 15min interval starting with the full hour);var;900 s, FixedBlockCompleted;Float;NO
+1624;AcReactivePowerImport15minInstantaneous;Reactive Power total import in the instantaneous period (fixed 15min interval starting with the full hour);var;900 s, FixedBlockInstantaneous;Float;NO
+1625;AcReactivePowerExport15minInstantaneous;Reactive Power total export in the instantaneous period (fixed 15min interval starting with the full hour);var;900 s, FixedBlockInstantaneous;Float;NO
+1626;AcReactivePowerSumMaximum15minInstantaneous;Reactive Power total (import - export) maximum in the instantaneous period (fixed 15min interval starting with the full hour);var;900 s, FixedBlockInstantaneous;Float;NO
+1627;AcReactivePowerSumMinimum15minInstantaneous;Reactive Power total (import - export) minimum in the instantaneous period (fixed 15min interval starting with the full hour);var;900 s, FixedBlockInstantaneous;Float;NO
+1628;AcReactivePowerImport15minPredicted;Reactive Power total import predicted in the instantaneous period (fixed 15min interval starting with the full hour);var;900 s, FixedBlockPredicted;Float;NO
+1629;AcReactivePowerExport15minPredicted;Reactive Power total export predicted in the instantaneous period (fixed 15min interval starting with the full hour);var;900 s, FixedBlockPredicted;Float;NO
+1630;AcReactivePowerImportCompleted;Reactive Power total import - demand of last completed period (fixed interval starting with the full hour);var;user-defined, FixedBlockCompleted;Float;NO
+1631;AcReactivePowerExportCompleted;Reactive Power total export - demand of last completed period (fixed interval starting with the full hour);var;user-defined, FixedBlockCompleted;Float;NO
+1632;AcReactivePowerSumMaximumCompleted;Reactive Power total (import - export) maximum - demand of last completed period (fixed interval starting with the full hour);var;user-defined, FixedBlockCompleted;Float;NO
+1633;AcReactivePowerSumMinimumCompleted;Reactive Power total (import - export) minimum - demand of last completed period (fixed interval starting with the full hour);var;user-defined, FixedBlockCompleted;Float;NO
+1634;AcReactivePowerImportInstantaneous;Reactive Power total import in the instantaneous period (fixed interval starting with the full hour);var;user-defined, FixedBlockInstantaneous;Float;NO
+1635;AcReactivePowerExportInstantaneous;Reactive Power total export in the instantaneous period (fixed interval starting with the full hour);var;user-defined, FixedBlockInstantaneous;Float;NO
+1636;AcReactivePowerSumMaximumInstantaneous;Reactive Power total (import - export) maximum in the instantaneous period (fixed interval starting with the full hour);var;user-defined, FixedBlockInstantaneous;Float;NO
+1637;AcReactivePowerSumMinimumInstantaneous;Reactive Power total (import - export) minimum in the instantaneous period (fixed interval starting with the full hour);var;user-defined, FixedBlockInstantaneous;Float;NO
+1638;AcReactivePowerImportPredicted;Reactive Power total import predicted in the instantaneous period (fixed interval starting with the full hour);var;user-defined, FixedBlockPredicted;Float;NO
+1639;AcReactivePowerExportPredicted;Reactive Power total export predicted in the instantaneous period (fixed interval starting with the full hour);var;user-defined, FixedBlockPredicted;Float;NO
+1700;AcPowerFactorL1;Power factor L1 ;-;-;Float;NO
+1701;AcPowerFactorL1Max;Power factor L1 maximum. Based on AcPowerFactorL1. May be reset by ResetStatistics or other mechanisms.;-;-;Float;YES
+1702;AcPowerFactorL1Min;Power factor L1 minimum. Based on AcPowerFactorL1. May be reset by ResetStatistics or other mechanisms.;-;-;Float;YES
+1703;AcPowerFactorL2;Power factor L2;-;-;Float;NO
+1704;AcPowerFactorL2Max;Power factor L2 maximum. Based on AcPowerFactorL2. May be reset by ResetStatistics or other mechanisms.;-;-;Float;YES
+1705;AcPowerFactorL2Min;Power factor L2 minimum. Based on AcPowerFactorL2. May be reset by ResetStatistics or other mechanisms.;-;-;Float;YES
+1706;AcPowerFactorL3;Power factor L3;-;-;Float;NO
+1707;AcPowerFactorL3Max;Power factor L3 maximum. Based on AcPowerFactorL3. May be reset by ResetStatistics or other mechanisms.;-;-;Float;YES
+1708;AcPowerFactorL3Min;Power factor L3 minimum. Based on AcPowerFactorL3. May be reset by ResetStatistics or other mechanisms.;-;-;Float;YES
+1709;AcPowerFactorPe;Power factor;-;-;AcPeDataType;NO
+1710;AcPowerFactorPeMax;Power factor maximum (the maximum of each phase is tracked individually). Based on AcPowerFactorPe. May be reset by ResetStatistics or other mechanisms.;-;-;AcPeDataType;YES
+1711;AcPowerFactorPeMin;Power factor minimum (the minimum of each phase is tracked individually). Based on AcPowerFactorPe. May be reset by ResetStatistics or other mechanisms.;-;-;AcPeDataType;YES
+1712;AcPowerFactorTotal;Power factor total;-;-;Float;NO
+1713;AcPowerFactorTotalMax;Power factor total maximum. Based on AcPowerFactorTotal. May be reset by ResetStatistics or other mechanisms.;-;-;Float;YES
+1714;AcPowerFactorTotalMin;Power factor total minimum. Based on AcPowerFactorTotal. May be reset by ResetStatistics or other mechanisms.;-;-;Float;YES
+1715;AcTHDVoltageL1;Total Harmonic Distortion of Voltage L1;%;-;Float;NO
+1716;AcTHDVoltageL2;Total Harmonic Distortion of Voltage L2;%;-;Float;NO
+1717;AcTHDVoltageL3;Total Harmonic Distortion of Voltage L3;%;-;Float;NO
+1718;AcTHDVoltageL1L2;Total Harmonic Distortion of Voltage L1-L2;%;-;Float;NO
+1719;AcTHDVoltageL2L3;Total Harmonic Distortion of Voltage L2-L3;%;-;Float;NO
+1720;AcTHDVoltageL3L1;Total Harmonic Distortion of Voltage L3-L1;%;-;Float;NO
+1721;AcTHDCurrentL1;Total Harmonic Distortion of Current L1;%;-;Float;NO
+1722;AcTHDCurrentL2;Total Harmonic Distortion of Current L2;%;-;Float;NO
+1723;AcTHDCurrentL3;Total Harmonic Distortion of Current L3;%;-;Float;NO
+1724;AcTHDVoltageL1Min600s;Total Harmonic Distortion of Voltage L1 minimum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1725;AcTHDVoltageL2Min600s;Total Harmonic Distortion of Voltage L2 minimum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1726;AcTHDVoltageL3Min600s;Total Harmonic Distortion of Voltage L3 minimum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1727;AcTHDVoltageL1L2Min600s;Total Harmonic Distortion of Voltage L1-L2 minimum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1728;AcTHDVoltageL2L3Min600s;Total Harmonic Distortion of Voltage L2-L3 minimum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1729;AcTHDVoltageL3L1Min600s;Total Harmonic Distortion of Voltage L3-L1 minimum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1730;AcTHDVoltageL1Max600s;Total Harmonic Distortion of Voltage L1 maximum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1731;AcTHDVoltageL2Max600s;Total Harmonic Distortion of Voltage L2 maximum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1732;AcTHDVoltageL3Max600s;Total Harmonic Distortion of Voltage L3 maximum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1733;AcTHDVoltageL1L2Max600s;Total Harmonic Distortion of Voltage L1-L2 maximum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1734;AcTHDVoltageL2L3Max600s;Total Harmonic Distortion of Voltage L2-L3 maximum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1735;AcTHDVoltageL3L1Max600s;Total Harmonic Distortion of Voltage L3-L1 maximum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1736;AcTHDCurrentL1Min600s;Total Harmonic Distortion of Current L1 minimum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1738;AcTHDCurrentL2Min600s;Total Harmonic Distortion of Current L2 minimum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1739;AcTHDCurrentL3Min600s;Total Harmonic Distortion of Current L3 minimum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1740;AcTHDCurrentL1Max600s;Total Harmonic Distortion of Current L1 maximum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1741;AcTHDCurrentL2Max600s;Total Harmonic Distortion of Current L2 maximum 600 seconds;%;600 s, SlidingDemand;Float;NO
+1742;AcTHDCurrentL3Max600s;Total Harmonic Distortion of Current L3 maximum 600 seconds;%;600 s, SlidingDemand;Float;NO
+2000;NeEnergyImport5;Non Electrical Energy Consumed Odometer;Wh;-;Int16[5];YES
+2001;NeEnergyImportLp;Non Electrical Energy Consumed Odometer (low precision);Wh;-;Float;YES
+2002;NeEnergyImportHp;Non Electrical Energy Consumed Odometer (high precision);Wh;-;Double;YES
+2003;NeEnergyExport5;Non Electrical Energy Generated Odometer;Wh;-;Int16[5];YES
+2004;NeEnergyExportLp;Non Electrical Energy Generated Odometer (low precision);Wh;-;Float;YES
+2005;NeEnergyExportHp;Non Electrical Energy Generated Odometer (high precision);Wh;-;Double;YES
+2006;NeEnergySum5;Non Electrical Energy Odometer Sum;Wh;-;Int16[5];YES
+2007;NeEnergySumLp;Non Electrical Energy Odometer Sum (low precision);Wh;-;Float;YES
+2008;NeEnergySumHp;Non Electrical Energy Odometer Sum (high precision);Wh;-;Double;YES
+2100;VolumeFlowRate;Volume Flow rate;m3/sec;-;Float;NO
+2101;MassFlowRate;Mass flow rate;kg/sec;-;Float;NO
+28683;Pressure;Pressure;Pa;-;Float;NO
+28684;Temperature;Temperature;K;-;Float;NO
+28685;Weight;Weight;kg;-;Float;YES
+28686;Volume;Volume;m3;-;Float;YES
+28687;Density;Density;kg/m3;-;Float;NO
+28688;HeatFlow;Heat Flow;W/m2;-;Float;NO
+28689;HeatCapacity;Heat capacity of medium;Wh/Kkg;-;Float;NO

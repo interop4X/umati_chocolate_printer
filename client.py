@@ -293,7 +293,7 @@ async def main():
         node_path = [
             "0:Objects",
             "5:Machines",
-            "7:ChocoCuttingTable",
+            "9:ChocoCuttingTable",
             "5:MachineryBuildingBlocks",
             "3:JobManagement",
             "3:JobOrderControl",
