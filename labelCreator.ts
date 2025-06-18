@@ -54,7 +54,7 @@ export function createPdf(JobOrderId: string, outputPath: string, jobFile: strin
         doc.pipe(writeStream);
         doc.fontSize(5)
 
-        doc.image('images/interop4X.png', 1, 5, {fit: [20, 20]})
+        doc.image('images/interop4X_sw.png', 1, 5, {fit: [20, 20]})
         doc.image('images/qrcode.png', 21, 5, {fit: [20, 20]})
 
         doc.fontSize(3)

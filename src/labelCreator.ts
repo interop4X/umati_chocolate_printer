@@ -82,7 +82,7 @@ export function createPdf(JobOrderId: string, outputPath: string, jobFile: strin
         doc.pipe(writeStream);
         doc.fontSize(5)
 
-        doc.image('images/interop4X.png', 10, 3, {fit: [20, 20]})
+        doc.image('images/interop4X_sw.png', 10, 3, {fit: [20, 20]})
 
         //doc.image("images/qr_"+JobOrderId+".png", 21, 5, {fit: [20, 20]})
 
@@ -102,20 +102,8 @@ export function createPdf(JobOrderId: string, outputPath: string, jobFile: strin
         doc.text(tmp,centeredX2,35,{
             align: 'center',
         });
-        if(source == "umati"){
-            doc.image("images/umati.png", 5, 50, {fit: [22, 50]})
-        } else {
-            doc.image("images/xMES.png", 5, 50, {fit: [10, 10]})
-            doc.fontSize(2)
-            doc.text("Hall 6 Booth 352",15,53,{
-                align: 'center',
-                //width: 35
-            });
-            doc.text("send from ",15,56,{
-                align: 'center',
-                //width: 35
-            });
-        }
+        doc.image("images/umati_sw.png", 9, 48, {fit: [22, 50]})
+        
 
 
         // Lies den Inhalt der jobFile und füge ihn ins PDF ein
