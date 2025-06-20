@@ -205,9 +205,8 @@ async function main() {
             value: 0,
             dataType: DataType.UInt32
         });
-        var tmp = 0;
-        setChildValue(myLifetimeVar!, "StartValue", tmp, DataType.UInt32);
-        setChildValue(myLifetimeVar!, "LimitValue", tmp, DataType.UInt32);
+        setChildValue(myLifetimeVar!, "StartValue", 0, DataType.UInt32);
+        setChildValue(myLifetimeVar!, "LimitValue", 500, DataType.UInt32);
         //var Indication = new NodeId(device_idx, 475)
         //setChildValue(myLifetimeVar!, "Indication", Indication, DataType.NodeId);
 
@@ -260,65 +259,24 @@ async function main() {
     }
 
     function initIdentifcation() {
-        const identifcation = machine?.getChildByName("Identification", device_idx);
+        const identifcation = machine?.getChildByName("Identification", device_idx)as UAVariable;
 
-        var tmp = identifcation?.getChildByName("Manufacturer", device_idx) as UAVariable;
-        tmp.setValueFromSource({
-            value: new LocalizedText("interop4X"),
-            dataType: DataType.LocalizedText
-        });
+        setChildValue(identifcation, "Manufacturer", new LocalizedText("interop4X"), DataType.LocalizedText);
+        setChildValue(identifcation, "ProductInstanceUri", "interop4X.de/choco_cutting_table/123456789", DataType.String);
 
-        var tmp = identifcation?.getChildByName("ProductInstanceUri") as UAVariable;
-        tmp.setValueFromSource({
-            value: "interop4X.de/choco_cutting_table/123456789",
-            dataType: DataType.String
-        });
-
-        var Categorie = server.engine.addressSpace?.constructExtensionObject(new NodeId(NodeIdType.NUMERIC, 3014, server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/Glass/Flat/v2/")), {
+        var Categorie = server.engine.addressSpace?.constructExtensionObject(
+            new NodeId(NodeIdType.NUMERIC, 3014, server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/Glass/Flat/v2/")), {
             ID: "LabelPrinting",
             Description: "Label printing"
-        });
-        var tmp = identifcation?.getChildByName("ProcessingCategories") as UAVariable;
-        tmp.setValueFromSource({
-            value: Categorie,
-            dataType: DataType.ExtensionObject
-        });
-
-
-        var tmp = identifcation?.getChildByName("SerialNumber") as UAVariable;
-        tmp.setValueFromSource({
-            value: "123456789",
-            dataType: DataType.String
-        });
-
-        var tmp = identifcation?.getChildByName("Model") as UAVariable;
-        tmp?.setValueFromSource({
-            value: new LocalizedText("Model 42"),
-            dataType: DataType.LocalizedText
-        });
-
-        var tmp = identifcation?.getChildByName("SoftwareRevision") as UAVariable;
-        tmp?.setValueFromSource({
-            value: "0.0.1",
-            dataType: DataType.String
-        });
-        var tmp = identifcation?.getChildByName("YearOfConstruction") as UAVariable;
-        tmp?.setValueFromSource({
-            value: "2024",
-            dataType: DataType.UInt16
-        });
-
-        var tmp = identifcation?.getChildByName("DeviceClass") as UAVariable;
-        tmp?.setValueFromSource({
-            value: "Cutting Table",
-            dataType: DataType.String
-        });
-
-        var tmp = identifcation?.getChildByName("Location") as UAVariable;
-        tmp?.setValueFromSource({
-            value: "glass 15 A43 / 51.262752, 6.743782",
-            dataType: DataType.String
-        });
+            }
+        );
+        setChildValue(identifcation, "ProcessingCategories", Categorie, DataType.ExtensionObject);
+        setChildValue(identifcation, "SerialNumber", "123456789", DataType.String);
+        setChildValue(identifcation, "Model", new LocalizedText("Model 42"), DataType.LocalizedText);
+        setChildValue(identifcation, "SoftwareRevision", "0.4.2", DataType.String);
+        setChildValue(identifcation, "YearOfConstruction", 2024, DataType.UInt16);
+        setChildValue(identifcation, "DeviceClass", "Cutting Table", DataType.String);
+        setChildValue(identifcation, "Location", "ASER B5 224/AMTC B5 224/VIRTUAL 1 1/", DataType.String);
     }
 
     function store(inputArguments: Variant[], context: any, callback: any) {
