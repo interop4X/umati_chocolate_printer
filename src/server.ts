@@ -97,59 +97,11 @@ async function main() {
     const device_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/DI/") as number;
 
     const bb_folder = machine.getChildByName("MachineryBuildingBlocks") as UAObject;
-    const ecm_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/ECM/") as number;
-    const energyType = server.engine.addressSpace?.findObjectType("IEnergyProfileE1Type",ecm_idx)
-    
-
-    const myEnergyProfileE1Type = myNamespace?.addObjectType({
-        browseName: "EnergyProfileE1Type",
-        subtypeOf: energyType!,
-    })
-    
-        const energy_bb = myEnergyProfileE1Type?.instantiate({
-        organizedBy: bb_folder,
-        browseName: "EnergyMeasurement"
-    });
+  
 
     const bb_lifetime_folder_type_node = server.engine.addressSpace?.findObjectType("MachineryLifetimeCounterType",machinery_idx)
-    const bb_lifetime_folder_node = bb_lifetime_folder_type_node?.instantiate({
-        organizedBy: bb_folder,
-        browseName: new QualifiedName({
-            namespaceIndex:machinery_idx,
-            name:"LifetimeCounters"
-        })
-    });
+
     const myLifetimeVar = createLifetimeVariable();
-    /*
-    const Indication = myLifetimeVar?.getChildByName("Indication") as UAVariable;
-    Indication.setValueFromSource({
-        value: new NodeId(device_idx,475),
-        dataType: DataType.NodeId
-    });*/
-    /*
-    const unit = myLifetimeVar?.getChildByName("EngineeringUnits") as UAVariable;
-    const engineeringUnits = new EUInformation({
-        namespaceUri: "http://www.opcfoundation.org/UA/units/un/cefact",
-        unitId: 4406393, // z. B. UnitId für „degree Celsius“
-        displayName: new LocalizedText("pc"),
-        description: new LocalizedText("piece")
-    });
-    LimitValue.setValueFromSource({
-        value: server.engine.addressSpace?.constructExtensionObject(
-            new NodeId(NodeIdType.NUMERIC, 887, 0),
-            {
-              namespaceUri: engineeringUnits.namespaceUri,
-              unitId: engineeringUnits.unitId,
-              displayName: engineeringUnits.displayName,
-              description: engineeringUnits.description,
-            },
-          ),
-        dataType: DataType.ExtensionObject
-    });*/
-
-
-
-
 
     const fileSystemRoot = machine.getChildByName("FileSystem") as UAObject;
     const root = new RootDict(server,__dirname + "/../data", fileSystemRoot!);
@@ -220,13 +172,23 @@ async function main() {
     const MachineryBuildingBlocks = machine.getChildByName("MachineryBuildingBlocks");
 
     initIdentifcation();
-
     initMachineryItem();
+    InitCleanupAbortedJobs(); // 10 Sekunden Intervall
+    InitCleanupOldJobs();
+    InitEnergyMonitoring(); 
+
 
     const { jobOrderList, jobOrderControl } = initJobManagement();
 
 
     function createLifetimeVariable() {
+    const bb_lifetime_folder_node = bb_lifetime_folder_type_node?.instantiate({
+        organizedBy: bb_folder,
+        browseName: new QualifiedName({
+            namespaceIndex:machinery_idx,
+            name:"LifetimeCounters"
+        })
+    });
         const LifetimeVariableType = server.engine.addressSpace?.findVariableType("LifetimeVariableType", device_idx);
         const myLifetimeVar = LifetimeVariableType?.instantiate({
             organizedBy: bb_lifetime_folder_node,
@@ -238,30 +200,30 @@ async function main() {
                 "Indication"
             ]
         });
+        
         myLifetimeVar?.setValueFromSource({
             value: 0,
             dataType: DataType.UInt32
         });
         var tmp = 0;
-
-        const StartValue = myLifetimeVar?.getChildByName("StartValue") as UAVariable;
-        StartValue.setValueFromSource({
-            value: 0,
-            dataType: DataType.UInt32
-        });
-
-        const LimitValue = myLifetimeVar?.getChildByName("LimitValue") as UAVariable;
-        LimitValue.setValueFromSource({
-            value: 500,
-            dataType: DataType.UInt32
-        });
-        const Indication = myLifetimeVar?.getChildByName("Indication") as UAVariable;
-        LimitValue.setValueFromSource({
-            value: new NodeId(device_idx, 475),
-            dataType: DataType.NodeId
-        });
+        setChildValue(myLifetimeVar!, "StartValue", tmp, DataType.UInt32);
+        setChildValue(myLifetimeVar!, "LimitValue", tmp, DataType.UInt32);
+        //var Indication = new NodeId(device_idx, 475)
+        //setChildValue(myLifetimeVar!, "Indication", Indication, DataType.NodeId);
 
         return myLifetimeVar;
+    }
+
+    function setChildValue(parent: UAVariable, childName: string, value: any, dataType: DataType) {
+        const child = parent.getChildByName(childName) as UAVariable;
+        if (child) {
+            child.setValueFromSource({
+                value: value,
+                dataType: dataType
+            });
+        } else {
+            console.warn(`Child node not found for setting value: ${parent.browseName.toString()}-${childName}`);
+        }
     }
 
     function initJobManagement() {
@@ -299,6 +261,7 @@ async function main() {
 
     function initIdentifcation() {
         const identifcation = machine?.getChildByName("Identification", device_idx);
+
         var tmp = identifcation?.getChildByName("Manufacturer", device_idx) as UAVariable;
         tmp.setValueFromSource({
             value: new LocalizedText("interop4X"),
@@ -518,9 +481,6 @@ async function main() {
         }
     });
 
-    InitCleanupAbortedJobs(); // 10 Sekunden Intervall
-    InitCleanupOldJobs();
-    InitEnergyMonitoring(); 
 
     
 
@@ -568,17 +528,40 @@ async function main() {
     }
 
     async function InitEnergyMonitoring() {
+        const ecm_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/ECM/") as number;
+        const energyType = server.engine.addressSpace?.findObjectType("IEnergyProfileE1Type",ecm_idx)
+
+        const myEnergyProfileE1Type = myNamespace?.addObjectType({
+            browseName: "EnergyProfileE1Type",
+            subtypeOf: energyType!,
+        });
+    
+        const energy_bb = myEnergyProfileE1Type?.instantiate({
+            organizedBy: bb_folder,
+            browseName: "EnergyMeasurement"
+        });
         const power_node = energy_bb?.getChildByName("AcActivePowerTotal") as UAVariable;
         const shelly = new ShellyPlugClient("192.168.33.1");
-        await shelly.setPowerOn();   // Gerät einschalten
-        console.log("Shelly Plug eingeschaltet");
-        setInterval(async () => {
-            const power = await shelly.getActivePower();
-            power_node?.setValueFromSource({
-                value: power,
-                dataType: DataType.Float
+        try{
+            var result = await shelly.setPowerOn();   // Gerät einschalten
+            console.log("Shelly Plug eingeschaltet");
+            if (!result) {
+                console.error("Fehler beim Einschalten des Shelly Plugs");
+                return;
+            }
+            setInterval(async () => {
+                const power = await shelly.getActivePower();
+                power_node?.setValueFromSource({
+                    value: power,
+                    dataType: DataType.Float
             });
-        }, 500);
+            }, 500);
+
+        } catch (error) {
+            console.error("Fehler beim Einschalten des Shelly Plugs:", error);
+        }
+
+
     }
 
     function SimulateJob(duration: number = 5000) {
