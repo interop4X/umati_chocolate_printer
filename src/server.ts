@@ -9,6 +9,7 @@ import { createPdf } from "./labelCreator";
 import {StackLight} from "./stacklight";
 
 import { promisify } from "util";
+import { ShellyPlugClient } from "./ShellyPlugClient";
 const { exec } = require("child_process");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
@@ -566,12 +567,15 @@ async function main() {
         }, 7 * 60 * 60 * 1000);
     }
 
-    function InitEnergyMonitoring() {
+    async function InitEnergyMonitoring() {
         const power_node = energy_bb?.getChildByName("AcActivePowerTotal") as UAVariable;
+        const shelly = new ShellyPlugClient("192.168.33.1");
+        await shelly.setPowerOn();   // Gerät einschalten
+        console.log("Shelly Plug eingeschaltet");
         setInterval(async () => {
-            const tmp = await getAcActivePowerTotalFromShelly("192.168.33.1");
+            const power = await shelly.getActivePower();
             power_node?.setValueFromSource({
-                value: tmp,
+                value: power,
                 dataType: DataType.Float
             });
         }, 500);
@@ -607,28 +611,6 @@ async function main() {
             });
     }
 }
-
-async function getAcActivePowerTotalFromShelly(ip: string): Promise<number | null> {
-    const url = `http://${ip}/rpc/Switch.GetStatus?id=0`;
-
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP-Fehler: ${response.status}`);
-        }
-
-        const data = await response.json();
-        const leistung = data.apower;
-        //console.log(leistung)
-
-        return leistung
-
-    } catch (error) {
-        //console.log(`Fehler beim Abrufen der Daten: ${(error as Error).message}`);
-        return 2.2001;
-    }
-}
-
 
 // Führe die Hauptfunktion aus
 main().catch((error) => {
