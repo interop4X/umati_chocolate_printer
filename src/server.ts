@@ -118,43 +118,7 @@ async function main() {
             name:"LifetimeCounters"
         })
     });
-    const LifetimeVariableType = server.engine.addressSpace?.findVariableType("LifetimeVariableType",device_idx)
-    const myLifetimeVar = LifetimeVariableType?.instantiate({
-        organizedBy: bb_lifetime_folder_node,
-        browseName: new QualifiedName({
-            namespaceIndex:machinery_idx,
-            name:"Paper"
-        }),
-        optionals:[
-            "Indication"
-        ]
-
-    });
-    myLifetimeVar?.setValueFromSource({
-        value: 0,
-        dataType: DataType.UInt32
-    });
-    var tmp = 0;
-
-    setInterval(async () => {
-        tmp = tmp + 1;
-        myLifetimeVar?.setValueFromSource({
-            value: tmp,
-            dataType: DataType.Float
-        });
-    }, 10); // 10 Sekunden Intervall
-
-    const StartValue = myLifetimeVar?.getChildByName("StartValue") as UAVariable;
-    StartValue.setValueFromSource({
-        value: 0,
-        dataType: DataType.UInt32
-    });
-
-    const LimitValue = myLifetimeVar?.getChildByName("LimitValue") as UAVariable;
-    LimitValue.setValueFromSource({
-        value: 100,
-        dataType: DataType.UInt32
-    });
+    const myLifetimeVar = createLifetimeVariable();
     /*
     const Indication = myLifetimeVar?.getChildByName("Indication") as UAVariable;
     Indication.setValueFromSource({
@@ -260,6 +224,44 @@ async function main() {
 
     const { jobOrderList, jobOrderControl } = initJobManagement();
 
+
+    function createLifetimeVariable() {
+        const LifetimeVariableType = server.engine.addressSpace?.findVariableType("LifetimeVariableType", device_idx);
+        const myLifetimeVar = LifetimeVariableType?.instantiate({
+            organizedBy: bb_lifetime_folder_node,
+            browseName: new QualifiedName({
+                namespaceIndex: machinery_idx,
+                name: "Paper"
+            }),
+            optionals: [
+                "Indication"
+            ]
+        });
+        myLifetimeVar?.setValueFromSource({
+            value: 0,
+            dataType: DataType.UInt32
+        });
+        var tmp = 0;
+
+        const StartValue = myLifetimeVar?.getChildByName("StartValue") as UAVariable;
+        StartValue.setValueFromSource({
+            value: 0,
+            dataType: DataType.UInt32
+        });
+
+        const LimitValue = myLifetimeVar?.getChildByName("LimitValue") as UAVariable;
+        LimitValue.setValueFromSource({
+            value: 500,
+            dataType: DataType.UInt32
+        });
+        const Indication = myLifetimeVar?.getChildByName("Indication") as UAVariable;
+        LimitValue.setValueFromSource({
+            value: new NodeId(device_idx, 475),
+            dataType: DataType.NodeId
+        });
+
+        return myLifetimeVar;
+    }
 
     function initJobManagement() {
         const jobManagement = MachineryBuildingBlocks?.getChildByName("JobManagement");
@@ -407,26 +409,14 @@ async function main() {
     const storeandStartMethod = jobOrderControl?.getChildByName("StoreAndStart") as UAMethod;
     storeMethod.bindMethod(store);
     storeandStartMethod.bindMethod(store);
+    const operationCounters = MachineryBuildingBlocks?.getChildByName("OperationCounters");
+    const OperationCycleCounter = operationCounters?.getChildByName("OperationCycleCounter") as UAVariable;
 
     const startMethod = jobOrderControl?.getChildByName("Start") as UAMethod;
     startMethod.bindMethod(function (inputArguments, context, callback) {
         const jobOrderID = inputArguments[0].value;
         console.log(`Drucke Dokument: ${jobOrderID}`);
         mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.Executing.text);
-
-        const operationCounter = MachineryBuildingBlocks?.getChildByName("OperationCounters");
-        const OperationCycleCounter = operationCounter?.getChildByName("OperationCycleCounter") as UAVariable;
-        var counter = OperationCycleCounter.readValue()
-        OperationCycleCounter.setValueFromSource({
-            value: counter.value.value + 1,
-            dataType: DataType.UInt32
-        });
-
-        myLifetimeVar?.setValueFromSource({
-            value: counter.value.value,
-            dataType: DataType.UInt32
-        });
-
 
 
         const list = jobOrderList.readValue();
@@ -467,47 +457,28 @@ async function main() {
         // Temporäre Datei erstellen, die gedruckt werden soll
         const tempPdfPath = path.join(__dirname,"../data",`${jobOrderID}.pdf`);
         const tempRecipePath = path.join(__dirname,"../data",jobFile);
-        const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+        const callMethodResult = {
+            statusCode: StatusCodes.Good,
+            outputArguments: [{
+                dataType: DataType.UInt64,
+                arrayType: VariantArrayType.Scalar,
+                value: 0
+            }
+            ]
+        };
+        callback(null, callMethodResult);
+
 
         // Erstelle die PDF-Datei und drucke sie
         createPdf(jobOrderID, tempPdfPath,tempRecipePath,source)
-            /*.then((filePath : any) => {
-                console.log("print file");    
-                /*return printer.print(tempPdfPath, {
-                    printer: 'M220 Printer', // Setze den Druckernamen falls nötig
-                    orientation : "portrait",
-                    //paperSize: "label",
-                    scale: "fit",
-                    //win32: ["-print-settings", "fit"]  // Windows-spezifische Einstellungen, z.B. "fit" für Papiergrößenanpassung
-                }); // Ersetze "printer_name" mit deinem tatsächlichen Druckernamen
-            })*/
             .then((filePath : any) => {
-                console.log("print file");
-		const printerName = "label";
-                const command = `lp -d ${printerName} "${tempPdfPath}" -o media=Custom.90x40mm -o orientation-requested=4 -o fit-to-page`;
-                    return execAsync(command)
-        .then(({ stdout, stderr } : {stdout:string; stderr:string}) => {
-            if (stderr) {
-                console.error('Fehler beim Drucken:', stderr);
-            } else {
-                console.log('Druckauftrag erfolgreich:', stdout);
-            }
-        })
-        .catch((error : Error) => {
-            console.error('Druckbefehl fehlgeschlagen:', error);
-        });
+                return PrintLabel(tempPdfPath);
             })
             .then(()=>{
-                console.log("sim job")
-                const operationCounter = MachineryBuildingBlocks?.getChildByName("OperationCounters");
-                const OperationDuration = operationCounter?.getChildByName("OperationDuration") as UAVariable;        
-                var counter = OperationDuration.readValue()
-                OperationDuration.setValueFromSource({
-                    value: counter.value.value + 5*1000,
-                    dataType: DataType.Double
-            });
-                return sleep(5000); // 10 Sekunden warten
-
+                IncreaseOperationCounter();
+                IncreaseLifetimeCounter();
+                return SimulateJob(20 * 1000); 
             })
             .then(() => {
                 console.log("Druckauftrag erfolgreich gesendet!");
@@ -518,17 +489,7 @@ async function main() {
                 theJob.state[0].stateText = "Ended";
                 jobOrderList.setValueFromSource(list.value);
                 // Erfolgreiche Rückgabe an den Client
-                const callMethodResult = {
-                    statusCode: StatusCodes.Good,
-                    outputArguments: [{
-                        dataType: DataType.UInt64,
-                        arrayType: VariantArrayType.Scalar,
-                        value: 0
-                    }
-                    ]
-                };
-                callback(null, callMethodResult);
-
+      
             })
             .catch((error : any) => {
                 theJob.state[0].stateNumber = 6;
@@ -536,57 +497,29 @@ async function main() {
                 jobOrderList.setValueFromSource(list);
                 console.error("Fehler beim Drucken:", error);
                 mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.NotExecuting.text);
-
-                // Rückgabe an den Client bei Fehler
-                const callMethodResult = {
-                    statusCode: StatusCodes.BadInternalError,
-                    outputArguments: []
-                };
-                callback(null, callMethodResult);
             });
+
+        function IncreaseLifetimeCounter() {
+            var lifetimeValue = myLifetimeVar?.readValue();
+            myLifetimeVar?.setValueFromSource({
+                value: lifetimeValue?.value.value +1,
+                dataType: DataType.UInt32
+            });
+        }
+
+        function IncreaseOperationCounter() {
+            var counter = OperationCycleCounter.readValue();
+            OperationCycleCounter.setValueFromSource({
+                value: counter.value.value + 1,
+                dataType: DataType.UInt32
+            });
+            return counter;
+        }
     });
 
-    setInterval(() => {
-        var i;
-        var list = jobOrderList.readValue();
-        //console.log(list.value.value);
-        for (i in list.value.value) {
-            var job = (list.value.value[i]);
-            //console.log(job.state);
-            if (job.state[0].stateNumber == 6) {
-                console.log("Aborted->End");
-                list.value.value[i].state[0].stateNumber = 5;
-                list.value.value[i].state[0].stateText = "Ended";
-
-            }
-        }
-        jobOrderList.setValueFromSource(list.value);
-    }, 5*1000); // 10 Sekunden Intervall
-
-    setInterval(() => {
-        var i;
-        var list = jobOrderList.readValue();
-        //console.log(list.value.value);
-        for (i in list.value.value) {
-            var job = (list.value.value[i]);
-            //console.log(job.state);
-            if (job.state[0].stateNumber == 5) {
-                console.log("Remove job");
-                list.value.value.splice(i);
-                list.value.dimensions![0] = list.value.dimensions![0] - 1;            }
-        }
-        jobOrderList.setValueFromSource(list.value);
-    }, 7*60*60*1000); // 10 Sekunden Intervall
-
-
-    const power_node = energy_bb?.getChildByName("AcActivePowerTotal") as UAVariable
-    setInterval(async () => {
-        const tmp  = await getAcActivePowerTotalFromShelly("192.168.33.1");
-        power_node?.setValueFromSource({
-            value: tmp,
-            dataType: DataType.Float
-        });
-    }, 500); // 10 Sekunden Intervall
+    InitCleanupAbortedJobs(); // 10 Sekunden Intervall
+    InitCleanupOldJobs();
+    InitEnergyMonitoring(); 
 
     
 
@@ -595,6 +528,84 @@ async function main() {
     console.log("Server is now listening on: ", server.getEndpointUrl());
 
 
+
+    function InitCleanupAbortedJobs() {
+        setInterval(() => {
+            var i;
+            var list = jobOrderList.readValue();
+            //console.log(list.value.value);
+            for (i in list.value.value) {
+                var job = (list.value.value[i]);
+                //console.log(job.state);
+                if (job.state[0].stateNumber == 6) {
+                    console.log("Aborted->End");
+                    list.value.value[i].state[0].stateNumber = 5;
+                    list.value.value[i].state[0].stateText = "Ended";
+
+                }
+            }
+            jobOrderList.setValueFromSource(list.value);
+        }, 5 * 1000);
+    }
+
+    function InitCleanupOldJobs() {
+        setInterval(() => {
+            var i;
+            var list = jobOrderList.readValue();
+            //console.log(list.value.value);
+            for (i in list.value.value) {
+                var job = (list.value.value[i]);
+                //console.log(job.state);
+                if (job.state[0].stateNumber == 5) {
+                    console.log("Remove job");
+                    list.value.value.splice(i);
+                    list.value.dimensions![0] = list.value.dimensions![0] - 1;
+                }
+            }
+            jobOrderList.setValueFromSource(list.value);
+        }, 7 * 60 * 60 * 1000);
+    }
+
+    function InitEnergyMonitoring() {
+        const power_node = energy_bb?.getChildByName("AcActivePowerTotal") as UAVariable;
+        setInterval(async () => {
+            const tmp = await getAcActivePowerTotalFromShelly("192.168.33.1");
+            power_node?.setValueFromSource({
+                value: tmp,
+                dataType: DataType.Float
+            });
+        }, 500);
+    }
+
+    function SimulateJob(duration: number = 5000) {
+        console.log("sim job");
+        const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        const operationCounter = MachineryBuildingBlocks?.getChildByName("OperationCounters");
+        const OperationDuration = operationCounter?.getChildByName("OperationDuration") as UAVariable;
+        var counter = OperationDuration.readValue();
+        OperationDuration.setValueFromSource({
+            value: counter.value.value + duration,
+            dataType: DataType.Double
+        });
+        return sleep(duration);
+    }
+
+    function PrintLabel(tempPdfPath: string) {
+        console.log("print file");
+        const printerName = "label";
+        const command = `lp -d ${printerName} "${tempPdfPath}" -o media=Custom.90x40mm -o orientation-requested=4 -o fit-to-page`;
+        return execAsync(command)
+            .then(({ stdout, stderr }: { stdout: string; stderr: string; }) => {
+                if (stderr) {
+                    console.error('Fehler beim Drucken:', stderr);
+                } else {
+                    console.log('Druckauftrag erfolgreich:', stdout);
+                }
+            })
+            .catch((error: Error) => {
+                console.error('Druckbefehl fehlgeschlagen:', error);
+            });
+    }
 }
 
 async function getAcActivePowerTotalFromShelly(ip: string): Promise<number | null> {
@@ -613,7 +624,7 @@ async function getAcActivePowerTotalFromShelly(ip: string): Promise<number | nul
         return leistung
 
     } catch (error) {
-        console.log(`Fehler beim Abrufen der Daten: ${(error as Error).message}`);
+        //console.log(`Fehler beim Abrufen der Daten: ${(error as Error).message}`);
         return 2.2001;
     }
 }
