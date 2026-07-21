@@ -53,7 +53,9 @@ export class RootDict extends Dict {
     private directoryAdded(entryPath: string): void {
         const parts = this.relativeParts(entryPath);
         if (parts) {
-            this.findDirectory(parts, true);
+            this.runModelChangeTransaction(() => {
+                this.findDirectory(parts, true);
+            });
         }
     }
 
@@ -63,10 +65,12 @@ export class RootDict extends Dict {
             return;
         }
         const name = parts.pop()!;
-        const parent = this.findDirectory(parts, true);
-        if (parent && !parent.findChild(name)) {
-            parent.addChild(new File(this.server, name, parent));
-        }
+        this.runModelChangeTransaction(() => {
+            const parent = this.findDirectory(parts, true);
+            if (parent && !parent.findChild(name)) {
+                parent.addChild(new File(this.server, name, parent));
+            }
+        });
     }
 
     private entryRemoved(entryPath: string): void {
@@ -75,9 +79,13 @@ export class RootDict extends Dict {
             return;
         }
         const name = parts.pop()!;
-        const removed = this.findDirectory(parts, false)?.removeChild(name);
-        if (removed?.opcuaObject && !removed.opcuaObject.isDisposed()) {
-            removed.opcuaObject.namespace.deleteNode(removed.opcuaObject);
+        const parent = this.findDirectory(parts, false);
+        const removed = parent?.findChild(name);
+        if (!parent || !removed) {
+            return;
         }
+        this.runModelChangeTransaction(() => {
+            parent.deleteAddressSpaceChild(removed);
+        });
     }
 }
