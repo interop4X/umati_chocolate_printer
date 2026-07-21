@@ -4,7 +4,7 @@ import { NodeId, NodeIdType, OPCUAServer, UAFile, nodesets, UAMethod, StatusCode
 import { EUInformation } from "node-opcua-data-access";
 import * as path from "path";
 import { MachineryItemState } from "./machineryItemState";
-import { FileBaseSystem, RootDict, File } from "./file";
+import { RootDict } from "./filesystem";
 import { createPdf } from "./labelCreator";
 import {StackLight} from "./stacklight";
 
@@ -105,69 +105,6 @@ async function main() {
 
     const fileSystemRoot = machine.getChildByName("FileSystem") as UAObject;
     const root = new RootDict(server,__dirname + "/../data", fileSystemRoot!);
-
-    const createFileMethod = fileSystemRoot.getMethodByName("CreateFile");
-    createFileMethod?.bindMethod(function (inputArguments, context, callback) {
-        console.log("Add new file:");
-        const fileName = inputArguments[0].value;
-        const requestFileOpen = inputArguments[1].value;
-        console.log(fileName);
-        var tmp : File = new File(server, fileName, root);
-        root.addFile(tmp);
-        if (requestFileOpen) {
-            var args: Variant[] = [];
-            args.push(new Variant({
-                dataType: DataType.Byte,
-                arrayType: VariantArrayType.Scalar,
-                value: 7
-            }));
-            
-            // Asynchrone Methode aufrufen und auf das Ergebnis warten
-            tmp.opcuaObject.open.execute(tmp.opcuaObject, args, context).then(
-                (result) => {
-                    console.log("Das Ergebnis des Methodenaufrufs:", result);
-                    // Ergebnis auswerten und fileHandle setzen
-                    var fileHandle = result.outputArguments![0]?.value ?? 1;
-        
-                    // Rückgabe an den Client nach erfolgreicher Ausführung
-                    const callMethodResult = {
-                        statusCode: StatusCodes.Good,
-                        outputArguments: [{
-                            dataType: DataType.NodeId,
-                            arrayType: VariantArrayType.Scalar,
-                            value: tmp.opcuaObject.nodeId
-                        }, {
-                            dataType: DataType.UInt32,
-                            arrayType: VariantArrayType.Scalar,
-                            value: fileHandle
-                        }]
-                    };
-                    // Callback aufrufen, um das Ergebnis zurückzugeben
-                    callback(null, callMethodResult);
-                }
-            ).catch((error) => {
-                console.error("Fehler beim Aufruf der Methode:", error);
-                // Bei einem Fehler wird der Callback mit einer Fehlermeldung aufgerufen
-                callback(error);
-            });
-        
-        } else {
-            // Wenn kein requestFileOpen erforderlich ist, direkt das Ergebnis zurückgeben
-            const callMethodResult = {
-                statusCode: StatusCodes.Good,
-                outputArguments: [{
-                    dataType: DataType.NodeId,
-                    arrayType: VariantArrayType.Scalar,
-                    value: tmp.opcuaObject.nodeId
-                }, {
-                    dataType: DataType.UInt32,
-                    arrayType: VariantArrayType.Scalar,
-                    value: 0
-                }]
-            };
-            callback(null, callMethodResult);
-        }
-    });
 
     const MachineryBuildingBlocks = machine.getChildByName("MachineryBuildingBlocks");
 

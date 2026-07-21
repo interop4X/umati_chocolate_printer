@@ -2,7 +2,6 @@ import { Console, log } from "console";
 import { NodeId, NodeIdType, OPCUAServer, UAFile, nodesets, UAMethod, StatusCodes, UAVariable, DataType, Variant, BrowsePath, VariantArrayType, BaseNode, LocalizedText, UAObject } from "node-opcua";
 import * as path from "path";
 import { MachineryItemState } from "./machineryItemState";
-import { FileBaseSystem, RootDict, File } from "./file";
 import * as QRCode from 'qrcode';
 
 import { promisify } from "util";
