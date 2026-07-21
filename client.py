@@ -305,19 +305,19 @@ async def main():
             print("Verbunden mit dem OPC UA Server")
             await client.load_data_type_definitions()
             await client.load_type_definitions()
-
-            time.sleep(10)
-            # Node über den Pfad finden
-            node = await client.nodes.root.get_child(node_path)
-            print("Node Found")
-            # Wert der JobOrderList lesen
-            job_order_list = await node.read_value()
-            #print("JobOrderList:", job_order_list)
-            for i, job in enumerate(job_order_list):
-                if (job.State[0].StateNumber == 5):
-                    if not job in knowenJob:
-                        create_aas_for_job(job, i)
-                        knowenJob.append(job)
+            while True:
+                time.sleep(10)
+                # Node über den Pfad finden
+                node = await client.nodes.root.get_child(node_path)
+                print("Node Found")
+                # Wert der JobOrderList lesen
+                job_order_list = await node.read_value()
+                #print("JobOrderList:", job_order_list)
+                for i, job in enumerate(job_order_list):
+                    if (job.State[0].StateNumber == 5):
+                        if not job in knowenJob:
+                            create_aas_for_job(job, i)
+                            knowenJob.append(job)
             await client.disconnect()
 
 # Event Loop starten

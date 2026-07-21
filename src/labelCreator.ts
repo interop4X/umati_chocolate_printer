@@ -94,15 +94,17 @@ export function createPdf(JobOrderId: string, outputPath: string, jobFile: strin
             align: 'center',
         });
 
+        doc.image("images/kp_logo_sw.png", 9, 30, {fit: [22, 50]})
+
+
         doc.fontSize(4)
         // Füge den JobOrderId in die PDF-Datei ein
         var tmp = "Job: " + JobOrderId
         const textWidth2 = doc.widthOfString(tmp);
         const centeredX2 = 21 - (textWidth2 / 2);
-        doc.text(tmp,centeredX2,35,{
+        doc.text(tmp,centeredX2,55,{
             align: 'center',
         });
-        doc.image("images/umati_sw.png", 9, 48, {fit: [22, 50]})
         
 
 
