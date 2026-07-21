@@ -1,3 +1,6 @@
 data/**
 images/qr*
 node_modules/**
+state/**
+backup_data/**
+**.aasx

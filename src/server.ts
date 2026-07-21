@@ -1,10 +1,12 @@
 import util from "util";
 import { Console, log } from "console";
-import { NodeId, NodeIdType, OPCUAServer, UAFile, nodesets, UAMethod, StatusCodes, UAVariable, DataType, Variant, BrowsePath, VariantArrayType, BaseNode, LocalizedText, UAObject, QualifiedName } from "node-opcua";
+import { NodeId, NodeIdType, OPCUAServer, UAFile, nodesets, UAMethod, StatusCodes, UAVariable, DataType, Variant, BrowsePath, VariantArrayType, BaseNode, LocalizedText, UAObject } from "node-opcua";
 import { EUInformation } from "node-opcua-data-access";
 import * as path from "path";
 import { MachineryItemState } from "./machineryItemState";
 import { RootDict } from "./filesystem";
+import { LifetimeCounter, OperationCounters } from "./counters";
+import { CounterStore } from "./persistence/CounterStore";
 import { createPdf } from "./labelCreator";
 import {StackLight} from "./stacklight";
 
@@ -97,16 +99,19 @@ async function main() {
     const device_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/DI/") as number;
 
     const bb_folder = machine.getChildByName("MachineryBuildingBlocks") as UAObject;
-  
-
-    const bb_lifetime_folder_type_node = server.engine.addressSpace?.findObjectType("MachineryLifetimeCounterType",machinery_idx)
-
-    const myLifetimeVar = createLifetimeVariable();
+    const MachineryBuildingBlocks = machine.getChildByName("MachineryBuildingBlocks");
+    const counterStore = new CounterStore(path.join(__dirname, "..", "state", "counters.json"));
+    const lifetimeCounter = new LifetimeCounter(
+        server,
+        bb_folder,
+        machinery_idx,
+        device_idx,
+        counterStore
+    );
+    const operationCounterManager = new OperationCounters(MachineryBuildingBlocks!, counterStore);
 
     const fileSystemRoot = machine.getChildByName("FileSystem") as UAObject;
     const root = new RootDict(server,__dirname + "/../data", fileSystemRoot!);
-
-    const MachineryBuildingBlocks = machine.getChildByName("MachineryBuildingBlocks");
 
     initIdentifcation();
     initMachineryItem();
@@ -117,38 +122,6 @@ async function main() {
 
     const { jobOrderList, jobOrderControl } = initJobManagement();
 
-
-    function createLifetimeVariable() {
-    const bb_lifetime_folder_node = bb_lifetime_folder_type_node?.instantiate({
-        organizedBy: bb_folder,
-        browseName: new QualifiedName({
-            namespaceIndex:machinery_idx,
-            name:"LifetimeCounters"
-        })
-    });
-        const LifetimeVariableType = server.engine.addressSpace?.findVariableType("LifetimeVariableType", device_idx);
-        const myLifetimeVar = LifetimeVariableType?.instantiate({
-            organizedBy: bb_lifetime_folder_node,
-            browseName: new QualifiedName({
-                namespaceIndex: machinery_idx,
-                name: "Paper"
-            }),
-            optionals: [
-                "Indication"
-            ]
-        });
-        
-        myLifetimeVar?.setValueFromSource({
-            value: 0,
-            dataType: DataType.UInt32
-        });
-        setChildValue(myLifetimeVar!, "StartValue", 0, DataType.UInt32);
-        setChildValue(myLifetimeVar!, "LimitValue", 500, DataType.UInt32);
-        //var Indication = new NodeId(device_idx, 475)
-        //setChildValue(myLifetimeVar!, "Indication", Indication, DataType.NodeId);
-
-        return myLifetimeVar;
-    }
 
     function setChildValue(parent: UAVariable, childName: string, value: any, dataType: DataType) {
         const child = parent.getChildByName(childName) as UAVariable;
@@ -268,9 +241,6 @@ async function main() {
     const storeandStartMethod = jobOrderControl?.getChildByName("StoreAndStart") as UAMethod;
     storeMethod.bindMethod(store);
     storeandStartMethod.bindMethod(store);
-    const operationCounters = MachineryBuildingBlocks?.getChildByName("OperationCounters");
-    const OperationCycleCounter = operationCounters?.getChildByName("OperationCycleCounter") as UAVariable;
-
     const startMethod = jobOrderControl?.getChildByName("Start") as UAMethod;
     startMethod.bindMethod(function (inputArguments, context, callback) {
         const jobOrderID = inputArguments[0].value;
@@ -335,8 +305,8 @@ async function main() {
                 return PrintLabel(tempPdfPath);
             })
             .then(()=>{
-                IncreaseOperationCounter();
-                IncreaseLifetimeCounter();
+                operationCounterManager.incrementCycleCounter();
+                lifetimeCounter.increment();
                 return SimulateJob(20 * 1000); 
             })
             .then(() => {
@@ -358,22 +328,6 @@ async function main() {
                 mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.NotExecuting.text);
             });
 
-        function IncreaseLifetimeCounter() {
-            var lifetimeValue = myLifetimeVar?.readValue();
-            myLifetimeVar?.setValueFromSource({
-                value: lifetimeValue?.value.value +1,
-                dataType: DataType.UInt32
-            });
-        }
-
-        function IncreaseOperationCounter() {
-            var counter = OperationCycleCounter.readValue();
-            OperationCycleCounter.setValueFromSource({
-                value: counter.value.value + 1,
-                dataType: DataType.UInt32
-            });
-            return counter;
-        }
     });
 
 
@@ -462,13 +416,7 @@ async function main() {
     function SimulateJob(duration: number = 5000) {
         console.log("sim job");
         const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-        const operationCounter = MachineryBuildingBlocks?.getChildByName("OperationCounters");
-        const OperationDuration = operationCounter?.getChildByName("OperationDuration") as UAVariable;
-        var counter = OperationDuration.readValue();
-        OperationDuration.setValueFromSource({
-            value: counter.value.value + duration,
-            dataType: DataType.Double
-        });
+        operationCounterManager.addOperationDuration(duration);
         return sleep(duration);
     }
 
