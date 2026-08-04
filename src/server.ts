@@ -20,6 +20,33 @@ const printer = require("pdf-to-printer");
 
 const execAsync = util.promisify(exec);
 
+enum Isa95ReturnStatusBit {
+    NoError = 0,
+    UnknownJobOrderId = 1,
+    InvalidJobOrderStatus = 3,
+    UnableToAcceptJobOrder = 4,
+    InvalidRequest = 32
+}
+
+function isa95ReturnStatus(bit: Isa95ReturnStatusBit): Variant {
+    const value: [number, number] = bit < 32
+        ? [0, Math.pow(2, bit)]
+        : [Math.pow(2, bit - 32), 0];
+
+    return new Variant({
+        dataType: DataType.UInt64,
+        arrayType: VariantArrayType.Scalar,
+        value
+    });
+}
+
+function isa95MethodResult(bit: Isa95ReturnStatusBit) {
+    return {
+        statusCode: StatusCodes.Good,
+        outputArguments: [isa95ReturnStatus(bit)]
+    };
+}
+
 // Hauptfunktion zur Erstellung des OPC UA Servers
 async function main() {
     // Advertise an address that remote OPC UA clients can actually resolve/reach.
@@ -206,7 +233,22 @@ async function main() {
     function store(inputArguments: Variant[], context: any, callback: any) {
         // Logik der Methode hier
         // inputArguments enthält die übergebenen Argumente
-        const inputJobOrder = inputArguments[0].value;
+        const inputJobOrder = inputArguments[0]?.value;
+        const jobOrderID = inputJobOrder?.jobOrderID;
+        if (typeof jobOrderID !== "string" || !jobOrderID.trim()) {
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.InvalidRequest));
+            return;
+        }
+
+        const currentJobs = jobOrderList.readValue().value.value;
+        if (!Array.isArray(currentJobs)) {
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.UnableToAcceptJobOrder));
+            return;
+        }
+        if (currentJobs.some((entry: any) => entry?.jobOrder?.jobOrderID === jobOrderID)) {
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.UnableToAcceptJobOrder));
+            return;
+        }
         //const comment = inputArguments[1].value;
         //machine_state.printJobManager.addJob(new machine_state.)
         // Beispiel: Addition der Eingabewerte
@@ -237,18 +279,8 @@ async function main() {
 
         jobOrderList.setValueFromSource(list_value);
 
-        // Rückgabe der Ergebnisse
-        const callMethodResult = {
-            statusCode: StatusCodes.Good,
-            outputArguments: [{
-                dataType: DataType.UInt64,
-                value: 0
-            }
-            ]
-        };
-
         // Callback aufrufen, um die Ergebnisse an den Client zurückzugeben
-        callback(null, callMethodResult);
+        callback(null, isa95MethodResult(Isa95ReturnStatusBit.NoError));
     };
 
     const storeMethod = jobOrderControl?.getChildByName("Store") as UAMethod;
@@ -257,28 +289,36 @@ async function main() {
     storeandStartMethod.bindMethod(store);
     const startMethod = jobOrderControl?.getChildByName("Start") as UAMethod;
     startMethod.bindMethod(function (inputArguments, context, callback) {
-        const jobOrderID = inputArguments[0].value;
+        const jobOrderID = inputArguments[0]?.value;
+        if (typeof jobOrderID !== "string" || !jobOrderID.trim()) {
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.InvalidRequest));
+            return;
+        }
         console.log(`Drucke Dokument: ${jobOrderID}`);
-        mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.Executing.text);
 
 
         const list = jobOrderList.readValue();
+        if (!Array.isArray(list.value.value)) {
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.InvalidRequest));
+            return;
+        }
         const theJob = list.value.value.find((job: any) => {
-            return job.jobOrder.jobOrderID === jobOrderID;
+            return job?.jobOrder?.jobOrderID === jobOrderID;
         });    
         if (!theJob){
             console.log(`Job ${jobOrderID} not found!`); 
-            callback(null, {
-                statusCode: StatusCodes.Uncertain,
-                outputArguments: [new Variant({
-                    dataType: DataType.UInt64,
-                    arrayType: VariantArrayType.Scalar,
-                    value: [0, 2]
-                })]
-            });
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.UnknownJobOrderId));
             return;
         }
 
+        const jobState = theJob.state?.[0]?.stateNumber;
+        if (jobState !== 1 && jobState !== 2) {
+            console.log(`Job ${jobOrderID} has invalid status ${jobState} for Start`);
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.InvalidJobOrderStatus));
+            return;
+        }
+
+        mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.Executing.text);
         jobResponseManager.start(jobOrderID);
         theJob.state[0].stateNumber = 3;
         theJob.state[0].stateText = "Running";
@@ -286,41 +326,51 @@ async function main() {
         stackLight.setLightSync('green');
         stackLight.setFlashSync('fast');
 
-        // achtung es könnten auch mehrere WorkMaster sein!
-        var source = "default"
-        if(theJob.jobOrder.jobOrderParameters){
-            source =  "umati";
-        }
-        console.log(source);
+        // Es können mehrere WorkMaster angegeben sein. Der erste vollständige
+        // LocalPath wird verwendet; unvollständige Jobs nutzen das Default-Rezept.
+        const source = theJob.jobOrder.jobOrderParameters ? "umati" : "default";
+        const dataDirectory = path.resolve(__dirname, "../data");
+        const defaultRecipePath = path.join(dataDirectory, "default.json");
+        const workMasters = theJob.jobOrder.workMasterID;
+        let tempRecipePath = defaultRecipePath;
 
-        var jobFile ="default.json";
-        if (theJob.jobOrder.workMasterID){
-	   if (Array.isArray(theJob.jobOrder.workMasterId) && theJob.jobOrder.workMasterId.length > 0){
-		
-            jobFile = theJob.jobOrder.workMasterID[0].parameters.find((p:any) => p.ID == "LocalPath").value.value;}
-	    else {
-		console.log("empty workmasterid array");
-		}
-        }else{
-            console.log(`Job ${jobOrderID} No Workmaster is set`);
-            console.log(`No localPath in  ${jobOrderID} not found! Use Default!`);
+        if (Array.isArray(workMasters) && workMasters.length > 0) {
+            const localPathParameter = workMasters
+                .flatMap((workMaster: any) =>
+                    Array.isArray(workMaster?.parameters) ? workMaster.parameters : []
+                )
+                .find((parameter: any) => parameter?.ID === "LocalPath");
+            const localPath = localPathParameter?.value?.value;
+
+            if (typeof localPath === "string" && localPath.trim()) {
+                const candidatePath = path.resolve(dataDirectory, localPath.trim());
+                const isInsideDataDirectory =
+                    candidatePath === dataDirectory ||
+                    candidatePath.startsWith(dataDirectory + path.sep);
+
+                if (isInsideDataDirectory && fs.existsSync(candidatePath) && fs.statSync(candidatePath).isFile()) {
+                    tempRecipePath = candidatePath;
+                } else {
+                    console.warn(
+                        "Job " + jobOrderID + ": WorkMaster LocalPath \"" + localPath + "\" ist ungültig " +
+                        "oder nicht vorhanden. Verwende default.json."
+                    );
+                }
+            } else {
+                console.warn(
+                    "Job " + jobOrderID + ": WorkMaster enthält keinen gültigen LocalPath. " +
+                    "Verwende default.json."
+                );
+            }
+        } else {
+            console.warn("Job " + jobOrderID + ": Kein WorkMaster angegeben. Verwende default.json.");
         }
 
-        console.log(jobFile);
+        console.log("Job " + jobOrderID + ": Rezeptdatei " + tempRecipePath + ", Quelle " + source);
         // Temporäre Datei erstellen, die gedruckt werden soll
         const tempPdfPath = path.join(__dirname,"../data",`${jobOrderID}.pdf`);
-        const tempRecipePath = path.join(__dirname,"../data",jobFile);
 
-        const callMethodResult = {
-            statusCode: StatusCodes.Good,
-            outputArguments: [{
-                dataType: DataType.UInt64,
-                arrayType: VariantArrayType.Scalar,
-                value: 0
-            }
-            ]
-        };
-        callback(null, callMethodResult);
+        callback(null, isa95MethodResult(Isa95ReturnStatusBit.NoError));
 
 
         // Erstelle die PDF-Datei und drucke sie
