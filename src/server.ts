@@ -7,6 +7,7 @@ import { MachineryItemState } from "./machineryItemState";
 import { RootDict } from "./filesystem";
 import { LifetimeCounter, OperationCounters } from "./counters";
 import { CounterStore } from "./persistence/CounterStore";
+import { JobResponseManager } from "./jobmanagement";
 import { createPdf } from "./labelCreator";
 import {StackLight} from "./stacklight";
 
@@ -21,6 +22,10 @@ const execAsync = util.promisify(exec);
 
 // Hauptfunktion zur Erstellung des OPC UA Servers
 async function main() {
+    // Advertise an address that remote OPC UA clients can actually resolve/reach.
+    // The OS hostname (for example *.VDMA.LOCAL) is only valid in the local network.
+    const opcuaHostname = process.env.OPCUA_HOSTNAME || "100.96.1.3";
+
     const stackLight = new StackLight('/dev/ttyUSB0', 9600);
     await stackLight.setLightSync('yellow');
     await stackLight.setFlashSync('normal');
@@ -40,6 +45,7 @@ async function main() {
 
     // OPC UA Server Konfiguration
     const server = new OPCUAServer({
+        hostname: opcuaHostname,
         port: 48030, // Der Port, auf dem der Server läuft
         resourcePath: "", // Endpunkt
         buildInfo: {
@@ -97,6 +103,7 @@ async function main() {
     )
     const machinery_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/Machinery/") as number;
     const device_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/DI/") as number;
+    const isa95_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/ISA95-JOBCONTROL_V2/") as number;
 
     const bb_folder = machine.getChildByName("MachineryBuildingBlocks") as UAObject;
     const MachineryBuildingBlocks = machine.getChildByName("MachineryBuildingBlocks");
@@ -120,7 +127,13 @@ async function main() {
     InitEnergyMonitoring(); 
 
 
-    const { jobOrderList, jobOrderControl } = initJobManagement();
+    const { jobOrderList, jobOrderControl, jobOrderResults } = initJobManagement();
+    const jobResponseManager = new JobResponseManager(
+        server,
+        jobOrderResults as UAObject,
+        jobOrderList,
+        isa95_idx
+    );
 
 
     function setChildValue(parent: UAVariable, childName: string, value: any, dataType: DataType) {
@@ -138,6 +151,7 @@ async function main() {
     function initJobManagement() {
         const jobManagement = MachineryBuildingBlocks?.getChildByName("JobManagement");
         const jobOrderControl = jobManagement?.getChildByName("JobOrderControl");
+        const jobOrderResults = jobManagement?.getChildByName("JobOrderResults");
 
         const jobOrderList = jobOrderControl?.getChildByName("JobOrderList") as UAVariable;
         const jobOrderRequest = server.engine.addressSpace?.findDataType("ISA95JobOrderDataType");
@@ -148,7 +162,7 @@ async function main() {
         list_value.arrayType = VariantArrayType.Array;
         list_value.dimensions = [0];
         jobOrderList.setValueFromSource(list_value);
-        return { jobOrderList, jobOrderControl };
+        return { jobOrderList, jobOrderControl, jobOrderResults };
     }
 
     var mymachineryItemState : MachineryItemState;
@@ -254,8 +268,18 @@ async function main() {
         });    
         if (!theJob){
             console.log(`Job ${jobOrderID} not found!`); 
+            callback(null, {
+                statusCode: StatusCodes.Uncertain,
+                outputArguments: [new Variant({
+                    dataType: DataType.UInt64,
+                    arrayType: VariantArrayType.Scalar,
+                    value: [0, 2]
+                })]
+            });
+            return;
         }
 
+        jobResponseManager.start(jobOrderID);
         theJob.state[0].stateNumber = 3;
         theJob.state[0].stateText = "Running";
         jobOrderList.setValueFromSource(list.value);
@@ -317,13 +341,15 @@ async function main() {
                 theJob.state[0].stateNumber = 5;
                 theJob.state[0].stateText = "Ended";
                 jobOrderList.setValueFromSource(list.value);
+                jobResponseManager.complete(jobOrderID);
                 // Erfolgreiche Rückgabe an den Client
       
             })
             .catch((error : any) => {
                 theJob.state[0].stateNumber = 6;
                 theJob.state[0].stateText = "Aborted";
-                jobOrderList.setValueFromSource(list);
+                jobOrderList.setValueFromSource(list.value);
+                jobResponseManager.complete(jobOrderID);
                 console.error("Fehler beim Drucken:", error);
                 mymachineryItemState.setCurrentStateByText(mymachineryItemState.possibleStates.NotExecuting.text);
             });
@@ -360,15 +386,15 @@ async function main() {
 
     function InitCleanupOldJobs() {
         setInterval(() => {
-            var i;
             var list = jobOrderList.readValue();
             //console.log(list.value.value);
-            for (i in list.value.value) {
+            for (let i = list.value.value.length - 1; i >= 0; i--) {
                 var job = (list.value.value[i]);
                 //console.log(job.state);
                 if (job.state[0].stateNumber == 5) {
                     console.log("Remove job");
-                    list.value.value.splice(i);
+                    jobResponseManager.remove(job.jobOrder.jobOrderID);
+                    list.value.value.splice(i, 1);
                     list.value.dimensions![0] = list.value.dimensions![0] - 1;
                 }
             }
