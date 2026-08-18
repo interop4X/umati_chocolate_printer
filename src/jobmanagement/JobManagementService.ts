@@ -5,6 +5,7 @@ import {
     NodeId,
     NodeIdType,
     OPCUAServer,
+    RelativePath,
     StatusCodes,
     UAObject,
     UAMethod,
@@ -50,6 +51,14 @@ interface JobManagementServiceOptions {
     onJobSuccess?: (jobOrderId: string) => void;
     onJobFailure?: (jobOrderId: string, error: unknown) => void;
 }
+
+type JobStateDefinition = {
+    stateText: string;
+    stateNumber: number;
+    browsePath?: RelativePath | null;
+};
+
+type RunningSubState = "PreparePrint" | "Print";
 
 export class JobManagementService {
     private readonly jobOrderList: UAVariable;
@@ -115,6 +124,18 @@ export class JobManagementService {
         }, 7 * 60 * 60 * 1000);
     }
 
+    public setRunningSubState(jobOrderId: string, subState: RunningSubState): void {
+        const subStateNumber = subState === "PreparePrint" ? 31 : 32;
+        this.setJobState(jobOrderId, {
+            stateText: "Running",
+            stateNumber: 3
+        }, {
+            stateText: subState,
+            stateNumber: subStateNumber,
+            browsePath: this.createRelativePath(subState)
+        });
+    }
+
     private bindMethods(jobOrderControl: UAObject): void {
         const storeMethod = jobOrderControl.getChildByName("Store") as UAMethod;
         const storeAndStartMethod = jobOrderControl.getChildByName("StoreAndStart") as UAMethod;
@@ -152,19 +173,6 @@ export class JobManagementService {
             return;
         }
 
-        const state = this.server.engine.addressSpace?.constructExtensionObject(
-            new NodeId(
-                NodeIdType.NUMERIC,
-                3006,
-                this.server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/ISA95-JOBCONTROL_V2/")
-            ),
-            {
-                browsePath: null,
-                stateText: "NotAllowedToStart",
-                stateNumber: "1"
-            }
-        );
-
         const orderAndState = this.server.engine.addressSpace?.constructExtensionObject(
             new NodeId(
                 NodeIdType.NUMERIC,
@@ -175,7 +183,18 @@ export class JobManagementService {
         ) as any;
 
         orderAndState.jobOrder = inputJobOrder;
-        orderAndState.state[0] = state;
+        orderAndState.state = [
+            this.createState({
+                browsePath: null,
+                stateText: "NotAllowedToStart",
+                stateNumber: 1
+            }),
+            this.createState({
+                browsePath: this.createRelativePath("NotAllowedToStartSubstates"),
+                stateText: "Ready",
+                stateNumber: 2
+            })
+        ];
 
         const list = this.jobOrderList.readValue();
         const listValue = list.value;
@@ -211,9 +230,20 @@ export class JobManagementService {
             return;
         }
 
-        job.state[0].stateNumber = 3;
-        job.state[0].stateText = "Running";
-        this.jobOrderList.setValueFromSource(list.value);
+        const allowedToStartSet = this.setJobState(jobOrderId, {
+            stateText: "AllowedToStart",
+            stateNumber: 2
+        }, {
+            stateText: "Ready",
+            stateNumber: 2,
+            browsePath: this.createRelativePath("AllowedToStartSubstates")
+        });
+        if (!allowedToStartSet) {
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.UnknownJobOrderId));
+            return;
+        }
+
+        this.setRunningSubState(jobOrderId, "PreparePrint");
         this.jobResponseManager.start(jobOrderId);
         this.options.onJobStart?.(jobOrderId);
 
@@ -224,27 +254,70 @@ export class JobManagementService {
 
         this.options.executeJob(jobOrderId, recipePath, source)
             .then(() => {
-                const currentList = this.jobOrderList.readValue();
-                const currentJob = (currentList.value.value as any[]).find((entry: any) => entry?.jobOrder?.jobOrderID === jobOrderId);
-                if (currentJob) {
-                    currentJob.state[0].stateNumber = 5;
-                    currentJob.state[0].stateText = "Ended";
-                    this.jobOrderList.setValueFromSource(currentList.value);
-                }
+                this.setJobState(jobOrderId, {
+                    stateText: "Ended",
+                    stateNumber: 5
+                });
                 this.jobResponseManager.complete(jobOrderId);
                 this.options.onJobSuccess?.(jobOrderId);
             })
             .catch((error: unknown) => {
-                const currentList = this.jobOrderList.readValue();
-                const currentJob = (currentList.value.value as any[]).find((entry: any) => entry?.jobOrder?.jobOrderID === jobOrderId);
-                if (currentJob) {
-                    currentJob.state[0].stateNumber = 6;
-                    currentJob.state[0].stateText = "Aborted";
-                    this.jobOrderList.setValueFromSource(currentList.value);
-                }
+                this.setJobState(jobOrderId, {
+                    stateText: "Aborted",
+                    stateNumber: 6
+                });
                 this.jobResponseManager.complete(jobOrderId);
                 this.options.onJobFailure?.(jobOrderId, error);
             });
+    }
+
+    private setJobState(jobOrderId: string, topState: JobStateDefinition, subState?: JobStateDefinition): boolean {
+        const list = this.jobOrderList.readValue();
+        if (!Array.isArray(list.value.value)) {
+            return false;
+        }
+
+        const job = (list.value.value as any[]).find((entry: any) => entry?.jobOrder?.jobOrderID === jobOrderId);
+        if (!job) {
+            return false;
+        }
+
+        const states = [this.createState(topState)];
+        if (subState) {
+            states.push(this.createState(subState));
+        }
+        job.state = states;
+        this.jobOrderList.setValueFromSource(list.value);
+        return true;
+    }
+
+    private createState(definition: JobStateDefinition): any {
+        return this.server.engine.addressSpace?.constructExtensionObject(
+            new NodeId(
+                NodeIdType.NUMERIC,
+                3006,
+                this.server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/ISA95-JOBCONTROL_V2/")
+            ),
+            {
+                browsePath: definition.browsePath ?? null,
+                stateText: definition.stateText,
+                stateNumber: definition.stateNumber
+            }
+        );
+    }
+
+    private createRelativePath(targetName: string): RelativePath {
+        return new RelativePath({
+            elements: [{
+                referenceTypeId: new NodeId(NodeIdType.NUMERIC, 33, 0),
+                isInverse: false,
+                includeSubtypes: true,
+                targetName: {
+                    namespaceIndex: this.isa95NamespaceIndex,
+                    name: targetName
+                }
+            }]
+        });
     }
 
     private resolveRecipePath(job: any): string {

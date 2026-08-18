@@ -139,12 +139,20 @@ async function main() {
             },
             executeJob: async (jobOrderId: string, recipePath: string, source: "umati" | "default") => {
                 console.log("Job " + jobOrderId + ": Rezeptdatei " + recipePath + ", Quelle " + source);
+                const totalDurationMs = 20 * 1000;
+                const prepareDurationMs = Math.floor(totalDurationMs * 0.2);
+                const printDurationMs = totalDurationMs - prepareDurationMs;
+
+                jobManagementService.setRunningSubState(jobOrderId, "PreparePrint");
+                await SimulateJob(prepareDurationMs);
+
+                jobManagementService.setRunningSubState(jobOrderId, "Print");
                 const tempPdfPath = path.join(__dirname, "../data", `${jobOrderId}.pdf`);
                 await createPdf(jobOrderId, tempPdfPath, recipePath, source);
                 await PrintLabel(tempPdfPath);
                 operationCounterManager.incrementCycleCounter();
                 lifetimeCounter.increment();
-                await SimulateJob(20 * 1000);
+                await SimulateJob(printDurationMs);
             },
             onJobSuccess: () => {
                 console.log("Druckauftrag erfolgreich gesendet!");
