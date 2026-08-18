@@ -1,4 +1,4 @@
-import { StackLight } from './StackLight'; // Import the StackLight module
+import { StackLight } from './stacklight'; // Import the StackLight module
 import { promisify } from 'util';
 const sleep = promisify(setTimeout);
 
