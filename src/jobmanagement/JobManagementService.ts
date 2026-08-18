@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import {
     DataType,
+    LocalizedText,
     NodeId,
     NodeIdType,
     OPCUAServer,
@@ -62,7 +63,11 @@ type RunningSubState = "PreparePrint" | "Print";
 
 export class JobManagementService {
     private readonly jobOrderList: UAVariable;
+    private readonly jobOrderControl: UAObject;
+    private readonly jobOrderResults: UAObject;
     private readonly jobResponseManager: JobResponseManager;
+    private readonly jobOrderStatusEventType: any;
+    private readonly jobResponseDataType: NodeId;
 
     constructor(
         private readonly server: OPCUAServer,
@@ -80,6 +85,8 @@ export class JobManagementService {
         if (!jobOrderControl || !jobOrderResults) {
             throw new Error("JobOrderControl or JobOrderResults node not found");
         }
+        this.jobOrderControl = jobOrderControl;
+        this.jobOrderResults = jobOrderResults;
 
         this.jobOrderList = jobOrderControl.getChildByName("JobOrderList") as UAVariable;
         if (!this.jobOrderList) {
@@ -94,6 +101,10 @@ export class JobManagementService {
             this.jobOrderList,
             isa95NamespaceIndex
         );
+
+        this.jobOrderStatusEventType = this.ensureJobOrderStatusEventType();
+        this.jobResponseDataType = this.resolveJobResponseDataType();
+        this.ensureEventNotifier();
 
         this.bindMethods(jobOrderControl);
     }
@@ -133,6 +144,9 @@ export class JobManagementService {
             stateText: subState,
             stateNumber: subStateNumber,
             browsePath: this.createRelativePath(subState)
+        }, {
+            transition: `Running/${subState}`,
+            severity: 200
         });
     }
 
@@ -202,6 +216,14 @@ export class JobManagementService {
         listValue.dimensions![0] = listValue.dimensions![0] + 1;
         this.jobOrderList.setValueFromSource(listValue);
 
+        this.raiseJobOrderStatusEvent(
+            jobOrderId,
+            orderAndState.jobOrder,
+            orderAndState.state,
+            "Store/NotAllowedToStart/Ready",
+            100
+        );
+
         callback(null, isa95MethodResult(Isa95ReturnStatusBit.NoError));
     }
 
@@ -237,13 +259,15 @@ export class JobManagementService {
             stateText: "Ready",
             stateNumber: 2,
             browsePath: this.createRelativePath("AllowedToStartSubstates")
+        }, {
+            transition: "Start/AllowedToStart/Ready",
+            severity: 150
         });
         if (!allowedToStartSet) {
             callback(null, isa95MethodResult(Isa95ReturnStatusBit.UnknownJobOrderId));
             return;
         }
 
-        this.setRunningSubState(jobOrderId, "PreparePrint");
         this.jobResponseManager.start(jobOrderId);
         this.options.onJobStart?.(jobOrderId);
 
@@ -257,6 +281,9 @@ export class JobManagementService {
                 this.setJobState(jobOrderId, {
                     stateText: "Ended",
                     stateNumber: 5
+                }, undefined, {
+                    transition: "Completed/Ended",
+                    severity: 250
                 });
                 this.jobResponseManager.complete(jobOrderId);
                 this.options.onJobSuccess?.(jobOrderId);
@@ -265,13 +292,21 @@ export class JobManagementService {
                 this.setJobState(jobOrderId, {
                     stateText: "Aborted",
                     stateNumber: 6
+                }, undefined, {
+                    transition: "Failed/Aborted",
+                    severity: 700
                 });
                 this.jobResponseManager.complete(jobOrderId);
                 this.options.onJobFailure?.(jobOrderId, error);
             });
     }
 
-    private setJobState(jobOrderId: string, topState: JobStateDefinition, subState?: JobStateDefinition): boolean {
+    private setJobState(
+        jobOrderId: string,
+        topState: JobStateDefinition,
+        subState?: JobStateDefinition,
+        eventMeta?: { transition: string; severity: number }
+    ): boolean {
         const list = this.jobOrderList.readValue();
         if (!Array.isArray(list.value.value)) {
             return false;
@@ -288,7 +323,134 @@ export class JobManagementService {
         }
         job.state = states;
         this.jobOrderList.setValueFromSource(list.value);
+
+        if (eventMeta) {
+            this.raiseJobOrderStatusEvent(
+                jobOrderId,
+                job.jobOrder,
+                states,
+                eventMeta.transition,
+                eventMeta.severity
+            );
+        }
+
         return true;
+    }
+
+    private ensureJobOrderStatusEventType(): any {
+        const addressSpace = this.server.engine.addressSpace;
+        if (!addressSpace) {
+            throw new Error("AddressSpace not initialized");
+        }
+
+        const baseEventType = addressSpace.findEventType("ISA95JobOrderStatusEventType", this.isa95NamespaceIndex);
+        if (!baseEventType) {
+            throw new Error("ISA95JobOrderStatusEventType not found");
+        }
+
+        if (!baseEventType.isAbstract) {
+            return baseEventType;
+        }
+
+        const ownNamespace = addressSpace.getOwnNamespace();
+        const concreteName = "LocalISA95JobOrderStatusEventType";
+        const existingEventType = addressSpace.findEventType(concreteName, ownNamespace.index);
+        if (existingEventType) {
+            return existingEventType;
+        }
+
+        return ownNamespace.addEventType({
+            browseName: concreteName,
+            subtypeOf: baseEventType
+        });
+    }
+
+    private resolveJobResponseDataType(): NodeId {
+        const dataType = this.server.engine.addressSpace?.findDataType(
+            "ISA95JobResponseDataType",
+            this.isa95NamespaceIndex
+        );
+        if (!dataType) {
+            throw new Error("ISA95JobResponseDataType not found");
+        }
+        return dataType.nodeId;
+    }
+
+    private ensureEventNotifier(): void {
+        if (this.jobOrderControl.eventNotifier === 0) {
+            this.jobOrderControl.setEventNotifier(0x1);
+        }
+        if (this.jobOrderResults.eventNotifier === 0) {
+            this.jobOrderResults.setEventNotifier(0x1);
+        }
+    }
+
+    private raiseJobOrderStatusEvent(
+        jobOrderId: string,
+        jobOrder: any,
+        jobState: any[],
+        transition: string,
+        severity: number
+    ): void {
+        try {
+            const addressSpace = this.server.engine.addressSpace;
+            if (!addressSpace) {
+                throw new Error("AddressSpace not initialized");
+            }
+            const eventTime = new Date();
+            const jobResponse = addressSpace.constructExtensionObject(this.jobResponseDataType, {
+                jobResponseID: `${jobOrderId}-status-${eventTime.getTime()}`,
+                description: new LocalizedText({ text: `Status event for ${jobOrderId}` }),
+                jobOrderID: jobOrderId,
+                startTime: eventTime,
+                jobState,
+                jobResponseData: [],
+                personnelActuals: [],
+                equipmentActuals: [],
+                physicalAssetActuals: [],
+                materialActuals: []
+            });
+
+            const eventPayload: any = {
+                sourceNode: {
+                    dataType: DataType.NodeId,
+                    value: this.jobOrderControl.nodeId
+                },
+                sourceName: {
+                    dataType: DataType.String,
+                    value: "JobOrderControl"
+                },
+                message: {
+                    dataType: DataType.LocalizedText,
+                    value: new LocalizedText({ text: `${jobOrderId}: ${transition}` })
+                },
+                severity: {
+                    dataType: DataType.UInt16,
+                    value: severity
+                },
+                time: {
+                    dataType: DataType.DateTime,
+                    value: eventTime
+                },
+                jobOrder: {
+                    dataType: DataType.ExtensionObject,
+                    value: jobOrder
+                },
+                jobState: {
+                    dataType: DataType.ExtensionObject,
+                    arrayType: VariantArrayType.Array,
+                    value: jobState
+                },
+                jobResponse: {
+                    dataType: DataType.ExtensionObject,
+                    value: jobResponse
+                }
+            };
+
+            this.jobOrderControl.raiseEvent(this.jobOrderStatusEventType, eventPayload);
+        } catch (error) {
+            console.error(`Failed to raise ISA95 JobOrderStatus event for ${jobOrderId}:`, error);
+        }
     }
 
     private createState(definition: JobStateDefinition): any {
