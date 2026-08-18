@@ -40,6 +40,7 @@ async function main() {
         path.join(__dirname, "..", "models", "opc.ua.glas.v2.nodeset2.xml"), // Glas Nodeset
         nodesets.ia,
         path.join(__dirname, "..", "models", "ECM", "Opc.Ua.ECM.NodeSet2.xml"), // Glas Flat Nodeset
+        path.join(__dirname, "..", "models", "Opc.Ua.Machinery.Energy.NodeSet2.xml"), // Machinery Energy Nodeset
     ];
 
     // OPC UA Server Konfiguration
@@ -236,15 +237,36 @@ async function main() {
 
         const monitoringType = server.engine.addressSpace?.findObjectType("MonitoringType", machinery_idx);
         const ecm_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/ECM/") as number;
+        const machineryEnergy_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/Machinery/Energy/") as number;
         const energyType = server.engine.addressSpace?.findObjectType("IEnergyProfileE1Type", ecm_idx);
+        const energyMeasurementType = server.engine.addressSpace?.findObjectType("EnergyMeasurementType", ecm_idx);
+
+        const nonElectricalEnergyType = server.engine.addressSpace?.findObjectType("INonElectricalEnergyType", machineryEnergy_idx);
+        const massFlowType = server.engine.addressSpace?.findObjectType("IMassFlowType", machineryEnergy_idx);
+        const volumeFlowType = server.engine.addressSpace?.findObjectType("IVolumeFlowType", machineryEnergy_idx);
 
         if (!monitoringType) {
             console.warn("MonitoringType not found. Skipping monitoring setup.");
             return;
         }
 
+        if (!machineryEnergy_idx) {
+            console.warn("Machinery Energy namespace not found. Skipping monitoring setup.");
+            return;
+        }
+
         if (!energyType) {
             console.warn("IEnergyProfileE1Type not found. Skipping monitoring setup.");
+            return;
+        }
+
+        if (!energyMeasurementType) {
+            console.warn("EnergyMeasurementType not found. Skipping monitoring setup.");
+            return;
+        }
+
+        if (!nonElectricalEnergyType || !massFlowType || !volumeFlowType) {
+            console.warn("Required Machinery Energy interfaces not found. Skipping monitoring setup.");
             return;
         }
 
@@ -273,8 +295,32 @@ async function main() {
             electricity = myNamespace!.addObject({
                 componentOf: consumption,
                 browseName: {
-                    namespaceIndex: machinery_idx,
+                    namespaceIndex: machineryEnergy_idx,
                     name: "Electricity"
+                },
+                typeDefinition: "FolderType"
+            });
+        }
+
+        let compressedAir = consumption.getChildByName("CompressedAir") as UAObject;
+        if (!compressedAir) {
+            compressedAir = myNamespace!.addObject({
+                componentOf: consumption,
+                browseName: {
+                    namespaceIndex: machineryEnergy_idx,
+                    name: "CompressedAir"
+                },
+                typeDefinition: "FolderType"
+            });
+        }
+
+        let chilledWater = consumption.getChildByName("ChilledWater") as UAObject;
+        if (!chilledWater) {
+            chilledWater = myNamespace!.addObject({
+                componentOf: consumption,
+                browseName: {
+                    namespaceIndex: machineryEnergy_idx,
+                    name: "ChilledWater"
                 },
                 typeDefinition: "FolderType"
             });
@@ -285,18 +331,183 @@ async function main() {
             subtypeOf: energyType!,
         });
 
-        if (!myEnergyProfileE1Type) {
-            console.warn("Failed to create EnergyProfileE1Type subtype.");
+        const compressedAirMeasurementType = myNamespace?.addObjectType({
+            browseName: "CompressedAirMeasurementType",
+            subtypeOf: energyMeasurementType,
+        });
+
+        const chilledWaterMeasurementType = myNamespace?.addObjectType({
+            browseName: "ChilledWaterMeasurementType",
+            subtypeOf: energyMeasurementType,
+        });
+
+        if (!myEnergyProfileE1Type || !compressedAirMeasurementType || !chilledWaterMeasurementType) {
+            console.warn("Failed to create measurement subtypes.");
             return;
         }
+
+        compressedAirMeasurementType.addReference({ referenceType: "HasInterface", nodeId: nonElectricalEnergyType.nodeId });
+        compressedAirMeasurementType.addReference({ referenceType: "HasInterface", nodeId: massFlowType.nodeId });
+        compressedAirMeasurementType.addReference({ referenceType: "HasInterface", nodeId: volumeFlowType.nodeId });
+
+        chilledWaterMeasurementType.addReference({ referenceType: "HasInterface", nodeId: volumeFlowType.nodeId });
     
         const energy_bb = myEnergyProfileE1Type.instantiate({
             componentOf: electricity,
             browseName: {
-                namespaceIndex: ecm_idx,
+                namespaceIndex: machineryEnergy_idx,
                 name: "Main"
             }
         });
+
+        const compressedAirMain = compressedAirMeasurementType.instantiate({
+            componentOf: compressedAir,
+            browseName: {
+                namespaceIndex: machineryEnergy_idx,
+                name: "Main"
+            },
+            optionals: ["Pressure", "Temperature", "VolumeFlowRate", "Volume"]
+        });
+
+        const chilledWaterMain = chilledWaterMeasurementType.instantiate({
+            componentOf: chilledWater,
+            browseName: {
+                namespaceIndex: machineryEnergy_idx,
+                name: "Main"
+            },
+            optionals: ["Pressure", "Temperature", "VolumeFlowRate", "Volume"]
+        });
+
+        function ensureFloatVariable(parent: UAObject, variableName: string, initialValue: number) {
+            let node = parent.getChildByName(variableName, ecm_idx) as UAVariable;
+            if (!node) {
+                node = myNamespace!.addVariable({
+                    componentOf: parent,
+                    browseName: {
+                        namespaceIndex: ecm_idx,
+                        name: variableName
+                    },
+                    dataType: DataType.Float
+                });
+            }
+
+            node.setValueFromSource({ value: initialValue, dataType: DataType.Float });
+            return node;
+        }
+
+        function setEngineeringUnits(variable: UAVariable, unitId: number, displayName: string, description: string) {
+            let engineeringUnitsNode = variable.getChildByName("EngineeringUnits") as UAVariable;
+            if (!engineeringUnitsNode) {
+                engineeringUnitsNode = myNamespace!.addVariable({
+                    propertyOf: variable,
+                    browseName: "EngineeringUnits",
+                    dataType: "EUInformation"
+                });
+            }
+
+            const euInfo = new EUInformation({
+                namespaceUri: "http://www.opcfoundation.org/UA/units/un/cefact",
+                unitId,
+                displayName: new LocalizedText(displayName),
+                description: new LocalizedText(description)
+            });
+
+            engineeringUnitsNode.setValueFromSource({
+                value: euInfo,
+                dataType: DataType.ExtensionObject
+            });
+        }
+
+        const compressedAirPressureNode = ensureFloatVariable(compressedAirMain, "Pressure", 650000);
+        const compressedAirTemperatureNode = ensureFloatVariable(compressedAirMain, "Temperature", 20.0);
+        const compressedAirFlowRateNode = ensureFloatVariable(compressedAirMain, "VolumeFlowRate", 0.012);
+        const compressedAirVolumeNode = ensureFloatVariable(compressedAirMain, "Volume", 0);
+
+        const chilledWaterPressureNode = ensureFloatVariable(chilledWaterMain, "Pressure", 280000);
+        const chilledWaterTemperatureNode = ensureFloatVariable(chilledWaterMain, "Temperature", 4.0);
+        const chilledWaterFlowRateNode = ensureFloatVariable(chilledWaterMain, "VolumeFlowRate", 0.004);
+        const chilledWaterVolumeNode = ensureFloatVariable(chilledWaterMain, "Volume", 0);
+
+        // Units: Pressure [Pa], Temperature [degC], VolumeFlowRate [m^3/s], Volume [m^3]
+        for (const pressureNode of [compressedAirPressureNode, chilledWaterPressureNode]) {
+            setEngineeringUnits(pressureNode, 5259596, "Pa", "pascal");
+        }
+        for (const temperatureNode of [compressedAirTemperatureNode, chilledWaterTemperatureNode]) {
+            setEngineeringUnits(temperatureNode, 4408652, "degC", "degree Celsius");
+        }
+        for (const flowRateNode of [compressedAirFlowRateNode, chilledWaterFlowRateNode]) {
+            setEngineeringUnits(flowRateNode, 5067091, "m3/s", "cubic metre per second");
+        }
+        for (const volumeNode of [compressedAirVolumeNode, chilledWaterVolumeNode]) {
+            setEngineeringUnits(volumeNode, 5067857, "m3", "cubic metre");
+        }
+
+        const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+        const randomDelta = (amplitude: number) => (Math.random() * 2 - 1) * amplitude;
+
+        let compressedAirPressure = 650000;
+        let compressedAirTemperature = 20.0;
+        let compressedAirFlowRate = 0.012;
+        let compressedAirVolume = 0;
+
+        let chilledWaterPressure = 280000;
+        let chilledWaterTemperature = 4.0;
+        let chilledWaterFlowRate = 0.004;
+        let chilledWaterVolume = 0;
+
+        // Simuliere realistische Schwankungen und integriere VolumeFlowRate zu Volume (m^3).
+        setInterval(() => {
+            const dtSeconds = 1;
+
+            compressedAirTemperature = clamp(
+                compressedAirTemperature + (20.0 - compressedAirTemperature) * 0.08 + randomDelta(0.08),
+                18.5,
+                22.0
+            );
+            compressedAirPressure = clamp(
+                compressedAirPressure + (650000 - compressedAirPressure) * 0.08 + randomDelta(5000),
+                550000,
+                720000
+            );
+            compressedAirFlowRate = clamp(
+                compressedAirFlowRate + (0.012 - compressedAirFlowRate) * 0.12 + randomDelta(0.0018),
+                0.006,
+                0.022
+            );
+            compressedAirVolume += compressedAirFlowRate * dtSeconds;
+
+            chilledWaterTemperature = clamp(
+                chilledWaterTemperature + (4.0 - chilledWaterTemperature) * 0.1 + randomDelta(0.05),
+                3.2,
+                5.2
+            );
+            chilledWaterPressure = clamp(
+                chilledWaterPressure + (280000 - chilledWaterPressure) * 0.1 + randomDelta(4000),
+                210000,
+                340000
+            );
+            chilledWaterFlowRate = clamp(
+                chilledWaterFlowRate + (0.004 - chilledWaterFlowRate) * 0.14 + randomDelta(0.0008),
+                0.0015,
+                0.008
+            );
+            chilledWaterVolume += chilledWaterFlowRate * dtSeconds;
+
+            compressedAirPressureNode.setValueFromSource({ value: compressedAirPressure, dataType: DataType.Float });
+            compressedAirTemperatureNode.setValueFromSource({ value: compressedAirTemperature, dataType: DataType.Float });
+            compressedAirFlowRateNode.setValueFromSource({ value: compressedAirFlowRate, dataType: DataType.Float });
+            compressedAirVolumeNode.setValueFromSource({ value: compressedAirVolume, dataType: DataType.Float });
+
+            chilledWaterPressureNode.setValueFromSource({ value: chilledWaterPressure, dataType: DataType.Float });
+            chilledWaterTemperatureNode.setValueFromSource({ value: chilledWaterTemperature, dataType: DataType.Float });
+            chilledWaterFlowRateNode.setValueFromSource({ value: chilledWaterFlowRate, dataType: DataType.Float });
+            chilledWaterVolumeNode.setValueFromSource({ value: chilledWaterVolume, dataType: DataType.Float });
+        }, 1000);
+
+        const compressedAirPowerNode = compressedAirMain.getChildByName("NeEnergyImportHp") as UAVariable;
+        if (compressedAirPowerNode) {
+            compressedAirPowerNode.setValueFromSource({ value: 0, dataType: DataType.Double });
+        }
 
         const power_node = energy_bb?.getChildByName("AcActivePowerTotal") as UAVariable;
         if (!power_node) {
