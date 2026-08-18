@@ -120,9 +120,9 @@ async function main() {
     const root = new RootDict(server,__dirname + "/../data", fileSystemRoot!);
 
     var mymachineryItemState : MachineryItemState;
-    initIdentifcation();
+    initIdentification();
     initMachineryItem();
-    InitEnergyMonitoring();
+    await InitEnergyMonitoring();
 
     const dataDirectory = path.resolve(__dirname, "../data");
     const jobManagementService = new JobManagementService(
@@ -171,7 +171,7 @@ async function main() {
     jobManagementService.startCleanupTimers();
 
 
-    function setChildValue(parent: UAVariable, childName: string, value: any, dataType: DataType) {
+    function setChildValue(parent: UAObject | UAVariable, childName: string, value: any, dataType: DataType) {
         const child = parent.getChildByName(childName) as UAVariable;
         if (child) {
             child.setValueFromSource({
@@ -199,11 +199,16 @@ async function main() {
 
     }
 
-    function initIdentifcation() {
-        const identifcation = machine?.getChildByName("Identification", device_idx)as UAVariable;
+    function initIdentification() {
+        const identification = machine?.getChildByName("Identification", device_idx) as UAObject;
 
-        setChildValue(identifcation, "Manufacturer", new LocalizedText("interop4X"), DataType.LocalizedText);
-        setChildValue(identifcation, "ProductInstanceUri", "interop4X.de/choco_cutting_table/123456789", DataType.String);
+        if (!identification) {
+            console.warn("Identification node not found. Skipping identification initialization.");
+            return;
+        }
+
+        setChildValue(identification, "Manufacturer", new LocalizedText("interop4X"), DataType.LocalizedText);
+        setChildValue(identification, "ProductInstanceUri", "interop4X.de/choco_cutting_table/123456789", DataType.String);
 
         var Categorie = server.engine.addressSpace?.constructExtensionObject(
             new NodeId(NodeIdType.NUMERIC, 3014, server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/Glass/Flat/v2/")), {
@@ -211,32 +216,94 @@ async function main() {
             Description: "Label printing"
             }
         );
-        setChildValue(identifcation, "ProcessingCategories", Categorie, DataType.ExtensionObject);
-        setChildValue(identifcation, "SerialNumber", "123456789", DataType.String);
-        setChildValue(identifcation, "Model", new LocalizedText("Model 42"), DataType.LocalizedText);
-        setChildValue(identifcation, "SoftwareRevision", "0.4.2", DataType.String);
-        setChildValue(identifcation, "YearOfConstruction", 2024, DataType.UInt16);
-        setChildValue(identifcation, "DeviceClass", "Cutting Table", DataType.String);
-        setChildValue(identifcation, "Location", "ASER B5 224/AMTC B5 224/VIRTUAL 1 1/", DataType.String);
+        setChildValue(identification, "ProcessingCategories", Categorie, DataType.ExtensionObject);
+        setChildValue(identification, "SerialNumber", "123456789", DataType.String);
+        setChildValue(identification, "Model", new LocalizedText("Model 42"), DataType.LocalizedText);
+        setChildValue(identification, "SoftwareRevision", "0.4.2", DataType.String);
+        setChildValue(identification, "YearOfConstruction", 2024, DataType.UInt16);
+        setChildValue(identification, "DeviceClass", "Cutting Table", DataType.String);
+        setChildValue(identification, "Location", "ASER B5 224/AMTC B5 224/VIRTUAL 1 1/", DataType.String);
     }
 
     // Endpunkt anzeigen
     console.log("Server is now listening on: ", server.getEndpointUrl());
 
     async function InitEnergyMonitoring() {
+        if (!machine) {
+            console.warn("Machine instance not available. Skipping energy monitoring initialization.");
+            return;
+        }
+
+        const monitoringType = server.engine.addressSpace?.findObjectType("MonitoringType", machinery_idx);
         const ecm_idx = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/ECM/") as number;
-        const energyType = server.engine.addressSpace?.findObjectType("IEnergyProfileE1Type",ecm_idx)
+        const energyType = server.engine.addressSpace?.findObjectType("IEnergyProfileE1Type", ecm_idx);
+
+        if (!monitoringType) {
+            console.warn("MonitoringType not found. Skipping monitoring setup.");
+            return;
+        }
+
+        if (!energyType) {
+            console.warn("IEnergyProfileE1Type not found. Skipping monitoring setup.");
+            return;
+        }
+
+        const monitoring = monitoringType.instantiate({
+            componentOf: machine,
+            browseName: {
+                namespaceIndex: machinery_idx,
+                name: "Monitoring"
+            },
+            optionals: ["Consumption"]
+        });
+
+        let consumption = monitoring.getChildByName("Consumption") as UAObject;
+        if (!consumption) {
+            consumption = myNamespace!.addObject({
+                componentOf: monitoring,
+                browseName: {
+                    namespaceIndex: machinery_idx,
+                    name: "Consumption"
+                }
+            });
+        }
+
+        let electricity = consumption.getChildByName("Electricity") as UAObject;
+        if (!electricity) {
+            electricity = myNamespace!.addObject({
+                componentOf: consumption,
+                browseName: {
+                    namespaceIndex: machinery_idx,
+                    name: "Electricity"
+                },
+                typeDefinition: "FolderType"
+            });
+        }
 
         const myEnergyProfileE1Type = myNamespace?.addObjectType({
             browseName: "EnergyProfileE1Type",
             subtypeOf: energyType!,
         });
+
+        if (!myEnergyProfileE1Type) {
+            console.warn("Failed to create EnergyProfileE1Type subtype.");
+            return;
+        }
     
-        const energy_bb = myEnergyProfileE1Type?.instantiate({
-            organizedBy: bb_folder,
-            browseName: "EnergyMeasurement"
+        const energy_bb = myEnergyProfileE1Type.instantiate({
+            componentOf: electricity,
+            browseName: {
+                namespaceIndex: ecm_idx,
+                name: "Main"
+            }
         });
+
         const power_node = energy_bb?.getChildByName("AcActivePowerTotal") as UAVariable;
+        if (!power_node) {
+            console.warn("AcActivePowerTotal not found under Monitoring.Consumption.Electricity.Main.");
+            return;
+        }
+
         const shelly = new ShellyPlugClient("192.168.33.1");
         try{
             var result = await shelly.setPowerOn();   // Gerät einschalten
