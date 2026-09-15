@@ -4,7 +4,7 @@ import { ShellyPlugClient } from "../ShellyPlugClient";
 
 interface EnergyMonitoringOptions {
     server: OPCUAServer;
-    machine: UAObject;
+    machineryBuildingBlocks: UAObject;
     myNamespace: any;
     machineryNamespaceIndex: number;
 }
@@ -50,7 +50,7 @@ function setEngineeringUnits(variable: UAVariable, unitId: number, displayName: 
 }
 
 export async function initEnergyMonitoring(options: EnergyMonitoringOptions): Promise<void> {
-    const { server, machine, myNamespace, machineryNamespaceIndex } = options;
+    const { server, machineryBuildingBlocks, myNamespace, machineryNamespaceIndex } = options;
 
     const monitoringType = server.engine.addressSpace?.findObjectType("MonitoringType", machineryNamespaceIndex);
     const ecmNamespaceIndex = server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/ECM/") as number;
@@ -87,16 +87,21 @@ export async function initEnergyMonitoring(options: EnergyMonitoringOptions): Pr
         return;
     }
 
-    const monitoring = monitoringType.instantiate({
-        componentOf: machine,
-        browseName: {
-            namespaceIndex: machineryNamespaceIndex,
-            name: "Monitoring"
-        },
-        optionals: ["Consumption"]
-    });
+    // The machine type already provides a Monitoring node, so reuse it instead of creating a second one.
+    let monitoring = machineryBuildingBlocks.getChildByName("Monitoring", machineryNamespaceIndex) as UAObject;
+    if (!monitoring) {
+        monitoring = monitoringType.instantiate({
+            componentOf: machineryBuildingBlocks,
+            browseName: {
+                namespaceIndex: machineryNamespaceIndex,
+                name: "Monitoring"
+            },
+            namespace: myNamespace,
+            optionals: ["Consumption"]
+        });
+    }
 
-    let consumption = monitoring.getChildByName("Consumption") as UAObject;
+    let consumption = monitoring.getChildByName("Consumption", machineryNamespaceIndex) as UAObject;
     if (!consumption) {
         consumption = myNamespace.addObject({
             componentOf: monitoring,
@@ -164,13 +169,18 @@ export async function initEnergyMonitoring(options: EnergyMonitoringOptions): Pr
 
     chilledWaterMeasurementType.addReference({ referenceType: "HasInterface", nodeId: volumeFlowType.nodeId });
 
-    const electricityMain = myEnergyProfileE1Type.instantiate({
-        componentOf: electricity,
-        browseName: {
-            namespaceIndex: machineryEnergyNamespaceIndex,
-            name: "Main"
-        }
-    });
+    // The machine type already provides the richer Electricity/Main (import, export and power), so reuse it.
+    let electricityMain = electricity.getChildByName("Main", machineryEnergyNamespaceIndex) as UAObject;
+    if (!electricityMain) {
+        electricityMain = myEnergyProfileE1Type.instantiate({
+            componentOf: electricity,
+            browseName: {
+                namespaceIndex: machineryEnergyNamespaceIndex,
+                name: "Main"
+            },
+            namespace: myNamespace
+        });
+    }
 
     const compressedAirMain = compressedAirMeasurementType.instantiate({
         componentOf: compressedAir,
@@ -178,6 +188,7 @@ export async function initEnergyMonitoring(options: EnergyMonitoringOptions): Pr
             namespaceIndex: machineryEnergyNamespaceIndex,
             name: "Main"
         },
+        namespace: myNamespace,
         optionals: ["Pressure", "Temperature", "VolumeFlowRate", "Volume"]
     });
 
@@ -187,6 +198,7 @@ export async function initEnergyMonitoring(options: EnergyMonitoringOptions): Pr
             namespaceIndex: machineryEnergyNamespaceIndex,
             name: "Main"
         },
+        namespace: myNamespace,
         optionals: ["Pressure", "Temperature", "VolumeFlowRate", "Volume"]
     });
 
@@ -286,23 +298,54 @@ export async function initEnergyMonitoring(options: EnergyMonitoringOptions): Pr
         return;
     }
 
-    const shelly = new ShellyPlugClient("192.168.33.1");
-    try {
-        const result = await shelly.setPowerOn();
-        console.log("Shelly Plug eingeschaltet");
-        if (!result) {
-            console.error("Fehler beim Einschalten des Shelly Plugs");
-            return;
-        }
+    const energyImportNode = electricityMain.getChildByName("AcActiveEnergyTotalImportLp") as UAVariable;
+    const energyExportNode = electricityMain.getChildByName("AcActiveEnergyTotalExportLp") as UAVariable;
+    // ECM defines AcActivePowerTotal in W and the energy odometers in Wh.
+    let energyImportWh = 0;
+    energyImportNode?.setValueFromSource({ value: energyImportWh, dataType: DataType.Float });
+    // The machine never feeds back into the grid.
+    energyExportNode?.setValueFromSource({ value: 0, dataType: DataType.Float });
 
-        setInterval(async () => {
-            const power = await shelly.getActivePower();
-            powerNode.setValueFromSource({
-                value: power,
-                dataType: DataType.Float
-            });
-        }, 500);
+    const shelly = new ShellyPlugClient("192.168.33.1");
+    let shellyAvailable = false;
+    try {
+        shellyAvailable = await shelly.setPowerOn();
+        if (shellyAvailable) {
+            console.log("Shelly Plug eingeschaltet");
+        } else {
+            console.error("Fehler beim Einschalten des Shelly Plugs");
+        }
     } catch (error) {
         console.error("Fehler beim Einschalten des Shelly Plugs:", error);
     }
+
+    // Fallback while the plug delivers no reading: simulate a plausible standby/load power.
+    let simulatedPower = 45;
+    const simulatePower = () => {
+        simulatedPower = clamp(
+            simulatedPower + (45 - simulatedPower) * 0.1 + randomDelta(6),
+            18,
+            120
+        );
+        return simulatedPower;
+    };
+
+    const samplingIntervalMs = 500;
+    let lastSample = Date.now();
+    setInterval(async () => {
+        const measuredPower = shellyAvailable ? await shelly.getActivePower() : null;
+        const power = typeof measuredPower === "number" ? measuredPower : simulatePower();
+        powerNode.setValueFromSource({
+            value: power,
+            dataType: DataType.Float
+        });
+
+        const now = Date.now();
+        const elapsedHours = (now - lastSample) / 3_600_000;
+        lastSample = now;
+        if (energyImportNode && power > 0) {
+            energyImportWh += power * elapsedHours;
+            energyImportNode.setValueFromSource({ value: energyImportWh, dataType: DataType.Float });
+        }
+    }, samplingIntervalMs);
 }

@@ -16,7 +16,8 @@ export class File extends FileBaseSystem {
         this.opcuaObject = this.fileType.instantiate({
             browseName: name,
             displayName: name,
-            organizedBy: parent.opcuaObject
+            organizedBy: parent.opcuaObject,
+            namespace: parent.targetNamespace
         }) as UAFile;
         try {
             installFileType(this.opcuaObject, { filename: this.getFilePath() });

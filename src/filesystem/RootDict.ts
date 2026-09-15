@@ -1,4 +1,4 @@
-import { BaseNode, OPCUAServer } from "node-opcua";
+import { BaseNode, Namespace, OPCUAServer } from "node-opcua";
 import * as fs from "fs";
 import * as path from "path";
 import chokidar, { FSWatcher } from "chokidar";
@@ -8,7 +8,7 @@ import { File } from "./File";
 export class RootDict extends Dict {
     private readonly watcher: FSWatcher;
 
-    constructor(server: OPCUAServer, rootPath: string, opcuaObject: BaseNode) {
+    constructor(server: OPCUAServer, rootPath: string, opcuaObject: BaseNode, namespace?: Namespace) {
         const absoluteRoot = path.resolve(rootPath);
         fs.mkdirSync(absoluteRoot, { recursive: true });
         super(server, absoluteRoot, null, opcuaObject);

@@ -1,4 +1,4 @@
-import { DataType, OPCUAServer, QualifiedName, UAObject, UAVariable } from "node-opcua";
+import { DataType, Namespace, OPCUAServer, QualifiedName, UAObject, UAVariable } from "node-opcua";
 import { CounterStore } from "../persistence/CounterStore";
 
 export class LifetimeCounter {
@@ -9,7 +9,8 @@ export class LifetimeCounter {
         buildingBlocks: UAObject,
         machineryNamespaceIndex: number,
         deviceNamespaceIndex: number,
-        private readonly store: CounterStore
+        private readonly store: CounterStore,
+        namespace?: Namespace
     ) {
         const addressSpace = server.engine.addressSpace;
         const folderType = addressSpace?.findObjectType("MachineryLifetimeCounterType", machineryNamespaceIndex);
@@ -23,7 +24,8 @@ export class LifetimeCounter {
             browseName: new QualifiedName({
                 namespaceIndex: machineryNamespaceIndex,
                 name: "LifetimeCounters"
-            })
+            }),
+            namespace
         });
         this.variable = variableType.instantiate({
             organizedBy: folder,
@@ -31,6 +33,7 @@ export class LifetimeCounter {
                 namespaceIndex: machineryNamespaceIndex,
                 name: "Paper"
             }),
+            namespace,
             optionals: ["Indication"]
         });
 

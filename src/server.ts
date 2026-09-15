@@ -10,6 +10,7 @@ import { createPdf } from "./labelCreator";
 import { StackLight } from "./stacklight";
 import { initIdentification } from "./identification/initIdentification";
 import { initEnergyMonitoring } from "./monitoring/initEnergyMonitoring";
+import { GlassEventService } from "./events";
 
 const { exec } = require("child_process");
 
@@ -63,6 +64,9 @@ async function main() {
 
 
     const myNamespace = server.engine.addressSpace?.registerNamespace("urn:de.interop4X.opcua.choco_cutting_table");
+    if (!myNamespace) {
+        throw new Error("Could not register own namespace.");
+    }
 
     const machine_folder_nid = new NodeId(NodeId.NodeIdType.NUMERIC, 1001, server.engine.addressSpace?.getNamespaceIndex("http://opcfoundation.org/UA/Machinery/"));
     const machine_folder = server.engine.addressSpace?.findNode(machine_folder_nid);
@@ -92,7 +96,8 @@ async function main() {
                 "Identification.Location",
                 "MachineryBuildingBlocks.OperationCounters.OperationCycleCounter",
                 "MachineryBuildingBlocks.OperationCounters.OperationDuration",
-                "MachineryBuildingBlocks.OperationCounters.PowerOnDuration"
+                "MachineryBuildingBlocks.OperationCounters.PowerOnDuration",
+                "MachineryBuildingBlocks.Monitoring.Consumption"
                 //"OptionalObject"
             ] // Liste der optionalen Elemente, die du instanziieren möchtest
         }
@@ -109,12 +114,13 @@ async function main() {
         bb_folder,
         machinery_idx,
         device_idx,
-        counterStore
+        counterStore,
+        myNamespace
     );
     const operationCounterManager = new OperationCounters(MachineryBuildingBlocks!, counterStore);
 
     const fileSystemRoot = machine.getChildByName("FileSystem") as UAObject;
-    const root = new RootDict(server,__dirname + "/../data", fileSystemRoot!);
+    const root = new RootDict(server, __dirname + "/../data", fileSystemRoot!, myNamespace);
 
     let mymachineryItemState!: MachineryItemState;
 
@@ -126,12 +132,17 @@ async function main() {
     initMachineryItem();
     await initEnergyMonitoring({
         server,
-        machine,
+        machineryBuildingBlocks: bb_folder,
         myNamespace,
         machineryNamespaceIndex: machinery_idx
     });
 
     const dataDirectory = path.resolve(__dirname, "../data");
+    const glassEvents = new GlassEventService({
+        server,
+        source: machine,
+        namespace: myNamespace
+    });
     const jobManagementService = new JobManagementService(
         server,
         MachineryBuildingBlocks as UAObject,
@@ -150,16 +161,22 @@ async function main() {
                 const prepareDurationMs = Math.floor(totalDurationMs * 0.2);
                 const printDurationMs = totalDurationMs - prepareDurationMs;
 
+                glassEvents.raiseComponentIn(jobOrderId);
+
                 jobManagementService.setRunningSubState(jobOrderId, "PreparePrint");
                 await SimulateJob(prepareDurationMs);
 
                 jobManagementService.setRunningSubState(jobOrderId, "Print");
+                glassEvents.raiseProcessingIn(jobOrderId);
                 const tempPdfPath = path.join(__dirname, "../data", `${jobOrderId}.pdf`);
                 await createPdf(jobOrderId, tempPdfPath, recipePath, source);
                 await PrintLabel(tempPdfPath);
                 operationCounterManager.incrementCycleCounter();
                 lifetimeCounter.increment();
                 await SimulateJob(printDurationMs);
+
+                glassEvents.raiseProcessingOut(jobOrderId);
+                glassEvents.raiseComponentOut(jobOrderId);
             },
             onJobSuccess: () => {
                 console.log("Druckauftrag erfolgreich gesendet!");

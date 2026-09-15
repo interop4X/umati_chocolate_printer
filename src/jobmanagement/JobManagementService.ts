@@ -177,6 +177,9 @@ export class JobManagementService {
             return;
         }
 
+        console.log(`[JobOrderControl.Store] Received JobOrderID=${jobOrderId}`);
+        console.dir(inputJobOrder, { depth: null });
+
         const currentJobs = this.jobOrderList.readValue().value.value;
         if (!Array.isArray(currentJobs)) {
             callback(null, isa95MethodResult(Isa95ReturnStatusBit.UnableToAcceptJobOrder));

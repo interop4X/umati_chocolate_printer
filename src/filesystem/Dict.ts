@@ -1,5 +1,5 @@
 import {
-    BaseNode, DataType, NodeId, OPCUAServer, sameNodeId, StatusCodes,
+    BaseNode, DataType, Namespace, NodeId, OPCUAServer, sameNodeId, StatusCodes,
     UAFileDirectory, Variant
 } from "node-opcua";
 import * as fs from "fs";
@@ -12,9 +12,11 @@ export type FileSystemChild = Dict | File;
 export class Dict extends FileBaseSystem {
     public childs: FileSystemChild[] = [];
     public override opcuaObject: UAFileDirectory;
+    public readonly targetNamespace?: Namespace;
 
-    constructor(protected readonly server: OPCUAServer, name: string, parent: Dict | null, opcuaObject?: BaseNode) {
+    constructor(protected readonly server: OPCUAServer, name: string, parent: Dict | null, opcuaObject?: BaseNode, namespace?: Namespace) {
         super(name, parent);
+        this.targetNamespace = namespace ?? parent?.targetNamespace;
         if (opcuaObject) {
             this.opcuaObject = opcuaObject as UAFileDirectory;
         } else {
@@ -25,7 +27,8 @@ export class Dict extends FileBaseSystem {
             this.opcuaObject = type.instantiate({
                 browseName: name,
                 displayName: name,
-                organizedBy: parent?.opcuaObject
+                organizedBy: parent?.opcuaObject,
+                namespace: this.targetNamespace
             }) as UAFileDirectory;
         }
         this.ensureNodeVersion();
