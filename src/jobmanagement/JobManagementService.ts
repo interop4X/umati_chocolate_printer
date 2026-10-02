@@ -36,9 +36,9 @@ function isa95ReturnStatus(bit: Isa95ReturnStatusBit): Variant {
     });
 }
 
-function isa95MethodResult(bit: Isa95ReturnStatusBit) {
+function isa95MethodResult(bit: Isa95ReturnStatusBit, statusCode = StatusCodes.Good) {
     return {
-        statusCode: StatusCodes.Good,
+        statusCode,
         outputArguments: [isa95ReturnStatus(bit)]
     };
 }
@@ -150,14 +150,44 @@ export class JobManagementService {
         });
     }
 
+    private clear(inputArguments: Variant[], _context: unknown, callback: any): void {
+        const jobOrderId = inputArguments[0]?.value;
+        if (typeof jobOrderId !== "string" || !jobOrderId.trim()) {
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.InvalidRequest, StatusCodes.Uncertain));
+            return;
+        }
+
+        const list = this.jobOrderList.readValue();
+        const jobs = list.value.value;
+        if (!Array.isArray(jobs)) {
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.InvalidRequest, StatusCodes.Uncertain));
+            return;
+        }
+
+        const jobIndex = jobs.findIndex((job: any) => job?.jobOrder?.jobOrderID === jobOrderId);
+        if (jobIndex === -1) {
+            callback(null, isa95MethodResult(Isa95ReturnStatusBit.UnknownJobOrderId, StatusCodes.Uncertain));
+            return;
+        }
+
+        jobs.splice(jobIndex, 1);
+        list.value.dimensions = [jobs.length];
+        this.jobOrderList.setValueFromSource(list.value);
+        this.jobResponseManager.remove(jobOrderId);
+
+        callback(null, isa95MethodResult(Isa95ReturnStatusBit.NoError));
+    }
+
     private bindMethods(jobOrderControl: UAObject): void {
         const storeMethod = jobOrderControl.getChildByName("Store") as UAMethod;
         const storeAndStartMethod = jobOrderControl.getChildByName("StoreAndStart") as UAMethod;
         const startMethod = jobOrderControl.getChildByName("Start") as UAMethod;
+        const clearMethod = jobOrderControl.getChildByName("Clear") as UAMethod;
 
         storeMethod.bindMethod((inputArguments, context, callback) => this.store(inputArguments, context, callback));
         storeAndStartMethod.bindMethod((inputArguments, context, callback) => this.store(inputArguments, context, callback));
         startMethod.bindMethod((inputArguments, context, callback) => this.start(inputArguments, context, callback));
+        clearMethod.bindMethod((inputArguments, context, callback) => this.clear(inputArguments, context, callback));
     }
 
     private resetJobOrderList(): void {

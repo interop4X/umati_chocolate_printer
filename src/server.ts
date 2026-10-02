@@ -88,6 +88,7 @@ async function main() {
                 "MachineryBuildingBlocks.JobManagement.JobOrderControl.Store",
                 "MachineryBuildingBlocks.JobManagement.JobOrderControl.Start",
                 "MachineryBuildingBlocks.JobManagement.JobOrderControl.StoreAndStart",
+                "MachineryBuildingBlocks.JobManagement.JobOrderControl.Clear",
                 "MachineryBuildingBlocks.JobManagement.MachineryItemState.CurrentState.Number",
                 "Identification.Model",
                 "Identification.SoftwareRevision",
